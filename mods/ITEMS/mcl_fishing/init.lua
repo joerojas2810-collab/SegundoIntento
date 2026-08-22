@@ -225,13 +225,16 @@ function bobber_ENTITY:on_step(dtime)
 	local player = core.get_player_by_name(self.player)
 
 	if self._hooked and self._reeling then
-		local dst = vector.distance(player:get_pos(), self.object:get_pos())
-		if dst < 0.3 or self.timer > 10 then
-			remove_bobber(player, self.object)
-			return
-		end
-		self.object:add_velocity(vector.direction(self.object:get_pos(), player:get_pos()) * dst / 10)
-	end
+		local hooked = self._hooked
+        local player_pos = player:get_pos()
+        local hooked_pos = hooked:get_pos()
+        local impulse = vector.subtract(player_pos, hooked_pos)
+        impulse = vector.multiply(impulse, 2)
+        
+        hooked:add_velocity(impulse)
+        remove_bobber(player)
+        return
+    end
 
 	-- If in water, then bob.
 	if def and (def.liquidtype == "source" and core.get_item_group(def.name, "water") ~= 0) then
