@@ -84,110 +84,120 @@ core.register_on_mods_loaded(function()
 	jungle_biome_test = mcl_biome_dispatch.make_biome_test({ "#is_jungle" })
 end)
 
+local function loot(index, biome)
+    index = math.min(index, 3) + 1
+	local pr = PcgRandom(os.time() * math.random(1, 100))
+	local r = pr:next(1, 100)
+	local fish_values = {85, 84.8, 84.7, 84.5}
+	local junk_values = {10, 8.1, 6.1, 4.2}
+	local fish_value = fish_values[index]
+	local junk_value = junk_values[index] + fish_value
+    local loot_table
+    if r <= fish_value then
+        loot_table = mcl_fishing.loot_fish
+	elseif r <= junk_value then
+		if jungle_biome_test(biome) then
+			loot_table = mcl_fishing.loot_junk_jungle
+		else
+			loot_table = mcl_fishing.loot_junk
+		end
+	else
+		loot_table = mcl_fishing.loot_treasure
+	end
+    local items = mcl_loot.get_loot({ items = loot_table, stacks_min = 1, stacks_max = 1 }, pr)
+	local item
+	if #items >= 1 then
+		item = ItemStack(items[1])
+	else
+		item = ItemStack()
+	end
+    return item, loot_table
+end
+
+local function wear(itemstack, player, multiplier)
+    local durability = 65
+	local unbreaking = mcl_enchanting.get_enchantment(itemstack, "unbreaking")
+	if unbreaking > 0 then
+		durability = durability * (unbreaking + 1)
+	end
+
+    if not core.is_creative_enabled(player:get_player_name()) then
+		local idef = itemstack:get_definition()
+		itemstack:add_wear((65535 / durability) * multiplier)
+		if itemstack:get_count() == 0 and idef.sound and idef.sound.breaks then
+			core.sound_play(idef.sound.breaks, {pos=player:get_pos(), gain=0.5}, true)
+		end
+	end
+end
+
 local function fish(itemstack, player, pointed_thing)
 	if pointed_thing and pointed_thing.type == "node" then
 		-- Call on_rightclick if the pointed node defines it
 		local rc = mcl_util.call_on_rightclick(itemstack, player, pointed_thing)
 		if rc then return rc end
 	end
+
 	local pos = player:get_pos()
 
-	local durability = 65
-	local unbreaking = mcl_enchanting.get_enchantment(itemstack, "unbreaking")
-	if unbreaking > 0 then
-		durability = durability * (unbreaking + 1)
-	end
-
-	--Check for bobber if so handle.
-	if bobbers[player] then
-		local ent = bobbers[player]:get_luaentity()
-		if not ent then
-			remove_bobber(player)
-			return
-		end
-		if ent._hooked and ent._hooked:get_pos() then
-			local hent = ent._hooked:get_luaentity()
-			if not ent._reeling and hent and hent._mcl_fishing_reelable then
-				ent.timer = 0 --restart timer for reeling time limit
-				ent._reeling = true
-			else
-				remove_bobber(player)
-			end
-			return
-		end
-		if ent and ent._dive == true then
-			local items
-			local pr = PcgRandom(os.time() * math.random(1, 100))
-			local r = pr:next(1, 100)
-			local fish_values = {85, 84.8, 84.7, 84.5}
-			local junk_values = {10, 8.1, 6.1, 4.2}
-			local luck_of_the_sea = math.min(mcl_enchanting.get_enchantment(itemstack, "luck_of_the_sea"), 3)
-			local index = luck_of_the_sea + 1
-			local fish_value = fish_values[index]
-			local junk_value = junk_values[index] + fish_value
-			if r <= fish_value then
-				items = mcl_loot.get_loot({ items = mcl_fishing.loot_fish, stacks_min = 1, stacks_max = 1 }, pr)
-				awards.unlock(player:get_player_name(), "mcl:fishyBusiness")
-			elseif r <= junk_value then
-				local biome = mcl_biome_dispatch.get_biome_name(bobbers[player]:get_pos())
-				local loot_junk = mcl_fishing.loot_junk
-				if jungle_biome_test(biome) then
-					loot_junk = mcl_fishing.loot_junk_jungle
-				end
-				items = mcl_loot.get_loot({ items = loot_junk, stacks_min = 1, stacks_max = 1 }, pr)
-			else
-				items = mcl_loot.get_loot({ items = mcl_fishing.loot_treasure, stacks_min = 1, stacks_max = 1 }, pr)
-			end
-			local item
-			if #items >= 1 then
-				item = ItemStack(items[1])
-			else
-				item = ItemStack()
-			end
-			local inv = player:get_inventory()
-			if inv:room_for_item("main", item) then
-				inv:add_item("main", item)
-				if item:get_name() == "mcl_mobitems:leather" then
-					awards.unlock(player:get_player_name(), "mcl:killCow")
-				end
-			else
-				core.add_item(pos, item)
-			end
-
-			mcl_experience.throw_xp(pos, math.random(1,6))
-
-			if not core.is_creative_enabled(player:get_player_name()) then
-				local idef = itemstack:get_definition()
-				itemstack:add_wear(65535/durability) -- 65 uses
-				if itemstack:get_count() == 0 and idef.sound and idef.sound.breaks then
-					core.sound_play(idef.sound.breaks, {pos=player:get_pos(), gain=0.5}, true)
-				end
-			end
-		end
-		--Check if object is on land.
-		local epos = ent.object:get_pos()
-		epos.y = math.floor(epos.y)
-		local node = core.get_node(epos)
-		local def = core.registered_nodes[node.name]
-		if def and def.walkable then
-			if not core.is_creative_enabled(player:get_player_name()) then
-				local idef = itemstack:get_definition()
-				itemstack:add_wear((65535/durability)*2) -- if so and not creative then wear double like in MC.
-				if itemstack:get_count() == 0 and idef.sound and idef.sound.breaks then
-					core.sound_play(idef.sound.breaks, {pos=player:get_pos(), gain=0.5}, true)
-				end
-			end
-		end
-		--Destroy bobber.
-		remove_bobber(player)
-		core.sound_play("reel", {object=player, gain=0.1, max_hear_distance=16}, true)
-		return itemstack
-	--If no bobber or flying_bobber exists then throw bobber.
-	else
-		local playerpos = player:get_pos()
+	-- If no bobber or flying_bobber exists then throw bobber.
+    if not bobbers[player] then
 		local dir = player:get_look_dir()
-		bobbers[player] = mcl_throwing.throw("mcl_fishing:flying_bobber", vector.offset(playerpos, 0, 1.5, 0), dir, 15, player:get_player_name())
+		bobbers[player] = mcl_throwing.throw("mcl_fishing:flying_bobber", vector.offset(pos, 0, 1.5, 0), dir, 15, player:get_player_name())
+        return
+    end
+
+	local ent = bobbers[player]:get_luaentity()
+	if not ent then
+		remove_bobber(player)
+		return
 	end
+
+	if ent._hooked and ent._hooked:get_pos() then
+		local hent = ent._hooked:get_luaentity()
+		if not ent._reeling and hent and hent._mcl_fishing_reelable then
+			ent.timer = 0 --restart timer for reeling time limit
+			ent._reeling = true
+		else
+			remove_bobber(player)
+		end
+		return
+	end
+
+	if ent._dive == true then
+        local luck_of_the_sea = mcl_enchanting.get_enchantment(itemstack, "luck_of_the_sea")
+		local biome = mcl_biome_dispatch.get_biome_name(pos)
+        local item, loot_table = loot(luck_of_the_sea, biome)
+        if loot_table == mcl_fishing.loot_fish then
+            awards.unlock(player:get_player_name(), "mcl:fishyBusiness")
+        end
+        
+		local inv = player:get_inventory()
+		if inv:room_for_item("main", item) then
+			inv:add_item("main", item)
+			if item:get_name() == "mcl_mobitems:leather" then
+				awards.unlock(player:get_player_name(), "mcl:killCow")
+			end
+		else
+			core.add_item(pos, item)
+		end
+
+		mcl_experience.throw_xp(pos, math.random(1,6))
+
+        wear(itemstack, player, 1) -- 65 uses
+	end
+
+	--Check if object is on land.
+	local epos = ent.object:get_pos()
+	epos.y = math.floor(epos.y)
+	local node = core.get_node(epos)
+	local def = core.registered_nodes[node.name]
+	if def and def.walkable then
+        wear(itemstack, player, 2) -- if so and not creative then wear double like in MC.
+	end
+	--Destroy bobber.
+	remove_bobber(player)
+	core.sound_play("reel", {object=player, gain=0.1, max_hear_distance=16}, true)
+	return itemstack
 end
 
 function bobber_ENTITY:check_player()
