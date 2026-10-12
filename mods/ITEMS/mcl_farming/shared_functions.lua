@@ -154,6 +154,11 @@ function mcl_farming:place_seed(itemstack, placer, pointed_thing, plantname)
 	pos = { x = pt.above.x, y = pt.above.y, z = pt.above.z }
 	local place_s = core.get_node(pos)
 
+	if core.is_protected(pos, placer:get_player_name()) then
+		core.record_protection_violation(pos, placer:get_player_name())
+		return
+	end
+
 	if string.find(farmland.name, "mcl_farming:soil") and place_s.name == "air" then
 		core.sound_play(core.registered_nodes[plantname].sounds.place, { pos = pos }, true)
 		core.set_node(pos, { name = plantname, param2 = core.registered_nodes[plantname].place_param2 })
