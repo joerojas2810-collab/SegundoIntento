@@ -372,3 +372,10 @@ for _, test in ipairs(truncate_utf8_tests) do
 		))
 	end
 end
+
+function mcl_util.resolve_alias(item_name)
+  while core.registered_aliases[item_name] do
+    item_name = core.register_aliases[item_name]
+  end
+  return item_name
+end

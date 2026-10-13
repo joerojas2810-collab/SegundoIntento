@@ -21,7 +21,7 @@ function mcl_enchanting.register_enchantment(name, def)
 end
 
 function mcl_enchanting.is_book(itemname)
-	local itemname = core.registered_aliases[itemname] or itemname
+	local itemname = mcl_util.resolve_alias(itemname)
 	return itemname == "mcl_books:book" or itemname == "mcl_enchanting:book_enchanted"
 end
 
