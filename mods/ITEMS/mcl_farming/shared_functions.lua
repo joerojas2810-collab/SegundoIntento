@@ -149,15 +149,16 @@ function mcl_farming:place_seed(itemstack, placer, pointed_thing, plantname)
 	local rc = mcl_util.call_on_rightclick(itemstack, placer, pointed_thing)
 	if rc then return rc end
 
-	local pos = { x = pt.above.x, y = pt.above.y - 1, z = pt.above.z }
-	local farmland = core.get_node(pos)
-	pos = { x = pt.above.x, y = pt.above.y, z = pt.above.z }
-	local place_s = core.get_node(pos)
+	local pos = vector.offset(pt.above, 0, -1, 0)
 
 	if core.is_protected(pos, placer:get_player_name()) then
 		core.record_protection_violation(pos, placer:get_player_name())
 		return
 	end
+
+	local farmland = core.get_node(pos)
+	pos = pt.above
+	local place_s = core.get_node(pos)
 
 	if core.get_item_group(farmland.name, "soil") > 1 and place_s.name == "air" then
 		core.sound_play(core.registered_nodes[plantname].sounds.place, { pos = pos }, true)
