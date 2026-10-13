@@ -162,7 +162,6 @@ function mcl_farming:place_seed(itemstack, placer, pointed_thing, plantname)
 	if core.get_item_group(farmland.name, "soil") > 1 and place_s.name == "air" then
 		core.sound_play(core.registered_nodes[plantname].sounds.place, { pos = pos }, true)
 		core.set_node(pos, { name = plantname, param2 = core.registered_nodes[plantname].place_param2 })
-		--local intervals_counter = get_intervals_counter(pos, 1, 1)
 	else
 		return
 	end
