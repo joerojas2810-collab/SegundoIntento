@@ -283,12 +283,9 @@ local function in_list(list, what)
 end
 
 -- should mob follow what I'm holding ?
-function mob_class:follow_holding(clicker)
-	local item = clicker:get_wielded_item()
-	if in_list(self.follow, item:get_name()) then
-		return true
-	end
-	return false
+function mob_class:follow_holding(obj)
+	local item = obj:get_wielded_item()
+	return in_list(self.follow, item:get_name())
 end
 
 local norm_radians = nil
@@ -559,8 +556,8 @@ function mob_class:do_go_pos (dtime, moveresult)
 
 	if self:check_jump (pos, moveresult) then
 		if self.should_jump and self.should_jump > 2
-		-- Be more eager to jump if it is really certain that
-		-- this mob expects to do so.
+			-- Be more eager to jump if it is really certain that
+			-- this mob expects to do so.
 			or target_node_surface - node_surface >= 0.98 then
 			self._jump = true
 			self.movement_goal = "jump"
@@ -1026,7 +1023,7 @@ function mob_class:target_in_shade (pos, width, height)
 	local nodes = core.find_nodes_in_area_under_air (aa, bb, groups)
 
 	-- Minecraft tries ten times every tick.
-	if #nodes < 1 then
+	if #nodes == 0 then
 		return nil
 	end
 
@@ -1163,7 +1160,6 @@ function mob_class:is_frightened ()
 end
 
 function mob_class:ai_step (dtime)
-	-- Number of seconds since mob was last punched.
 	if self.runaway_timer > 0 then
 		self.runaway_timer = self.runaway_timer - dtime
 	end
@@ -1173,6 +1169,7 @@ function mob_class:ai_step (dtime)
 		self.follow_cooldown = nil
 	end
 	if self._recent_attacker then
+		-- Number of seconds since mob was last punched.
 		self._recent_attacker_age = self._recent_attacker_age + dtime
 		if not self._recent_attacker:is_valid ()
 			or self._recent_attacker_age > 5 then
@@ -1223,7 +1220,7 @@ function mob_class:check_avoid (self_pos)
 		return true
 	else
 		-- Search for nearby mobs to avoid.
-		local target, max_distance, target_pos
+		local target, min_distance, target_pos
 		local range = self.runaway_view_range
 		local runaway_from_players
 			= table.indexof (runaway_from, "players") ~= -1
@@ -1258,16 +1255,16 @@ function mob_class:check_avoid (self_pos)
 				local pos = object:get_pos ()
 				local distance = vector.distance (self_pos, pos)
 				if distance <= view_range
-					and (not max_distance or distance < max_distance) then
+					and (not min_distance or distance < min_distance) then
 					target = object
 					target_pos = pos
-					max_distance = distance
+					min_distance = distance
 				end
 			end
 		end
 		if target then
 			local pos = self:target_away_from (self_pos, target_pos)
-			if pos and vector.distance (pos, target_pos) > max_distance then
+			if pos and vector.distance (pos, target_pos) > min_distance then
 				local bonus = self.runaway_bonus_near
 				self:gopath (pos, bonus)
 				self.avoiding = target
@@ -1616,7 +1613,7 @@ local function find_school_leader (list, species, cluster)
 		local entity = mob:get_luaentity ()
 		if entity and entity.name == species
 			and entity._school
-			and #entity._school > 1
+			and #entity._school > 0
 			and #entity._school < cluster then
 			return entity
 		end
@@ -1665,8 +1662,8 @@ function mob_class:check_schooling (self_pos, dtime)
 
 		-- Assign nearby unassigned mobs other than the
 		-- selected leader to its school.
-		for _, mob in ipairs (nearby) do
-			local entity = mob:get_luaentity ()
+		for _, obj in ipairs (nearby) do
+			local entity = obj:get_luaentity ()
 			if entity
 				and entity.object ~= leader.object
 				and entity.name == self.name
@@ -1674,7 +1671,7 @@ function mob_class:check_schooling (self_pos, dtime)
 				and (not entity._leader) then
 				entity._leader = leader.object
 				entity:replace_activity ("_leader")
-				table.insert (leader._school, mob)
+				table.insert (leader._school, obj)
 
 				if #leader._school >= cluster then
 					break
