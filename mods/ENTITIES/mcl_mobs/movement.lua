@@ -31,13 +31,13 @@ local function signum (number)
 	return number == 0.0 and 0 or number < 0 and -1 or 1
 end
 
-local function genbox (box, node)
-	box[1] = box[1] + node.x
-	box[2] = box[2] + node.y
-	box[3] = box[3] + node.z
-	box[4] = box[4] + node.x
-	box[5] = box[5] + node.y
-	box[6] = box[6] + node.z
+local function genbox (box, nodepos)
+	box[1] = box[1] + nodepos.x
+	box[2] = box[2] + nodepos.y
+	box[3] = box[3] + nodepos.z
+	box[4] = box[4] + nodepos.x
+	box[5] = box[5] + nodepos.y
+	box[6] = box[6] + nodepos.z
 end
 
 local function maxnum (a, b)
@@ -53,18 +53,18 @@ end
 -- generated garbage.
 local get_node_raw = mcl_mobs.get_node_raw
 
-local function get_node (node)
+local function get_node (nodepos)
 	if get_node_raw then
-		local content, _, _ = get_node_raw (node.x, node.y, node.z)
+		local content, _, _ = get_node_raw (nodepos.x, nodepos.y, nodepos.z)
 		return core.get_name_from_content_id (content)
 	else
-		local data = core.get_node (node)
+		local data = core.get_node (nodepos)
 		return data.name
 	end
 end
 
-local function aabb_clear (node, origin, pos2, direction, dist, typetest)
-	local node_type = get_node (node)
+local function aabb_clear (nodepos, origin, pos2, direction, dist, typetest)
+	local node_type = get_node (nodepos)
 	if node_type == "air" then
 		return true
 	else
@@ -77,10 +77,10 @@ local function aabb_clear (node, origin, pos2, direction, dist, typetest)
 			return false
 		end
 	end
-	local boxes = core.get_node_boxes ("collision_box", node)
+	local boxes = core.get_node_boxes ("collision_box", nodepos)
 
 	for _, box in ipairs (boxes) do
-		genbox (box, node)
+		genbox (box, nodepos)
 		local x1, y1, z1, x2, y2, z2
 			= box[1], box[2], box[3], box[4], box[5], box[6]
 
@@ -600,20 +600,20 @@ function mob_class:do_strafe (dtime, moveresult)
 
 	-- Don't jump off ledges or head into unwalkable nodes if
 	-- strafing in reverse or to the sides.
-	local node, est_dx, est_dz
-	local v = { x = sx * vel, y = 0, z = sz * vel, }
+	local nodepos, est_dx, est_dz
+	local v = vector.new(sx * vel, 0, sz * vel)
 	local self_pos = self.object:get_pos ()
 	est_dx, est_dz = self:accelerate_relative (v, vel, vel)
-	node = vector.offset (self_pos,
+	nodepos = vector.offset (self_pos,
 			      -- Scale the delta to reflect the
 			      -- quantity of movement applied in one
 			      -- Minecraft tick.
 			      est_dx * 0.05, 0, est_dz * 0.05)
-	node.x = math.floor (node.x + 0.5)
-	node.y = math.floor (node.y + 0.5)
-	node.z = math.floor (node.z + 0.5)
+	nodepos.x = math.floor (nodepos.x + 0.5)
+	nodepos.y = math.floor (nodepos.y + 0.5)
+	nodepos.z = math.floor (nodepos.z + 0.5)
 
-	if self:gwp_classify_for_movement (node) ~= "WALKABLE" then
+	if self:gwp_classify_for_movement (nodepos) ~= "WALKABLE" then
 		self.strafe_direction.x, sx = 0, 0
 		self.strafe_direction.z, sz = 1, 1
 	end
@@ -974,15 +974,15 @@ function mob_class:ascend_in_powder_snow (self_pos, dtime)
 	return false
 end
 
-local function convert_top_snow (node)
-	local nodedata = core.get_node (node)
+local function convert_top_snow (nodepos)
+	local nodedata = core.get_node (nodepos)
 	if core.get_item_group (nodedata.name, "top_snow") <= 2 then
-		return node
+		return nodepos
 	end
 
 	-- Otherwise move to the air node above.
-	node.y = node.y + 1
-	return node
+	nodepos.y = nodepos.y + 1
+	return nodepos
 end
 
 local aa = vector.new ()
@@ -1007,11 +1007,11 @@ function mob_class:pacing_target (pos, width, height, groups)
 		-- Make ten attempts to select a node within the
 		-- restriction or one that is eligible.
 		for i = 1, 10 do
-			local node = nodes[math.random (#nodes)]
-			if self:node_in_restriction (node)
+			local nodepos = nodes[math.random (#nodes)]
+			if self:node_in_restriction (nodepos)
 				and (not self.acceptable_pacing_target
-					or self:acceptable_pacing_target (node)) then
-				return convert_top_snow (node)
+					or self:acceptable_pacing_target (nodepos)) then
+				return convert_top_snow (nodepos)
 			end
 		end
 		return nil
@@ -1030,16 +1030,16 @@ function mob_class:target_in_shade (pos, width, height)
 		return nil
 	end
 
-	local newnode = {}
+	local newnode_pos = vector.new()
 	for i = 1, 10 do
-		local node = nodes[math.random (#nodes)]
-		newnode.x = node.x
-		newnode.y = node.y + 1
-		newnode.z = node.z
+		local nodepos = nodes[math.random (#nodes)]
+		newnode_pos.x = nodepos.x
+		newnode_pos.y = nodepos.y + 1
+		newnode_pos.z = nodepos.z
 		local sunlight
-			= core.get_natural_light (newnode, 0.5)
+			= core.get_natural_light (newnode_pos, 0.5)
 		if sunlight < 15 then
-			return newnode
+			return newnode_pos
 		end
 	end
 	return nil
@@ -1522,9 +1522,9 @@ local function aquatic_pacing_target (self, pos, width, height, groups)
 		-- Make ten attempts to select a node within the
 		-- restriction.
 		for i = 1, 10 do
-			local node = nodes[math.random (#nodes)]
-			if self:node_in_restriction (node) then
-				return node
+			local nodepos = nodes[math.random (#nodes)]
+			if self:node_in_restriction (nodepos) then
+				return nodepos
 			end
 		end
 		return nil
@@ -1854,14 +1854,14 @@ function mob_class:airborne_pacing_target (pos, width, height, groups)
 	-- current direction of sight.
 	local dir = self:get_yaw ()
 	dir = { x = -math.sin (dir), z = math.cos (dir), }
-	local node_pos = vector.copy (pos)
-	node_pos.x = math.floor (node_pos.x + 0.5)
-	node_pos.y = math.floor (node_pos.y + 0.5)
-	node_pos.z = math.floor (node_pos.z + 0.5)
+	local nodepos = vector.copy (pos)
+	nodepos.x = math.floor (nodepos.x + 0.5)
+	nodepos.y = math.floor (nodepos.y + 0.5)
+	nodepos.z = math.floor (nodepos.z + 0.5)
 	for i = 1, 10 do
-		local node = self:random_node_direction (width, height, dir, math.pi / 20)
-		if node then
-			local target = node_pos + node
+		local offset_pos = self:random_node_direction (width, height, dir, math.pi / 20)
+		if offset_pos then
+			local target = nodepos + offset_pos
 			local class = self:gwp_classify_for_movement (target)
 
 			-- Is this node walkable?
@@ -1893,14 +1893,14 @@ end
 -- Mob restrictions.
 ------------------------------------------------------------------------
 
-function mob_class:restrict_to (node, radius)
-	self._restriction_center = node
+function mob_class:restrict_to (nodepos, radius)
+	self._restriction_center = nodepos
 	self._restriction_size = radius
 end
 
-function mob_class:node_in_restriction (node)
+function mob_class:node_in_restriction (nodepos)
 	if self._restriction_center then
-		return vector.distance (self._restriction_center, node)
+		return vector.distance (self._restriction_center, nodepos)
 			< self._restriction_size
 	end
 	return true
@@ -1921,12 +1921,12 @@ function mob_class:return_to_restriction (self_pos, dtime)
 	for i = 1, 10 do
 		local restrict = self._restriction_center
 		local restriction_dir = vector.direction (self_pos, restrict)
-		local node = self:target_in_direction (self_pos, 16, 7,
+		local nodepos = self:target_in_direction (self_pos, 16, 7,
 						       restriction_dir,
 						       math.pi / 2)
-		if node then
-			if self:node_in_restriction (node) then
-				self:gopath (node, self.restriction_bonus)
+		if nodepos then
+			if self:node_in_restriction (nodepos) then
+				self:gopath (nodepos, self.restriction_bonus)
 				self._returning_to_restriction = true
 				return "_returning_to_restriction"
 			end
