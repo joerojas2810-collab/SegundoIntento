@@ -329,9 +329,7 @@ end
 
 function mob_class:teleport(target)
 	if self.do_teleport then
-		if self.do_teleport(self, target) == false then
-			return
-		end
+		self.do_teleport(self, target)
 	end
 end
 
@@ -386,7 +384,6 @@ function mob_class:dismount_jockey ()
 	if vehicle._jockey_rider == self.object then
 		vehicle._jockey_rider = nil
 		vehicle._jockey_staticdata = nil
-		return
 	end
 end
 
@@ -568,7 +565,6 @@ function mob_class:do_go_pos (dtime, moveresult)
 			local i = self.should_jump or 0
 			self.should_jump = i + 1
 		end
-		return
 	end
 end
 
@@ -1000,7 +996,7 @@ function mob_class:pacing_target (pos, width, height, groups)
 	local nodes = core.find_nodes_in_area_under_air (aa, bb, groups)
 
 	if (self._restrict_center or self.acceptable_pacing_target)
-		and #nodes >= 1 then
+		and #nodes > 0 then
 		-- Make ten attempts to select a node within the
 		-- restriction or one that is eligible.
 		for i = 1, 10 do
@@ -1014,7 +1010,7 @@ function mob_class:pacing_target (pos, width, height, groups)
 		return nil
 	end
 
-	return #nodes >= 1 and convert_top_snow (nodes[math.random (#nodes)])
+	return #nodes > 0 and convert_top_snow (nodes[math.random (#nodes)])
 end
 
 function mob_class:target_in_shade (pos, width, height)
@@ -1515,7 +1511,7 @@ local function aquatic_pacing_target (self, pos, width, height, groups)
 	set_search_bounds (pos, width, height)
 	local nodes = core.find_nodes_in_area (aa, bb, groups)
 
-	if self._restrict_center and #nodes >= 1 then
+	if self._restrict_center and #nodes > 0 then
 		-- Make ten attempts to select a node within the
 		-- restriction.
 		for i = 1, 10 do
@@ -1527,7 +1523,7 @@ local function aquatic_pacing_target (self, pos, width, height, groups)
 		return nil
 	end
 
-	return #nodes >= 1 and nodes[math.random (#nodes)]
+	return #nodes > 0 and nodes[math.random (#nodes)]
 end
 
 mob_class.aquatic_pacing_target = aquatic_pacing_target
