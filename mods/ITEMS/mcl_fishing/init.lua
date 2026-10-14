@@ -170,7 +170,7 @@ local function fish(itemstack, player, pointed_thing)
         if loot_table == mcl_fishing.loot_fish then
             awards.unlock(player:get_player_name(), "mcl:fishyBusiness")
         end
-        
+
 		local inv = player:get_inventory()
 		if inv:room_for_item("main", item) then
 			inv:add_item("main", item)
@@ -230,7 +230,7 @@ function bobber_ENTITY:on_step(dtime)
         local hooked_pos = hooked:get_pos()
         local impulse = vector.subtract(player_pos, hooked_pos)
         impulse = vector.multiply(impulse, 2)
-        
+
         hooked:add_velocity(impulse)
         remove_bobber(player)
         return
