@@ -551,6 +551,7 @@ local function register_chest(basename, desc, longdesc, usagehelp, tt_help, tile
 			-- BEGIN OF LISTRING WORKAROUND
 			if listname == "input" then
 				local inv = core.get_inventory({ type = "node", pos = pos })
+				inv:set_stack("input", 1, nil)
 				inv:add_item("main", stack)
 			end
 			-- END OF LISTRING WORKAROUND
