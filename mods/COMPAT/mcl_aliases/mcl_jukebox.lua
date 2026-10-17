@@ -6,3 +6,6 @@ core.register_alias("mcl_jukebox:record_5", "mcl_jukebox:record_chirp")
 core.register_alias("mcl_jukebox:record_6", "mcl_jukebox:record_strad")
 core.register_alias("mcl_jukebox:record_7", "mcl_jukebox:record_mellohi")
 core.register_alias("mcl_jukebox:record_8", "mcl_jukebox:record_mall")
+
+-- a typo caused an invalid record item to be added to loot chests:
+core.register_alias("mcl_jukebox:record_133", "mcl_jukebox:record_13")

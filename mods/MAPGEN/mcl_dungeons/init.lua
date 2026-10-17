@@ -47,7 +47,7 @@ local loottable =
 		items = {
 			{ itemstring = "mcl_mobitems:nametag", weight = 20 },
 			{ itemstring = "mcl_mobitems:leather", weight = 20, amount_min = 1, amount_max = 5 },
-			{ itemstring = "mcl_jukebox:record_133", weight = 15 },
+			{ itemstring = "mcl_jukebox:record_13", weight = 15 },
 			{ itemstring = "mcl_jukebox:record_far", weight = 15 },
 			{ itemstring = "mcl_jukebox:record_chirp", weight = 3 },
 			{ itemstring = "mcl_mobitems:copper_horse_armor", weight = 15 },
