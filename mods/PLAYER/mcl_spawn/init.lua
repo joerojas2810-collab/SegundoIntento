@@ -224,7 +224,9 @@ function mcl_spawn.spawn(player)
 
 			local node = core.get_node(pos)
 			local ndef = core.registered_nodes[node.name]
-			if ndef and (ndef.walkable or ndef.liquidtype ~= "none") then
+			-- treat ignore and unknown as walkable
+			if node.name == "ignore" or not ndef
+					or ndef.walkable or ndef.liquidtype ~= "none" then
 				break
 			end
 		end
