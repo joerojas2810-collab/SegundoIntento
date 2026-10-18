@@ -194,5 +194,5 @@ mcl_buttons.register_button("polished_blackstone", {
 	push_sound = "mesecons_button_push",
 })
 
-doc.add_entry_alias("nodes", "mcl_buttons:button_wood_off", "nodes", "mcl_buttons:button_wood_on")
+doc.add_entry_alias("nodes", "mcl_buttons:button_oak_off", "nodes", "mcl_buttons:button_oak_on")
 doc.add_entry_alias("nodes", "mcl_buttons:button_stone_off", "nodes", "mcl_buttons:button_stone_on")
