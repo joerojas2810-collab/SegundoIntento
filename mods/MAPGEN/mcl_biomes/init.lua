@@ -6510,7 +6510,7 @@ local function register_dimension_decorations()
 	})
 	core.register_decoration({
 		deco_type = "schematic",
-		place_on = {"mcl_blackstone:soul_soil","mcl_nether:soulsand"},
+		place_on = {"mcl_blackstone:soul_soil","mcl_nether:soul_sand"},
 		sidelen = 16,
 		fill_ratio = 0.000212,
 		biomes = {"SoulsandValley"},
@@ -6522,7 +6522,7 @@ local function register_dimension_decorations()
 	})
 	core.register_decoration({
 		deco_type = "schematic",
-		place_on = {"mcl_blackstone:soul_soil","mcl_nether:soulsand"},
+		place_on = {"mcl_blackstone:soul_soil","mcl_nether:soul_sand"},
 		sidelen = 16,
 		fill_ratio = 0.0002233,
 		biomes = {"SoulsandValley"},
@@ -6534,7 +6534,7 @@ local function register_dimension_decorations()
 	})
 	core.register_decoration({
 		deco_type = "schematic",
-		place_on = {"mcl_blackstone:soul_soil","mcl_nether:soulsand"},
+		place_on = {"mcl_blackstone:soul_soil","mcl_nether:soul_sand"},
 		sidelen = 16,
 		fill_ratio = 0.000225,
 		biomes = {"SoulsandValley"},
@@ -6546,7 +6546,7 @@ local function register_dimension_decorations()
 	})
 	core.register_decoration({
 		deco_type = "schematic",
-		place_on = {"mcl_blackstone:soul_soil","mcl_nether:soulsand"},
+		place_on = {"mcl_blackstone:soul_soil","mcl_nether:soul_sand"},
 		sidelen = 16,
 		fill_ratio = 0.00022323,
 		biomes = {"SoulsandValley"},
