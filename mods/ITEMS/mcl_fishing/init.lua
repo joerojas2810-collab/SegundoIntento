@@ -24,7 +24,7 @@ mcl_fishing.loot_junk = {
 }
 
 mcl_fishing.loot_junk_jungle = table.copy(mcl_fishing.loot_junk)
-table.insert(mcl_fishing.loot_junk_jungle, { itemstring = "mcl_bamboo:bamboo", weight = 10 })
+table.insert(mcl_fishing.loot_junk_jungle, { itemstring = "mcl_bamboo:bamboo_small", weight = 10 })
 
 mcl_fishing.loot_treasure = {
 	{ itemstring = "mcl_bows:bow", wear_min = 49144, wear_max = 65535, func = function(stack, pr)
