@@ -206,7 +206,7 @@ mcl_paintings.register_painting("mcl_paintings:volendam_costume", {
 	legacy_motive = 3,
 })
 
-mcl_paintings.register_painting_alias("ancient octupus", "mcl_paintings:ancient_octupus")
+mcl_paintings.register_painting_alias("ancient octupus", "mcl_paintings:ancient_octopus")
 mcl_paintings.register_painting_alias("snowy mountain", "mcl_paintings:snowy_mountain")
 mcl_paintings.register_painting_alias("balding man", "mcl_paintings:balding_man")
 mcl_paintings.register_painting_alias("poster", "mcl_paintings:poster")
