@@ -4267,7 +4267,7 @@ local function register_decorations()
 		biomes = {"Taiga","ColdTaiga","MegaTaiga","MegaSpruceTaiga"},
 		y_max = mcl_vars.mg_overworld_max,
 		y_min = 2,
-		decoration = "mcl_sweet_berry:sweet_berry_bush_3"
+		decoration = "mcl_farming:sweet_berry_bush_3"
 	})
 
 	-- Large ice spike
