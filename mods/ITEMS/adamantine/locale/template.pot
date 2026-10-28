@@ -1,0 +1,116 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luanti textdomain adamantine 1.0.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A block of adamantine. Very hard; needs at least a diamond pickaxe to mine."
+msgstr ""
+
+msgid "A lump of raw adamantine. Smelt it in a furnace to get an adamantine ingot."
+msgstr ""
+
+msgid "A piece of ladder which allows you to climb vertically. Ladders can only be placed on the side of solid blocks and not on glass, leaves, ice, slabs, glowstone, nor sea lanterns."
+msgstr ""
+
+msgid "Adamantine"
+msgstr ""
+
+msgid "Adamantine Axe"
+msgstr ""
+
+msgid "Adamantine Bars"
+msgstr ""
+
+msgid "Adamantine Chain"
+msgstr ""
+
+msgid "Adamantine Door"
+msgstr ""
+
+msgid "Adamantine Double Door"
+msgstr ""
+
+msgid "Adamantine Hoe"
+msgstr ""
+
+msgid "Adamantine Ingot"
+msgstr ""
+
+msgid "Adamantine Ladder"
+msgstr ""
+
+msgid "Adamantine Lump"
+msgstr ""
+
+msgid "Adamantine Ore"
+msgstr ""
+
+msgid "Adamantine Pickaxe"
+msgstr ""
+
+msgid "Adamantine Reverse Door"
+msgstr ""
+
+msgid "Adamantine Shovel"
+msgstr ""
+
+msgid "Adamantine Sword"
+msgstr ""
+
+msgid "Adamantine Trapdoor"
+msgstr ""
+
+msgid "Adamantine bars neatly connect to their neighbors as you build them."
+msgstr ""
+
+msgid "Adamantine doors are 2-block high barriers which can only be opened or closed by a redstone signal, and by hand."
+msgstr ""
+
+msgid "Adamantine ore embedded in deepslate. It needs at least a diamond pickaxe to mine."
+msgstr ""
+
+msgid "Adamantine ore is found very deep underground. It needs at least a diamond pickaxe to mine."
+msgstr ""
+
+msgid "An adamantine axe. It chops wood extremely fast and hits very hard."
+msgstr ""
+
+msgid "An adamantine hoe. It tills soil and almost never wears out."
+msgstr ""
+
+msgid "An adamantine pickaxe. It mines faster than any other pickaxe and can break every block that needs a pickaxe."
+msgstr ""
+
+msgid "An adamantine shovel. It digs soft blocks extremely fast."
+msgstr ""
+
+msgid "An adamantine sword. Deals more damage than diamond or netherite and lasts far longer."
+msgstr ""
+
+msgid "An ingot of adamantine, a metal harder and tougher than diamond and netherite."
+msgstr ""
+
+msgid "Block of Adamantine"
+msgstr ""
+
+msgid "Carved Adamantine Block"
+msgstr ""
+
+msgid "Chains are adamantine metallic decoration blocks."
+msgstr ""
+
+msgid "Deepslate Adamantine Ore"
+msgstr ""
+
+msgid "Adamantine Helmet"
+msgstr ""
+
+msgid "Adamantine Chestplate"
+msgstr ""
+
+msgid "Adamantine Leggings"
+msgstr ""
+
+msgid "Adamantine Boots"
+msgstr ""

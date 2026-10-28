@@ -4,9 +4,16 @@ local S = core.get_translator(core.get_current_modname())
 doc.sub.items.disable_core_factoid("node_mining")
 doc.sub.items.disable_core_factoid("tool_capabilities")
 
--- Help button callback
-core.register_on_player_receive_fields(function(player, _, fields)
+-- Help button callback. Everforge adds a small chooser in the survival
+-- inventory so its practical starter guide and the complete documentation
+-- remain equally accessible; without Everforge, retain the native action.
+core.register_on_player_receive_fields(function(player, formname, fields)
 	if fields.__mcl_doc then
+		if formname == "" and everforge and everforge.onboarding
+				and type(everforge.onboarding.show_inventory_help) == "function" then
+			everforge.onboarding.show_inventory_help(player)
+			return true
+		end
 		doc.show_doc(player:get_player_name())
 	end
 end)

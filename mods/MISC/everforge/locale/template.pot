@@ -1,0 +1,923 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luanti textdomain everforge 1.0.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "@1 @2"
+msgstr ""
+
+msgid "@1 — Rank @2 / @3"
+msgstr ""
+
+msgid "@1, Y @2 to @3; approximately @4 configured cluster placements per horizontal chunk."
+msgstr ""
+
+msgid "@1@nEach skill rank costs one point; earn 1 point every 5 XP levels."
+msgstr ""
+
+msgid "A modular Everforge tool. Its mining level is fixed by its head; binding, handle and tempering quality affect its other statistics."
+msgstr ""
+
+msgid "A reusable Everforge part made from @1. Material rarity and finished-tool craft quality are separate properties."
+msgstr ""
+
+msgid "A scholar of ancient dungeons."
+msgstr ""
+
+msgid "A specialist in alloys and crafted gear."
+msgstr ""
+
+msgid "Accepts: Tin, silver, mithril or adamantine lumps."
+msgstr ""
+
+msgid "Activate Everforge dungeon spawners"
+msgstr ""
+
+msgid "Adamantine"
+msgstr ""
+
+msgid "Alloy Melter"
+msgstr ""
+
+msgid "Alloy Modular @1"
+msgstr ""
+
+msgid "Already scaled by a version that did not record its multipliers"
+msgstr ""
+
+msgid "Also raw iron and raw gold; ingots are not accepted."
+msgstr ""
+
+msgid "Ancient Dungeon Spawner"
+msgstr ""
+
+msgid "Applied (stored)"
+msgstr ""
+
+msgid "Arcanist"
+msgstr ""
+
+msgid "Axe"
+msgstr ""
+
+msgid "Axe Head"
+msgstr ""
+
+msgid "Biomes: registered overworld biome entries for high, middle and deep features (@1, @2 and @3)."
+msgstr ""
+
+msgid "Biomes: registered overworld entries; @1 stone and @2 deepslate levelgen features."
+msgstr ""
+
+msgid "Block"
+msgstr ""
+
+msgid "Block information overlay disabled."
+msgstr ""
+
+msgid "Block information overlay enabled."
+msgstr ""
+
+msgid "Block: @1"
+msgstr ""
+
+msgid "Choose a class (selection is permanent):"
+msgstr ""
+
+msgid "Class: @1 | Level: @2 | Skill points: @3"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Common"
+msgstr ""
+
+msgid "Common material"
+msgstr ""
+
+msgid "Container"
+msgstr ""
+
+msgid "Copper"
+msgstr ""
+
+msgid "Craft quality: @1"
+msgstr ""
+
+msgid "Crop"
+msgstr ""
+
+msgid "Crop stage: @1"
+msgstr ""
+
+msgid "Damage: @1; attack interval: @2 s"
+msgstr ""
+
+msgid "Deep Miner"
+msgstr ""
+
+msgid "Deep band"
+msgstr ""
+
+msgid "Depth: Y @1 to @2, taken from the active Adamantine generation bounds."
+msgstr ""
+
+msgid "Dimension: Overworld"
+msgstr ""
+
+msgid "Dungeon Relic"
+msgstr ""
+
+msgid "Dungeon Reward Cache"
+msgstr ""
+
+msgid "Dungeoneer"
+msgstr ""
+
+msgid "Durability: @1 uses"
+msgstr ""
+
+msgid "Eligible; scaling applies when a player is within 34 nodes"
+msgstr ""
+
+msgid "Enable or disable the contextual block information overlay."
+msgstr ""
+
+msgid "Epic"
+msgstr ""
+
+msgid "Epic material"
+msgstr ""
+
+msgid "Everforge Alloy Melter"
+msgstr ""
+
+msgid "Everforge Alloy Melter — @1"
+msgstr ""
+
+msgid "Everforge RPG"
+msgstr ""
+
+msgid "Everforge dungeon spawn pulse"
+msgstr ""
+
+msgid "Everforge heads, bindings and reinforced handles."
+msgstr ""
+
+msgid "Excluded: scaling only affects native Overworld monsters"
+msgstr ""
+
+msgid "Fallback frequency: scarcity @1 nodes, @2 ores per cluster, cluster size @3."
+msgstr ""
+
+msgid "Forged Tool Binding"
+msgstr ""
+
+msgid "Forged Tool Head"
+msgstr ""
+
+msgid "Forgemaster"
+msgstr ""
+
+msgid "Frequency: each stone/deepslate feature has a 1-in-@1 filter per eligible chunk; cluster size @2."
+msgstr ""
+
+msgid "Fuel"
+msgstr ""
+
+msgid "Fuel: @1%"
+msgstr ""
+
+msgid "Gain a small XP bonus near dungeon guardians."
+msgstr ""
+
+msgid "Generation path: Mineclonia levelgen placed features."
+msgstr ""
+
+msgid "Generation path: engine ore fallback; Mineclonia levelgen is disabled."
+msgstr ""
+
+msgid "Generation path: engine register_ore fallback; Mineclonia levelgen is disabled."
+msgstr ""
+
+msgid "Generation, mining, processing and uses for Everforge metals."
+msgstr ""
+
+msgid "Gold"
+msgstr ""
+
+msgid "Head: @1 (@2); binding: @3 (@4); handle: @5 (@6)"
+msgstr ""
+
+msgid "High band"
+msgstr ""
+
+msgid "Hoe"
+msgstr ""
+
+msgid "Initialize Everforge dungeon caches"
+msgstr ""
+
+msgid "Input"
+msgstr ""
+
+msgid "Inventory"
+msgstr ""
+
+msgid "Iron"
+msgstr ""
+
+msgid "Iron Tool Binding (legacy component)"
+msgstr ""
+
+msgid "Iron Tool Head (legacy component)"
+msgstr ""
+
+msgid "Iron-Reinforced Handle (legacy component)"
+msgstr ""
+
+msgid "Learn"
+msgstr ""
+
+msgid "Legendary"
+msgstr ""
+
+msgid "Legendary material"
+msgstr ""
+
+msgid "Machine"
+msgstr ""
+
+msgid "Machine is burning fuel."
+msgstr ""
+
+msgid "Main uses: @1"
+msgstr ""
+
+msgid "Metal"
+msgstr ""
+
+msgid "Middle band"
+msgstr ""
+
+msgid "Mined resource: @1."
+msgstr ""
+
+msgid "Mineral: @1"
+msgstr ""
+
+msgid "Minerals"
+msgstr ""
+
+msgid "Minimum mining level: @1"
+msgstr ""
+
+msgid "Mining speed: @1; mining level: @2"
+msgstr ""
+
+msgid "Mithril"
+msgstr ""
+
+msgid "Mob: @1; health: @2 / @3; configured melee damage: @4; Y: @5; depth below Y=-32: @6; health multiplier: @7x; damage multiplier: @8x; @9"
+msgstr ""
+
+msgid "Mobile explorer and ranged specialist."
+msgstr ""
+
+msgid "Modular @1"
+msgstr ""
+
+msgid "No additional Everforge recipes use this metal."
+msgstr ""
+
+msgid "No fuel"
+msgstr ""
+
+msgid "No materials"
+msgstr ""
+
+msgid "No mineral entries are available."
+msgstr ""
+
+msgid "Only newly generated terrain can contain new deposits; existing map blocks are unchanged."
+msgstr ""
+
+msgid "Open Everforge class and skill progression."
+msgstr ""
+
+msgid "Open the in-game mineral generation and mining guide."
+msgstr ""
+
+msgid "Ore"
+msgstr ""
+
+msgid "Output full"
+msgstr ""
+
+msgid "Pickaxe"
+msgstr ""
+
+msgid "Pickaxe Head"
+msgstr ""
+
+msgid "Plant"
+msgstr ""
+
+msgid "Point at a mob and run this command again."
+msgstr ""
+
+msgid "Processing: @1 → @2"
+msgstr ""
+
+msgid "Processing: @1 → @2 in a Mineclonia furnace or Alloy Melter."
+msgstr ""
+
+msgid "Processing: @1 → @2 in a Mineclonia furnace."
+msgstr ""
+
+msgid "Products"
+msgstr ""
+
+msgid "Progress: @1%"
+msgstr ""
+
+msgid "Quality bonuses: +@1% damage, +@2% mining speed, +@3% durability, +@4% attack speed"
+msgstr ""
+
+msgid "Ranger"
+msgstr ""
+
+msgid "Rare"
+msgstr ""
+
+msgid "Rare material"
+msgstr ""
+
+msgid "Ready"
+msgstr ""
+
+msgid "Recommended tool: @1"
+msgstr ""
+
+msgid "Recommended tool: Hand or any tool"
+msgstr ""
+
+msgid "Recommended tool: Hoe"
+msgstr ""
+
+msgid "Recommended tool: Pickaxe; Mineclonia pickaxey group level: @1"
+msgstr ""
+
+msgid "Recommended tool: Shovel"
+msgstr ""
+
+msgid "Reduces wear on Everforge tools."
+msgstr ""
+
+msgid "Reinforced Handle"
+msgstr ""
+
+msgid "Run faster."
+msgstr ""
+
+msgid "Sealed Dungeon Cache"
+msgstr ""
+
+msgid "Shears"
+msgstr ""
+
+msgid "Shovel"
+msgstr ""
+
+msgid "Shovel Head"
+msgstr ""
+
+msgid "Show health, configured melee damage, depth and scaling for the mob you point at."
+msgstr ""
+
+msgid "Show registered Everforge and Adamantine generation paths (server only)."
+msgstr ""
+
+msgid "Silver"
+msgstr ""
+
+msgid "Skills — ranks, points and actions"
+msgstr ""
+
+msgid "Smelt alloys faster at Everforge melters."
+msgstr ""
+
+msgid "Smith"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Status: @1"
+msgstr ""
+
+msgid "Stone"
+msgstr ""
+
+msgid "Storage and construction blocks."
+msgstr ""
+
+msgid "Sword"
+msgstr ""
+
+msgid "Sword Blade"
+msgstr ""
+
+msgid "Takes 10% less mob and player melee damage."
+msgstr ""
+
+msgid "That skill is already at its maximum rank."
+msgstr ""
+
+msgid "The pointed object is not a Mineclonia monster."
+msgstr ""
+
+msgid "The server has disabled the contextual block information overlay."
+msgstr ""
+
+msgid "Tin"
+msgstr ""
+
+msgid "Tool Binding"
+msgstr ""
+
+msgid "Tools or equipment registered for this ingot."
+msgstr ""
+
+msgid "Trailblazer"
+msgstr ""
+
+msgid "Type: @1"
+msgstr ""
+
+msgid "Unassigned"
+msgstr ""
+
+msgid "Uncommon"
+msgstr ""
+
+msgid "Uncommon material"
+msgstr ""
+
+msgid "Unknown registered drop"
+msgstr ""
+
+msgid "Unsupported material"
+msgstr ""
+
+msgid "Update Everforge alloy melter inventory and interface"
+msgstr ""
+
+msgid "Vanguard"
+msgstr ""
+
+msgid "Wood"
+msgstr ""
+
+msgid "Working"
+msgstr ""
+
+msgid "You must be online to change this setting."
+msgstr ""
+
+msgid "You must be online to use this command."
+msgstr ""
+
+msgid "You need another skill point. Earn XP and level up."
+msgstr ""
+
+msgid "Your class is already set; it cannot be changed."
+msgstr ""
+
+msgid "[on|off]"
+msgstr ""
+
+msgid "custom / not exposed"
+msgstr ""
+
+msgid "unknown"
+msgstr ""
+
+msgid "A World Without a Written Destination."
+msgstr ""
+
+msgid "There is no prescribed route. Set your own pace: explore, build, mine, or let the landscape suggest a direction. This story is yours."
+msgstr ""
+
+msgid "What You Do Defines You."
+msgstr ""
+
+msgid "Mining, forging, combat, exploration, and crafting each leave a different mark. What you choose to practice shapes your progress; there is no single way forward."
+msgstr ""
+
+msgid "Forge Your Own Path."
+msgstr ""
+
+msgid "No permanent class locks you into a role. Try skills from different disciplines and grow your Mastery at your own pace."
+msgstr ""
+
+msgid "Not Everything Is in Sight."
+msgstr ""
+
+msgid "There is more to discover than what you see at first, but nothing demands that you go in a particular direction. Explore when you are ready and let curiosity guide you."
+msgstr ""
+
+msgid "The World Continues With You."
+msgstr ""
+
+msgid "Your journey does not end with this welcome. Build, change, and inhabit the world around you. When you close this card, the wider world is yours to explore."
+msgstr ""
+
+msgid "Your First Tools"
+msgstr ""
+
+msgid "Collect logs. Open your inventory, place logs in the crafting grid, and take the planks. Use them to make a crafting table; the recipe book (book icon) shows how to make a wooden axe."
+msgstr ""
+
+msgid "Learn by Doing"
+msgstr ""
+
+msgid "Try mining, forging, combat, exploration, or crafting. Use /everforge to see the five disciplines and available skills. There is no required order."
+msgstr ""
+
+msgid "Prepare Your Shelter"
+msgstr ""
+
+msgid "Build a shelter that suits you. Gather food and keep an eye on your health and hunger as you settle in."
+msgstr ""
+
+msgid "Discover the Unknown"
+msgstr ""
+
+msgid "Head out whenever you like. Take in the landscape and choose your own direction; exploration has no required objectives."
+msgstr ""
+
+msgid "Know Your Tools"
+msgstr ""
+
+msgid "To return to this guide without typing a command, open your inventory (I), select the Everforge tab, and choose \"Everforge Guide\". Or press T to open chat, type /everforge, and press Enter. I and T are Luanti's default keys; you can change them in Settings > Change keys."
+msgstr ""
+
+msgid "Everforge — Guide and Path"
+msgstr ""
+
+msgid "A world to shape at your own pace. Choose a guide or return to your progress."
+msgstr ""
+
+msgid "Introduction"
+msgstr ""
+
+msgid "Welcome to Everforge"
+msgstr ""
+
+msgid "First Steps"
+msgstr ""
+
+msgid "Suggestions, never missions"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Five disciplines and skills"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "Controls and commands"
+msgstr ""
+
+msgid "Recipes"
+msgstr ""
+
+msgid "Recipe book"
+msgstr ""
+
+msgid "Achievements"
+msgstr ""
+
+msgid "Game achievements"
+msgstr ""
+
+msgid "Controls and Commands"
+msgstr ""
+
+msgid "Open the available help pages. Controls can be changed in the game settings."
+msgstr ""
+
+msgid "Controls"
+msgstr ""
+
+msgid "Commands"
+msgstr ""
+
+msgid "Complete Help"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Everforge — Welcome"
+msgstr ""
+
+msgid "Everforge — First Steps"
+msgstr ""
+
+msgid "Would you like to see a few first steps?"
+msgstr ""
+
+msgid "Yes, show me"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Finish and Explore"
+msgstr ""
+
+msgid "Finish"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Skip"
+msgstr ""
+
+msgid "Would you like to see a few first steps? You can open them any time with /everforge first_steps; the world is ready to explore."
+msgstr ""
+
+msgid "The help pages are unavailable right now."
+msgstr ""
+
+msgid "The recipe book is unavailable right now."
+msgstr ""
+
+msgid "The achievements screen is unavailable in this world."
+msgstr ""
+
+msgid "Everforge progression is not available right now."
+msgstr ""
+
+msgid "Open Everforge's guide, progression, or a reference."
+msgstr ""
+
+msgid "Unknown section; showing the Everforge guide."
+msgstr ""
+
+msgid "Card @1 of @2"
+msgstr ""
+
+msgid "Everforge Guide"
+msgstr ""
+
+msgid "Choose a practical crafting guide or open the complete help library."
+msgstr ""
+
+msgid "Basic Crafting"
+msgstr ""
+
+msgid "General recipe book"
+msgstr ""
+
+msgid "Materials, tools and survival"
+msgstr ""
+
+msgid "First Materials"
+msgstr ""
+
+msgid "Tools and Weapons"
+msgstr ""
+
+msgid "Survival"
+msgstr ""
+
+msgid "Compatible wood"
+msgstr ""
+
+msgid "Any log"
+msgstr ""
+
+msgid "Compatible stone"
+msgstr ""
+
+msgid "Compatible coal"
+msgstr ""
+
+msgid "Any bed"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Tree trunks are the first raw material for wooden building and crafting."
+msgstr ""
+
+msgid "Break a tree trunk; it is gathered from the world and has no crafting recipe."
+msgstr ""
+
+msgid "Gathered from the world; no crafting grid."
+msgstr ""
+
+msgid "Planks"
+msgstr ""
+
+msgid "Planks are a common building material and a base ingredient for early tools and stations."
+msgstr ""
+
+msgid "Sticks"
+msgstr ""
+
+msgid "Sticks are handles and components used by tools, weapons and torches."
+msgstr ""
+
+msgid "Crafting Table"
+msgstr ""
+
+msgid "A crafting table opens the full 3×3 crafting grid."
+msgstr ""
+
+msgid "Place four compatible wood items in a 2×2 square."
+msgstr ""
+
+msgid "Place it in the world and right-click it to open the 3×3 grid."
+msgstr ""
+
+msgid "A pickaxe mines stone and other hard blocks; the suitable material depends on the block."
+msgstr ""
+
+msgid "The wood version uses compatible wood for the head and two sticks for the handle. Other registered material versions are selectable below."
+msgstr ""
+
+msgid "An axe is useful for tree trunks, wooden blocks and some other tasks."
+msgstr ""
+
+msgid "The wood version uses three compatible wood items and two sticks. Mineclonia registers two mirrored layouts."
+msgstr ""
+
+msgid "A shovel is useful for dirt, sand, gravel and other loose blocks."
+msgstr ""
+
+msgid "The wood version uses one compatible wood item above two sticks."
+msgstr ""
+
+msgid "A sword is a close-range weapon and can also cut some particular blocks."
+msgstr ""
+
+msgid "The wood version uses two compatible wood items above one stick."
+msgstr ""
+
+msgid "A hoe prepares suitable soil for growing crops."
+msgstr ""
+
+msgid "The wood version uses two compatible wood items and two sticks; the registered layout can face either way."
+msgstr ""
+
+msgid "Torch"
+msgstr ""
+
+msgid "A torch lights nearby spaces."
+msgstr ""
+
+msgid "Combine one compatible coal item above one stick; the registered recipe returns four torches."
+msgstr ""
+
+msgid "Furnace"
+msgstr ""
+
+msgid "A furnace cooks food and processes materials using fuel."
+msgstr ""
+
+msgid "Place compatible stone around the outside of a 3×3 grid, leaving the center empty."
+msgstr ""
+
+msgid "Chest"
+msgstr ""
+
+msgid "A chest stores items. Open it with a right-click."
+msgstr ""
+
+msgid "Place compatible wood around the outside of a 3×3 grid, leaving the center empty."
+msgstr ""
+
+msgid "Bed"
+msgstr ""
+
+msgid "A bed lets you sleep under the world's conditions; the world settings determine whether it also sets a respawn point."
+msgstr ""
+
+msgid "Use three matching wool blocks above three compatible wood items. Other colors have corresponding registered recipes."
+msgstr ""
+
+msgid "Place it and right-click at night or during a thunderstorm, when the bed is safe to use."
+msgstr ""
+
+msgid "Unlabeled item"
+msgstr ""
+
+msgid "Compatible material"
+msgstr ""
+
+msgid "Inventory or table; ingredients may be placed in any order."
+msgstr ""
+
+msgid "Inventory 2×2 or crafting table 3×3."
+msgstr ""
+
+msgid "Crafting table 3×3."
+msgstr ""
+
+msgid ", "
+msgstr ""
+
+msgid "Diamond"
+msgstr ""
+
+msgid "Netherite"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "The general recipe book uses progressive discovery here: it may show few recipes until you collect their ingredients. This guide shows selected basic recipes without changing that filter."
+msgstr ""
+
+msgid "The general recipe book remains available for the complete registered catalog."
+msgstr ""
+
+msgid "Choose a subject to see its purpose, how to obtain it and the registered grid."
+msgstr ""
+
+msgid "This material is gathered from the world; no crafting recipe is registered."
+msgstr ""
+
+msgid "No crafting-grid recipe is registered for this variant in the current game."
+msgstr ""
+
+msgid "This tool material is registered as non-grid-craftable."
+msgstr ""
+
+msgid "Open general recipe book"
+msgstr ""
+
+msgid "Back to Everforge guide"
+msgstr ""
+
+msgid "The general recipe book is unavailable right now."
+msgstr ""
+
+msgid "Unlabeled block"
+msgstr ""
+
+msgid "These examples follow Mineclonia's registered recipes, not a copied Minecraft list; material groups and bed behavior may differ by version or server setting."
+msgstr ""
+
+msgid "These examples follow this world's registered recipes, not a copied Minecraft list; material groups and bed behavior may differ by version or server setting."
+msgstr ""
+
+msgid "Craft one log to receive four planks. Each registered tree type has its own matching plank output."
+msgstr ""
+
+msgid "Place three pieces of the selected tool material across the top row, then two sticks below the center."
+msgstr ""
+
+msgid "Use three pieces of the selected tool material and two sticks. Two mirrored layouts are registered."
+msgstr ""
+
+msgid "Place one piece of the selected tool material above two sticks."
+msgstr ""
+
+msgid "Place two pieces of the selected tool material above one stick."
+msgstr ""
+
+msgid "Place two pieces of the selected tool material across the top, then two sticks below. Two mirrored layouts are registered."
+msgstr ""
+
+msgid "A bed lets you sleep when it is safe to use. World settings determine whether it also sets a respawn point."
+msgstr ""
+
+msgid "Bed color"
+msgstr ""
+
+msgid "Wood type"
+msgstr ""
+
+msgid "Craft a log; the output count appears in the registered recipe. Each tree type has its matching plank output."
+msgstr ""
+
+msgid "The general book may hide undiscovered recipes; this guide shows basics without changing that filter."
+msgstr ""
+
+msgid "The general book remains useful for searching and the wider registered catalog."
+msgstr ""
+
+msgid "Recipes follow this world, not a fixed Minecraft edition; bed behavior can depend on server settings."
+msgstr ""

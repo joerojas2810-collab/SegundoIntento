@@ -1,0 +1,19 @@
+# Extracto de ejecuciones reales correctas (no todos los intentos intermedios).
+Luanti 5.17.0 / LuaJIT 2.1.1764270282 / Mineclonia 0.124.1
+
+2026-10-28 13:05:16: ACTION[Server]: EVERFORGE_TEST_PASS: model: JSON, curves, points, purchase, dedupe, exploration, bounds
+2026-10-28 13:04:01: ACTION[Server]: [Everforge] REGION_READY {"center":{"x":103,"y":81,"z":26},"radius":6,"seed":"12345","state":"ready","version":1}
+2026-10-28 13:04:01: ACTION[Server]: EVERFORGE_TEST_PASS: actual singlenode region generated; world edit saved for restart
+2026-10-28 13:04:34: ACTION[Server]: EVERFORGE_TEST_PASS: restart: same region, blocks and node metadata preserved
+2026-10-28 13:13:29: ACTION[Server]: EVERFORGE_TEST_PASS: two real clients: shared spawn, dig, craft dispatch, forge, kill, exploration, isolated XP, skill purchase
+2026-10-28 13:13:29: ACTION[Server]: EVERFORGE_TEST_PASS: shared physical world edited; profile saved for reconnect/restart
+2026-10-28 13:15:30: ACTION[Server]: EVERFORGE_TEST_PASS: model: serialization, curves, points, purchase, dedupe, exploration, bounds
+2026-10-28 13:14:49: ACTION[Server]: EVERFORGE_TEST_PASS: real player reconnect: XP, skill, vanilla XP and world modification persist
+2026-10-28 13:14:49: ACTION[Server]: EVERFORGE_TEST_PASS: real death and respawn: vanilla XP lost, Everforge XP retained, shared fallback
+2026-10-28 13:15:51: ACTION[Server]: EVERFORGE_TEST_PASS: mechanics: UI purchases, speed, defense, bed priority, anchor charge, fallback, blocked region
+2026-10-28 13:16:31: ACTION[Server]: EVERFORGE_TEST_PASS: model: serialization, curves, points, purchase, dedupe, exploration, bounds
+2026-10-28 13:15:51: ACTION[Server]: [Everforge] REGION_READY {"center":{"x":103,"y":81,"z":26},"radius":6,"seed":"12345","state":"ready","version":1}
+2026-10-28 13:15:52: ACTION[Server]: EVERFORGE_TEST_PASS: actual singlenode region generated; world edit saved for restart
+2026-10-28 13:16:31: ACTION[Server]: EVERFORGE_TEST_PASS: restart: same region, blocks and node metadata preserved
+
+2026-10-28 13:17:34: ACTION[Server]: EVERFORGE_TEST_PASS: local game: fresh world, pending arrival, player spawn, profile and UI command

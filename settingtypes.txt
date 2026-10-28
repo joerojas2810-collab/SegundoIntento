@@ -282,3 +282,15 @@ mcl_logging_structures (Log structure generation) bool true
 # Debug logging for mcl_events.
 mcl_logging_event_api (Debug logging for mcl_events) bool false
 
+
+[Everforge development]
+# One small shared camp, created only on a new world. Never rebuilds a ready region.
+everforge_start_region (Shared starting region) bool true
+# Total XP required for level N is base * N^2. One general skill point per Mastery level.
+everforge_mastery_base (Mastery curve base) int 50 1 100000
+everforge_discipline_base (Discipline curve base) int 25 1 100000
+everforge_xp_mining (XP per mined position) int 1 0 10000
+everforge_xp_forging (XP per manually supplied smelt) int 6 0 10000
+everforge_xp_combat (XP per player monster kill) int 15 0 10000
+everforge_xp_exploration (XP per new 128-node horizontal cell) int 8 0 10000
+everforge_xp_crafting (XP per completed craft) int 4 0 10000
