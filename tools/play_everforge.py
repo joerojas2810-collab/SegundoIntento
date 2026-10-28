@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Isolated Everforge playtest. Python stdlib only; never opens normal Luanti saves."""
+"""Developer-only isolated Everforge playtest. Players should open the native Luanti app."""
 from __future__ import annotations
 import argparse
 import hashlib

@@ -903,15 +903,12 @@ local function waila_text(player)
 	if not def or node.name == "air" or node.name == "ignore" then return "" end
 	local name = (def.description or node.name):match("^[^\n]+") or node.name
 	local meta = core.get_meta(pointed.under)
-	local kind = get_node_kind(node.name, def, meta) or S("Block")
-	local recommended, level = get_mining_requirement(def.groups or {})
-	local lines = {name, S("Type: @1", kind), recommended}
+	-- Keep mining requirements in the field guide and native diggroups. The HUD
+	-- shows only the name, minimum level (when applicable) and live target state.
+	local _, level = get_mining_requirement(def.groups or {})
+	local lines = {name}
 	if level then lines[#lines + 1] = level end
 	for _, line in ipairs(get_node_extra(node.name, def, pointed.under, meta)) do lines[#lines + 1] = line end
-	if #lines < 3 then
-		core.log("warning", "[everforge] WAILA required fields were missing; restoring block name, category and tool line")
-		lines = {name, S("Type: @1", kind), recommended or S("Recommended tool: Hand or any tool")}
-	end
 	-- Resolve each independently translated field in the player's language
 	-- before joining the HUD. This prevents a domain marker from one field
 	-- being interpreted as part of another field's translation template.
@@ -919,6 +916,9 @@ local function waila_text(player)
 	lines = localize_waila_lines(lines, player_info and player_info.lang_code or "en")
 	return table.concat(lines, "\n")
 end
+
+-- Read-only diagnostic, also used by runtime HUD regressions.
+everforge._waila_text = waila_text
 
 local function waila_enabled(player)
 	if not waila_default_enabled then return false end
@@ -934,12 +934,6 @@ local function waila_line_count(text)
 	if text == "" then return 0 end
 	local _, newlines = text:gsub("\n", "")
 	return newlines + 1
-end
-
-local function ensure_waila_minimum_lines(text)
-	if text == "" or waila_line_count(text) >= 3 then return text end
-	core.log("warning", "[everforge] WAILA text had fewer than three lines; adding the missing category/tool fallback")
-	return text .. "\n" .. S("Type: @1", S("Block")) .. "\n" .. S("Recommended tool: Hand or any tool")
 end
 
 local function layout_waila_text(text)
@@ -981,7 +975,6 @@ local function update_waila(player)
 	end
 	local enabled = waila_enabled(player)
 	local content = enabled and waila_text(player) or ""
-	content = ensure_waila_minimum_lines(content)
 	local text, panel_scale = layout_waila_text(content)
 	local visible = text ~= ""
 	local offset_y = waila_bossbar_offset(player)

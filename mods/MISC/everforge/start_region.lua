@@ -1,5 +1,6 @@
 -- SPDX-License-Identifier: GPL-3.0-or-later
 -- Development prototype: one small camp, built only in a fresh world.
+local camp = dofile(core.get_modpath("everforge") .. "/camp.lua")
 local storage = core.get_mod_storage()
 local key = "start_region:v1"
 local encoded = storage:get_string(key)
@@ -16,7 +17,7 @@ end
 local function save() storage:set_string(key, core.write_json(region)) end
 local starting = false
 if not region then
- region = {version = 1, state = "building", radius = 6,
+ region = {version = 1, state = "building", radius = 10,
   center = vector.copy(mcl_biome_dispatch.get_spawn_point_2d()), seed = core.get_mapgen_setting("seed")}
  save()
  starting = true
@@ -42,12 +43,14 @@ local function find_arrival(player)
  if region.state ~= "ready" then return nil end
  local c,r = region.center,region.radius
  core.load_area({x=c.x-r,y=c.y-12,z=c.z-r}, {x=c.x+r,y=c.y+12,z=c.z+r})
- for radius = 0,r do
+ local preferred = region.arrival or c
+ for radius = 0,r*2 do
   for dx=-radius,radius do for dz=-radius,radius do
    if math.max(math.abs(dx),math.abs(dz)) == radius then
     for dy=6,-8,-1 do
-     if safe(c.x+dx,c.y+dy,c.z+dz,player and player:get_player_name()) then
-      return {x=c.x+dx,y=c.y+dy-.5,z=c.z+dz}
+     if math.abs(preferred.x+dx-c.x)<=r and math.abs(preferred.z+dz-c.z)<=r
+     and safe(preferred.x+dx,c.y+dy,preferred.z+dz,player and player:get_player_name()) then
+      return {x=preferred.x+dx,y=c.y+dy-.5,z=preferred.z+dz}
      end
     end
    end
@@ -68,7 +71,10 @@ provider = function(player)
  end
  local p = find_arrival(player)
  if p then
-  if player then player:get_meta():set_int("everforge:arrival_pending",0) end
+  if player then
+   if player:get_meta():get_int("everforge:arrival_pending")==1 then player:set_look_horizontal(math.pi) end
+   player:get_meta():set_int("everforge:arrival_pending",0)
+  end
   return p
  end
  if player then
@@ -106,32 +112,26 @@ local function build()
  core.load_area({x=c.x-8,y=surface-32,z=c.z-8},{x=c.x+8,y=surface+32,z=c.z+8})
  -- Find a natural dry support near the native center, never flatten the region.
  local found
- for dy=32,-64,-1 do
-  if safe(c.x,surface+dy,c.z) then found=surface+dy; break end
+ for dy=32,-96,-1 do
+  local p=vector.new(c.x,surface+dy-1,c.z)
+  local ground=core.get_node(p).name
+  local above=core.registered_nodes[core.get_node(vector.offset(p,0,1,0)).name]
+  local def=core.registered_nodes[ground]
+  -- A canopy is walkable, but is not ground. Trunks/vegetation within the
+  -- first-build footprint will be cleared; don't require an empty tree column.
+  if def and def.walkable and above and above.liquidtype=="none"
+  and (core.get_item_group(ground,"soil")>0 or core.get_item_group(ground,"stone")>0
+   or core.get_item_group(ground,"sand")>0 or ground=="mcl_core:snowblock") then
+   found=surface+dy; break
+  end
  end
  if not found then return fail("no dry ground at procedural spawn; try another development seed") end
  c.y = found
- -- A small cobble path follows the surface. Leave all other terrain untouched.
- for dx=-2,2 do for dz=-2,2 do
-  for dy=3,-3,-1 do
-   if safe(c.x+dx,c.y+dy,c.z+dz) then
-    core.set_node({x=c.x+dx,y=c.y+dy-1,z=c.z+dz},{name="mcl_core:cobble"})
-    break
-   end
-  end
- end end
- local stations = {{-2,0,"mcl_crafting_table:crafting_table"},{2,0,"mcl_furnaces:furnace"}}
- for _, station in ipairs(stations) do
-  for dy=3,-3,-1 do
-   local p=vector.new(c.x+station[1],c.y+dy,c.z+station[2])
-   if safe(p.x,p.y,p.z) and core.registered_nodes[station[3]] then
-    core.set_node(p,{name=station[3]})
-    local construct=core.registered_nodes[station[3]].on_construct
-    if construct then construct(p) end
-    break
-   end
-  end
- end
+ local ok,counts=pcall(camp.place,vector.new(c.x,c.y,c.z))
+ if not ok then return fail(tostring(counts)) end
+ region.revision=camp.revision
+ region.components=counts
+ region.arrival={x=c.x-1,y=c.y,z=c.z+6}
  region.state = "ready"; save()
  if not find_arrival() then return fail("camp has no safe arrival") end
  core.log("action", "[Everforge] REGION_READY " .. core.write_json(region))
@@ -159,5 +159,8 @@ if starting then
   end)
  end)
 end
+core.register_on_newplayer(function(player)
+ core.after(0,function() if player:is_valid() then player:set_look_horizontal(math.pi) end end)
+end)
 -- Diagnostic API for reproducible integration tests; no regeneration method.
 everforge.start_region = {get = function() return core.parse_json(core.write_json(region)) end, find_arrival = find_arrival}

@@ -29,17 +29,48 @@ local function region_tests()
  if not r or r.state~="ready" then return false end
  local arrival=everforge.start_region.find_arrival()
  check(arrival and math.abs(arrival.x-r.center.x)<=r.radius,"safe arrival in region")
+ if r.revision==2 then
+  local c=r.center
+  local expected={
+   {vector.offset(c,0,6,-1),"mcl_trees:wood_oak"},
+   {vector.offset(c,-3,0,1),"mcl_trees:tree_oak"},
+   {vector.offset(c,3,0,5),"mcl_campfires:campfire_lit"},
+   {vector.offset(c,-2,0,-2),"mcl_crafting_table:crafting_table"},
+   {vector.offset(c,2,0,-2),"mcl_furnaces:furnace"},
+   {vector.offset(c,0,5,-1),"mcl_lanterns:lantern_ceiling"},
+  }
+  for _,pair in ipairs(expected) do check(core.get_node(pair[1]).name==pair[2],"physical camp component "..pair[2]) end
+  check(r.components.roof==63 and r.components.post==12,"complete roof and posts recorded")
+  -- Exercise the actual HUD producer. The native guide keeps mining mechanics.
+  local original=mcl_util.get_pointed_thing
+  local target=vector.offset(c,0,-1,4)
+  mcl_util.get_pointed_thing=function() return {type="node",under=target} end
+  local text=everforge._waila_text({get_player_name=function() return "RuntimeHUD" end})
+  mcl_util.get_pointed_thing=original
+  check(text~="" and not text:find("Type:",1,true) and not text:find("Recommended tool:",1,true),"compact HUD does not restore removed fields")
+  check(text:find("Minimum mining level:",1,true),"HUD keeps mining level")
+  passed("physical camp: roof, posts, campfire, lantern and workstations; compact HUD")
+ end
  local marker=vector.new(r.center.x+5,r.center.y+6,r.center.z+5)
  core.load_area(marker)
  if stage=="bootstrap" then
   core.set_node(marker,{name="mcl_core:goldblock"})
   core.get_meta(marker):set_string("everforge_test","player construction survives restart")
   store:set_string("center",core.write_json(r.center))
+  if r.revision==2 then
+   local edit=vector.offset(r.center,4,4,-4)
+   core.set_node(edit,{name="mcl_core:goldblock"})
+   core.get_meta(edit):set_string("player_edit","do not rebuild")
+  end
   passed("actual singlenode region generated; world edit saved for restart")
   stop()
  elseif stage=="restart" then
   check(store:get_string("center")==core.write_json(r.center),"same region after restart")
   check(core.get_node(marker).name=="mcl_core:goldblock","construction preserved")
+  if r.revision==2 then
+   local edit=vector.offset(r.center,4,4,-4)
+   check(core.get_node(edit).name=="mcl_core:goldblock" and core.get_meta(edit):get_string("player_edit")=="do not rebuild","player modification of roof survives without regeneration")
+  end
   check(core.get_meta(marker):get_string("everforge_test")~="","node metadata preserved")
   passed("restart: same region, blocks and node metadata preserved")
   stop()

@@ -2,26 +2,24 @@
 
 Estado: desarrollo inicial; sin migraciones de personajes. Mineclonia del repositorio (0.124.1), Luanti **5.17.0**. Esta entrega sustituye el bloqueo por fases del plan maestro por implementación y pruebas en mundos desechables.
 
-## Abrir y jugar
+## Abrir y jugar: launcher nativo de Luanti
 
-En macOS, ejecutar `Iniciar-Everforge.command`. `Nuevo-Mundo-Everforge.command` crea otro mundo sin eliminar el anterior. Los datos están aislados en `.everforge-dev/`; no se usan los mundos normales de Luanti. Por defecto se reconoce el ejecutable de Luanti en Descargas o en PATH.
+Abrir **Luanti.app** normalmente, desde Finder/Dock o desde el enlace local `Luanti.app` de la carpeta Everforge. No se ejecuta ningún shell ni se mantiene Terminal abierto. Los antiguos `Iniciar-Everforge.command` y `Nuevo-Mundo-Everforge.command` se retiraron porque usaban `--go` y evitaban el menú nativo.
 
-Instalación limpia reproducible en macOS ARM64 (Python 3, sin paquetes adicionales):
+En esta instalación macOS, el juego ya está enlazado desde `~/Library/Application Support/minetest/games/mineclonia` a la carpeta del repositorio. **Everforge** es el nombre visible de `game.conf`; `mineclonia` es el identificador histórico de la instalación normal y se conserva para que los mundos previos sigan abriendo. No se duplica el juego con otro identificador. La cabecera Everforge y el icono siguen siendo archivos distintos; no se ha sustituido uno por el otro.
 
-```sh
-python3 tools/play_everforge.py --install --new
-```
+- **Individual:** seleccionar Everforge, pestaña **Start Game / Iniciar juego**, seleccionar el mundo y dejar **Host Server / Hospedar servidor** desmarcado. Pulsar **Play Game / Jugar**.
+- **Crear:** en esa misma pestaña, **New / Nuevo**, escribir un nombre y elegir **singlenode** para la generación procedural propia de Mineclonia. Para repetir la prueba documentada usar semilla `12345`. Confirmar crea solo ese mundo; abrir Luanti o pulsar Jugar no crea otros.
+- **Continuar:** seleccionar el mismo mundo. Construcciones y perfiles se guardan en él; cerrar y volver a abrir el launcher no lo reinicia.
+- **Hospedar con amigos:** seleccionar el mismo mundo, marcar **Host Server**, escribir el nombre del anfitrión y contraseña, mantener **Announce Server** desmarcado si no se desea publicar en la lista, y usar puerto **30000**. Pulsar **Host Game / Hospedar partida**. El anfitrión juega en su propia computadora; al salir se detiene esa sesión y el mundo queda guardado.
+- **Desde otra computadora en la misma red:** abrir Luanti 5.17.0 → **Join Game / Unirse**, dirección IP local del anfitrión (por ejemplo `192.168.1.50`), puerto `30000`, nombre propio y contraseña. No usar `127.0.0.1`, que apunta a la computadora de cada jugador. El servidor envía los mods y recursos del juego; el invitado no necesita instalar otro launcher ni copiar el mundo.
+- **Redes diferentes:** hospedar en casa no atraviesa automáticamente el router. Se necesita una red privada compartida o redirección **UDP 30000** al anfitrión y su dirección pública; CGNAT puede impedir esa conexión. No se configuró el router ni se publicó un servidor permanente. Permitir el tráfico de Luanti en el firewall de la red utilizada si el sistema lo solicita.
 
-El instalador descarga el ZIP oficial de Luanti 5.17.0 y verifica SHA256 `0ba118b537d3cc6fd07cd2268fef25e515fc6d87c27ad69b476144a8e28dba3c` antes de extraerlo en `.everforge-dev/runtime/`. `--archive /ruta/al/zip` reutiliza una descarga con la misma verificación. En otras plataformas usar `--luanti /ruta/al/ejecutable`; la instalación automática de esas plataformas queda pendiente. El launcher requiere la versión objetivo y enlaza este checkout como juego, sin instalar mods externos.
+Los mundos del launcher normal y `.everforge-dev/` son directorios distintos. Esta última carpeta queda para pruebas de desarrollo. En la instalación local se conserva el mundo original de desarrollo y se incorpora una copia al listado nativo para poder continuarlo; solo la copia adapta su identificador de juego a `mineclonia`, sin convertir perfiles ni bases de datos.
 
-```sh
-python3 tools/play_everforge.py --new --name Forjador
-python3 tools/play_everforge.py --server --port 49177
-```
+## Herramientas de desarrollo (no son el inicio recomendado)
 
-El segundo comando sirve el mundo en `127.0.0.1:49177`. Dos clientes locales con nombres distintos pueden conectarse desde «Unirse». La exposición a una LAN no está habilitada por defecto.
-
-Al crear un mundo se prepara terreno singlenode de Mineclonia, con seed 12345 para reproducibilidad; la primera carga tarda más que un reinicio. El campamento tiene un pequeño sendero de piedra, mesa de trabajo y horno nativos; no incluye equipo, recompensas, edificios nuevos ni NPC. Minar y fabricar sigue el survival normal. Abrir `/everforge` para consultar progreso y comprar habilidades. La pestaña Everforge ofrece la misma información.
+`tools/play_everforge.py` queda como herramienta CLI de pruebas aisladas y extracción verificada de Luanti 5.17.0; no ofrece una interfaz de inicio propia. Sus parámetros `--new`, `--server` y `--client` se usan en los tests descritos abajo. No cambian el flujo del launcher normal ni exponen un servidor a la LAN por defecto. La instalación automática macOS ARM64 verifica el ZIP oficial con SHA256 `0ba118b537d3cc6fd07cd2268fef25e515fc6d87c27ad69b476144a8e28dba3c`.
 
 ## Balance provisional y acciones
 
@@ -43,7 +41,7 @@ Primeras habilidades: Minería cuidadosa (−4% desgaste por rango, solo herrami
 
 Progreso en `everforge:progression:v1` de player metadata, serialización segura de Lua, un solo registro por actualización. Se conserva al morir y al reiniciar. Un perfil inválido no se reemplaza silenciosamente. Últimos 128 IDs evitan duplicados inmediatos y se guardan con el progreso. Descubrimientos de exploración persisten hasta 4096 celdas por personaje; al alcanzar el límite se detiene ese crédito.
 
-La región usa un manifiesto mundial `start_region:v1`, radio de llegada 6 nodos, ancla del spawn procedural. Se coloca una vez en un mundo nuevo y no se restaura al cargarlo. Camas/anclas mantienen su selección y validación nativas; solo el fallback mundial y jugadores nuevos usan el proveedor compartido. Las alternativas seguras se buscan dentro de la misma región, leyendo nodos actuales. Si no existe llegada segura, se registra el error administrativo y se rechaza la llegada con explicación; no se rompen construcciones ni se envía al jugador fuera de la región. El intento se vuelve a resolver al reconectar.
+La región usa un manifiesto mundial `start_region:v1`, radio de llegada 10 nodos en el prototipo revisado, ancla del spawn procedural. Se coloca una vez en un mundo nuevo y no se restaura al cargarlo. Camas/anclas mantienen su selección y validación nativas; solo el fallback mundial y jugadores nuevos usan el proveedor compartido. Las alternativas seguras se buscan dentro de la misma región, leyendo nodos actuales. Si no existe llegada segura, se registra el error administrativo y se rechaza la llegada con explicación; no se rompen construcciones ni se envía al jugador fuera de la región. El intento se vuelve a resolver al reconectar.
 
 Un reinicio con creación incompleta deja `needs_review`: revisar o crear otro mundo de desarrollo. Nunca se repone automáticamente la plantilla. No hay transacción conjunta entre mapa, jugador y mod storage; estos tests comprueban reinicio limpio, no durabilidad ante cualquier corte eléctrico. Mundos previos sin manifiesto no reciben una región por defecto. `everforge_start_region=false` permite comparar con spawn nativo.
 
