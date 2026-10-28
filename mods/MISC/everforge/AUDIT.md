@@ -32,7 +32,7 @@ Alcance: integración de Everforge con Luanti 5.17.0 y Mineclonia 0.124.1 en est
 ## WAILA y guía in-game
 
 - WAILA usa `mcl_util.get_pointed_thing`, HUD de texto y consulta con intervalo configurable. `everforge_waila_enabled` permite el interruptor global y `/everforge_waila on|off` la preferencia individual; un jugador no puede saltarse un apagado global.
-- Presenta nombre localizado, tipo cuando se identifica, herramienta sugerida y requisito solo para `pickaxey`. `axey`, `shovely`, `hoey`, `swordy` y `shearsy` describen herramienta/grupo, no un nivel inventado. También consulta infotext/estado de máquinas y etapa de cultivos cuando los metadatos o grupos del nodo lo permiten.
+- Presenta nombre localizado, categoría (tipo detectado o categoría genérica `Block`), herramienta sugerida y requisito solo para `pickaxey`. `axey`, `shovely`, `hoey`, `swordy` y `shearsy` describen herramienta/grupo, no un nivel inventado. También consulta infotext/estado de máquinas y etapa de cultivos cuando los metadatos o grupos del nodo lo permiten.
 - La categoría **Minerals** reutiliza `doc` y su constructor de galería; reúne estaño, plata, mitrilo y adamantina con icono/nombre, dimensión, biomas registrados, generación activa, profundidad/frecuencia, requisito, drop, procesamiento y usos disponibles. Comando: `/everforge_minerals`.
 - `doc` y `mcl_worlds` se declaran como dependencias directas de Everforge para no depender del orden accidental de carga.
 
@@ -44,13 +44,13 @@ Alcance: integración de Everforge con Luanti 5.17.0 y Mineclonia 0.124.1 en est
 
 ## Dependencias y compatibilidad
 
-Dependencias directas de Everforge: `mcl_init`, `mcl_experience`, `mcl_player`, `playerphysics`, `mcl_tools`, `mcl_armor`, `mcl_mobs`, `mcl_biomes`, `mcl_levelgen`, `mcl_core`, `mcl_chests`, `mcl_furnaces`, `mcl_formspec`, `mcl_util`, `mcl_worlds`, `doc`, `mcl_enchanting`, `mcl_autogroup`, `toolranks`, `mcl_damage`, `mcl_raw_ores`, `mcl_torches`, `moreores` y `adamantine`. Opcionales: `mcl_loot` y `mcl_sounds`.
+Dependencias directas de Everforge: `mcl_init`, `mcl_experience`, `mcl_player`, `playerphysics`, `mcl_tools`, `mcl_armor`, `mcl_mobs`, `mcl_biomes`, `mcl_levelgen`, `mcl_core`, `mcl_chests`, `mcl_furnaces`, `mcl_formspec`, `mcl_util`, `mcl_worlds`, `doc`, `mcl_enchanting`, `mcl_autogroup`, `toolranks`, `mcl_damage`, `mcl_raw_ores`, `mcl_torches`, `moreores` y `adamantine`. Opcionales: `mcl_loot`, `mcl_sounds` y `mcl_bossbars`; este último solo permite separar WAILA de las barras de jefe visibles.
 
 No se añade ninguna dependencia remota ni se requiere que el jugador instale mods externos a los ya integrados en Mineclonia y el paquete. No se toca el motor ni se modifica/elimina contenido de mundos guardados. El único refresco de mundo existente es la LBM de interfaz de Alloy Melter/alijo, que conserva inventarios y metadata de recompensas.
 
 ## Verificación y pruebas pendientes
 
-Comprobaciones estáticas ejecutadas tras las últimas ediciones: parser Lua para los cuatro archivos modificados; igualdad de las 142 cadenas de Everforge entre fuente, POT y PO español, incluidos placeholders; cobertura completa de cadenas fuente en los catálogos TR de Adamantina (33) y More Ores; y `git diff --check` sin errores. `msgfmt` no está instalado, así que el PO se revisó mediante validación propia de claves y placeholders, no con el compilador GNU. **No se lanzó Luanti en este entorno**, así que ninguna prueba descrita abajo debe interpretarse como prueba in-game completada.
+En la corrección WAILA se ejecutaron: parser Lua del archivo Everforge; igualdad de las 143 cadenas entre fuente, POT y PO español, con placeholders coincidentes; comprobación estática de anclaje/`size` y del guardado de mínimo tres líneas; y `git diff --check` sin errores. `msgfmt` no está instalado, así que el PO se revisó mediante validación propia de claves/placeholders, no con el compilador GNU. **No se lanzó Luanti en este entorno**, así que la apariencia final aún requiere confirmación in-game.
 
 1. Abrir un mundo de prueba Mineclonia nuevo en inglés y español; inspeccionar los formularios `/everforge` y `/everforge_minerals`, descripciones de ítems y nombres de menas. Confirmar que los identificadores/recetas siguen siendo los mismos.
 2. Apuntar a piedra, menas, cultivos, cofres y máquinas con WAILA. Comparar requisito de pico con el grupo `pickaxey`; verificar que otros grupos no se presentan como niveles. Probar `/everforge_waila off`, `on`, preferencia por jugador y ajuste global desactivado.
@@ -58,3 +58,13 @@ Comprobaciones estáticas ejecutadas tras las últimas ediciones: parser Lua par
 4. Fabricar herramientas modulares de varias calidades, usar/encantar/reparar y reiniciar; verificar límites de estadísticas y persistencia. Probar el Alloy Melter con cada pepita, combustible, tolvas, inventario y protección.
 5. En un mundo de prueba, localizar ambas estructuras, abrir alijos, comprobar que no admiten insertar objetos, que la protección se respeta y que un alijo con contenido no se excava. Confirmar que la LBM no cambia loot guardado.
 6. Comparar monstruos del supramundo a distintas profundidades; comprobar que el escalado solo afecta `mobs_mc` y no se aplica en Nether/End/void. Revisar multijugador para progresión y bonificaciones de fundición.
+
+## Diagnóstico y corrección del recorte de WAILA (después de `bf047ed`)
+
+La causa no estaba en `table.concat`, ni en que el cambio de bloque no actualizara el HUD. `waila_text` sí construía los campos separados por `\n`, y `update_waila` comparaba el texto nuevo y llamaba `hud_change` al cambiarlo. Luanti 5.17.0 dibuja cada segmento separado por `\n` como una línea de texto independiente.
+
+El error era el anclaje vertical: los dos elementos (texto y fondo) estaban en `position.y = 0` con `alignment.y = -1`. En Luanti, `alignment.y = -1` desplaza el elemento hacia arriba por toda su altura; para texto multilínea, la altura usada es la del bloque completo. Como el bloque empezaba fuera del borde superior, solo quedaba visible su última línea —por ejemplo, «Pala»—. El fondo tenía el mismo anclaje y quedaba también por encima de la pantalla. Se cambió el anclaje vertical de ambos a `1`, que deja el borde superior en el punto y offset definidos.
+
+Además, la API 5.17.0 indica que `scale` no se usa en HUD de texto; se reemplazó por `size = {x = 1}`. El fondo sigue siendo un HUD de imagen separado y con menor `z_index`, dimensionado según el texto medido y la escala de interfaz. La posición horizontal usa `x = 0.5` y `alignment.x = 0`; la posición vertical usa `y = 0.04` más un offset DPI-aware y se desplaza según las barras de jefe visibles. Se mide una copia localizada con `lang_code` del jugador para ajustar el panel, pero se envía el texto original con marcas Luanti para que el cliente conserve su traducción normal. Ya no se insertan saltos dentro de cadenas traducibles.
+
+Se añadió una comprobación de mínimo tres líneas (nombre, categoría y herramienta); si una regresión las colapsa, WAILA agrega categoría y herramienta de respaldo. La categoría genérica «Block» tiene traducción. El requisito de nivel continúa apareciendo solo cuando existe el grupo real `pickaxey`. La fuente consultada para el comportamiento HUD es la [documentación de HUD de Luanti 5.17.0](https://github.com/luanti-org/luanti/blob/5.17.0/doc/lua_api.md) y su [renderizador de texto e imágenes](https://github.com/luanti-org/luanti/blob/5.17.0/src/client/hud.cpp). La apariencia final sigue pendiente de confirmar en una sesión gráfica de Luanti.

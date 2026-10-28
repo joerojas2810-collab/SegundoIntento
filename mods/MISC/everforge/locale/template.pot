@@ -67,6 +67,9 @@ msgstr ""
 msgid "Block information overlay enabled."
 msgstr ""
 
+msgid "Block"
+msgstr ""
+
 msgid "Block: @1"
 msgstr ""
 

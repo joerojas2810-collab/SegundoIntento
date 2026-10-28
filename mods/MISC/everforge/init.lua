@@ -875,13 +875,15 @@ local function waila_text(player)
 	if not def or node.name == "air" or node.name == "ignore" then return "" end
 	local name = (def.description or node.name):match("^[^\n]+") or node.name
 	local meta = core.get_meta(pointed.under)
-	local kind = get_node_kind(node.name, def, meta)
+	local kind = get_node_kind(node.name, def, meta) or S("Block")
 	local recommended, level = get_mining_requirement(def.groups or {})
-	local lines = {name}
-	if kind then lines[#lines + 1] = S("Type: @1", kind) end
-	lines[#lines + 1] = recommended
+	local lines = {name, S("Type: @1", kind), recommended}
 	if level then lines[#lines + 1] = level end
 	for _, line in ipairs(get_node_extra(node.name, def, pointed.under, meta)) do lines[#lines + 1] = line end
+	if #lines < 3 then
+		core.log("warning", "[everforge] WAILA required fields were missing; restoring block name, category and tool line")
+		lines = {name, S("Type: @1", kind), recommended or S("Recommended tool: Hand or any tool")}
+	end
 	return table.concat(lines, "\n")
 end
 
@@ -891,34 +893,42 @@ local function waila_enabled(player)
 	return saved == "" or saved == "1"
 end
 
-local WAILA_WRAP_BYTES = 46
 local WAILA_TEXTURE_SIZE = 16
 local WAILA_CHAR_WIDTH = 9
 local WAILA_LINE_HEIGHT = 20
 
-local function layout_waila_text(text)
+local function waila_line_count(text)
+	if text == "" then return 0 end
+	local _, newlines = text:gsub("\n", "")
+	return newlines + 1
+end
+
+local function ensure_waila_minimum_lines(text)
+	if text == "" or waila_line_count(text) >= 3 then return text end
+	core.log("warning", "[everforge] WAILA text had fewer than three lines; adding the missing category/tool fallback")
+	return text .. "\n" .. S("Type: @1", S("Block")) .. "\n" .. S("Recommended tool: Hand or any tool")
+end
+
+local function layout_waila_text(player, text)
 	if text == "" then return "", {x = 1, y = 1} end
-	local wrapped, longest = {}, 0
-	for source_line in (text .. "\n"):gmatch("(.-)\n") do
-		local line = ""
-		for word in source_line:gmatch("%S+") do
-			if line ~= "" and #line + 1 + #word > WAILA_WRAP_BYTES then
-				wrapped[#wrapped + 1] = line
-				longest = math.max(longest, #line)
-				line = word
-			elseif line == "" then
-				line = word
-			else
-				line = line .. " " .. word
-			end
-		end
-		wrapped[#wrapped + 1] = line
+	local measured_text = text
+	local info = core.get_player_information(player:get_player_name())
+	if info and info.lang_code and core.get_translated_string then
+		local ok, localized = pcall(core.get_translated_string, info.lang_code, text)
+		if ok and type(localized) == "string" then measured_text = localized end
+	end
+
+	local longest, line_count = 0, 0
+	for line in (measured_text .. "\n"):gmatch("(.-)\n") do
+		line_count = line_count + 1
 		longest = math.max(longest, #line)
 	end
-	local rendered = table.concat(wrapped, "\n")
+	-- Translation should retain explicit line breaks; use the source count if a
+	-- translation backend ever collapses them so the panel still reserves space.
+	line_count = math.max(line_count, waila_line_count(text))
 	local width = math.max(220, longest * WAILA_CHAR_WIDTH + 32)
-	local height = math.max(40, #wrapped * WAILA_LINE_HEIGHT + 18)
-	return rendered, {
+	local height = math.max(40, line_count * WAILA_LINE_HEIGHT + 18)
+	return text, {
 		x = math.ceil(width / WAILA_TEXTURE_SIZE),
 		y = math.ceil(height / WAILA_TEXTURE_SIZE),
 	}
@@ -933,19 +943,24 @@ end
 local function update_waila(player)
 	local name = player:get_player_name()
 	local enabled = waila_enabled(player)
-	local text, panel_scale = layout_waila_text(enabled and waila_text(player) or "")
+	local content = enabled and waila_text(player) or ""
+	content = ensure_waila_minimum_lines(content)
+	local text, panel_scale = layout_waila_text(player, content)
 	local visible = text ~= ""
 	local offset_y = waila_bossbar_offset(player)
 	local hud = waila_huds[name]
 	if not hud then
+		-- y=1 anchors the top edge. y=-1 would shift a multiline text block
+		-- above the screen, leaving only its last line visible.
 		local background = {
-			type = "image", position = {x = 0.5, y = 0}, alignment = {x = 0, y = -1},
+			type = "image", position = {x = 0.5, y = 0.04}, alignment = {x = 0, y = 1},
 			offset = {x = 0, y = offset_y - 8}, scale = panel_scale,
 			text = visible and "everforge_waila_panel.png" or "", z_index = 4,
 		}
+		-- Text HUD sizing uses `size`, not the ignored `scale` field.
 		local label = {
-			type = "text", position = {x = 0.5, y = 0}, alignment = {x = 0, y = -1},
-			offset = {x = 0, y = offset_y}, scale = {x = 100, y = 100},
+			type = "text", position = {x = 0.5, y = 0.04}, alignment = {x = 0, y = 1},
+			offset = {x = 0, y = offset_y}, size = {x = 1},
 			text = text, number = 0xF4F7FC, style = 1, z_index = 5,
 		}
 		waila_huds[name] = {

@@ -70,6 +70,9 @@ msgstr "Interfaz de identificación de bloques desactivada."
 msgid "Block information overlay enabled."
 msgstr "Interfaz de identificación de bloques activada."
 
+msgid "Block"
+msgstr "Bloque"
+
 msgid "Block: @1"
 msgstr "Bloque: @1"
 
