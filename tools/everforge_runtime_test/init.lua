@@ -30,6 +30,7 @@ local function region_tests()
  local arrival=everforge.start_region.find_arrival()
  check(arrival and math.abs(arrival.x-r.center.x)<=r.radius,"safe arrival in region")
  if r.revision==2 then
+  check(arrival.x==r.arrival.x and arrival.z==r.arrival.z and arrival.y==r.center.y-.5,"ground-first courtyard arrival")
   local c=r.center
   local expected={
    {vector.offset(c,0,6,-1),"mcl_trees:wood_oak"},

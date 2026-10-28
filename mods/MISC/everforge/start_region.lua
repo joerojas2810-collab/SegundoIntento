@@ -47,7 +47,7 @@ local function find_arrival(player)
  for radius = 0,r*2 do
   for dx=-radius,radius do for dz=-radius,radius do
    if math.max(math.abs(dx),math.abs(dz)) == radius then
-    for dy=6,-8,-1 do
+    for _,dy in ipairs({0,1,-1,2,-2,3,-3,4,-4,5,-5,6,-6,-7,-8}) do
      if math.abs(preferred.x+dx-c.x)<=r and math.abs(preferred.z+dz-c.z)<=r
      and safe(preferred.x+dx,c.y+dy,preferred.z+dz,player and player:get_player_name()) then
       return {x=preferred.x+dx,y=c.y+dy-.5,z=preferred.z+dz}
