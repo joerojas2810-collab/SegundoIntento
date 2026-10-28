@@ -17,5 +17,6 @@ Authors/licenses of media files:
 Minecart model:
   22i (GPLv3)
 
-Texture files (CC BY-SA 3.0):
-  XSSheep
+Texture files:
+  Other existing textures: XSSheep (CC BY-SA 3.0)
+  `default_rail_crossing.png` and `default_rail_t_junction.png`: Pixel Perfection by Hugh "XSSheep" Rutland (CC BY-SA 4.0), imported from the Luanti conversion. See root `LEGAL.md` for source and contributor credits.

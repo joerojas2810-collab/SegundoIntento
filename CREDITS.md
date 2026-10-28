@@ -112,7 +112,9 @@
 * pixelzone
 
 ## Textures and menu images
-* XSSheep
+* XSSheep (original Pixel Perfection)
+* sofar and tacotexmex (Luanti Pixel-Perfection conversion and curation)
+* Toby109tt and devurandom (Pixel-Perfection repository contributors)
 * Wuzzy
 * kingoscargames
 * leorockway
