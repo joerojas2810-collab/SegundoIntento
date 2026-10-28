@@ -1,6 +1,6 @@
 # EVERFORGE — Plan maestro de evolución, migración y dirección artística
 
-**Estado:** propuesta para revisión; no autorizada para implementación funcional.
+**Estado:** Fase 0 autorizada y documentada; validación estática realizada, validación en runtime pendiente. Fase 1 y cualquier implementación funcional siguen sin autorización.
 
 **Fecha:** 28 de octubre de 2026.
 
@@ -8,7 +8,7 @@
 
 **Objetivo de compatibilidad:** Mineclonia 0.124.1 / Luanti 5.17.0.
 
-**Alcance de esta entrega:** documento exclusivamente. No se cambió código, balance, recursos, generación, configuración de una partida ni comportamiento de NPC; no se instalaron mods.
+**Alcance de esta entrega:** Fase 0 de investigación y validación técnica; documento exclusivamente. Resultados y límites en §18–21. No se cambió código, balance, recursos, generación, configuración de una partida ni comportamiento de NPC; no se instalaron mods.
 
 ## 1. Resumen ejecutivo
 
@@ -46,6 +46,9 @@ No se fijan tasas, curvas, cantidad de puntos, requisitos definitivos, efectos n
 | Árbol visual conectado a requisitos reales. | La UI se construye a partir de la definición funcional de los nodos, no de líneas decorativas. |
 | Señales de calidad además de texto/color, manteniendo material y calidad separados. | Debe analizarse la representación en stack/hotbar; no tocar estadísticas, materiales ni probabilidades. |
 | No cambiar ahora archivos funcionales o artísticos, no instalar mods, no balancear y no alterar NPC/mundo. | Las fases siguientes son una propuesta condicionada a aprobación; no son trabajo ejecutado. |
+| Una región inicial única y compartida por todos los jugadores de cada mundo. | Generación única integrada con el terreno procedural; cambios de jugadores persistentes; entrada de jugadores nuevos; camas/anclas conservan prioridad. Implementación mínima propuesta en §19, todavía no autorizada. |
+| El yunque es el icono propio de Everforge, separado del logo de cabecera. | Identidad confirmada; integración pendiente y fuera de Fase 0. |
+| Autorizar únicamente Fase 0 de validación técnica. | Sin cambios funcionales, migraciones ni escrituras en partidas existentes; Fase 1 requiere nueva autorización. |
 | Mantener PR #2 abierto contra `main`. | Solo entregar documentación en la rama existente; no fusionar ni force-push. |
 
 ### 2.2 Recomendaciones técnicas de este plan (requieren aprobación antes de programar)
@@ -66,7 +69,7 @@ No se fijan tasas, curvas, cantidad de puntos, requisitos definitivos, efectos n
 5. Catálogo de ramas/habilidades y sus efectos; 45 habilidades siguen sin estar aprobadas como contenido.
 6. Política de gasto/reembolso de puntos y de requisitos de habilidades activas.
 7. Qué hechos son globales de mundo, cuáles personales y cómo una narración personal puede reaccionar a ambos.
-8. Si el icono adjunto es la versión final a integrar en `menu/icon.png` y su autorización de distribución/licencia fuera del contexto del juego.
+8. Integración futura del yunque en `menu/icon.png` y condiciones de empaquetado/distribución. Su identidad como icono propio, distinta del logo, ya está confirmada; no se vuelve a consultar.
 9. Cómo se mostrará una calidad distinta en el icono del objeto dentro del inventario/hotbar, no solo en un formulario o tooltip.
 10. Si se aprueba contenido artístico original cuando la biblioteca actual no ofrezca un recurso adecuado.
 
@@ -80,7 +83,7 @@ La auditoría artística anterior describió correctamente el checkout de ese mo
 - **Logo/cabecera:** `menu/header.png`, 2172×724, contiene el wordmark Everforge ya elegido y documentado en `mods/MISC/everforge/AUDIT.md` (SHA-256 `b7828a191f862ff9c0090b8319b993f14ab3f4314d8a60fb5b109d4e3e72da47`). No es el icono adjunto.
 - **Historial:** las versiones históricas disponibles de `menu/icon.png` inspeccionadas también son iconos de césped; no localicé el yunque en la historia de los paths/ref actuales. Por tanto, la frase “Everforge ya tiene icono propio” queda identificada por el adjunto del usuario, no por un archivo actualmente instalado.
 
-**Conclusión de planificación:** conservar el logo en el header y reconocer el yunque como icono independiente suministrado. Una futura integración debe colocar el recurso suministrado en la ruta de icono del juego, sin usar una miniatura del logo ni volver al icono de césped. No se copia, escala, recomprime, redibuja ni reemplaza nada ahora. Antes de la fase artística se confirmará si este adjunto es el original final y si se autoriza su empaquetado; la fuente/licencia externa no se deduce de los píxeles.
+**Conclusión de planificación:** conservar el logo en el header y reconocer el yunque como icono independiente suministrado. Una futura integración debe colocar el recurso suministrado en la ruta de icono del juego, sin usar una miniatura del logo ni volver al icono de césped. No se copia, escala, recomprime, redibuja ni reemplaza nada ahora. El usuario confirma el yunque como icono propio y deja su integración pendiente. Antes de la fase artística se resolverá el empaquetado; la fuente/licencia externa no se deduce de los píxeles.
 
 ## 4. Situación técnica actual y archivos de referencia
 
@@ -371,7 +374,7 @@ El indicador debe ser pequeño y legible a 16×16, redundante con nombre/texto, 
 
 ## 12. Plan por fases
 
-La tabla contiene los nueve campos solicitados (objetivo, reutilización, rutas, trabajo nuevo, migración, validación, dependencias y riesgo), además de la fase. Todas las fases son futuras y requieren aprobación; solo la columna de documentación corresponde a este cambio.
+La tabla contiene los nueve campos solicitados (objetivo, reutilización, rutas, trabajo nuevo, migración, validación, dependencias y riesgo), además de la fase. Solo la Fase 0 está autorizada; su parte estática se entrega en §18–21 y su parte runtime sigue pendiente. Las fases funcionales requieren aprobación nueva. La región inicial se añade como trabajo separado posterior a esta validación, sin implementarla en Fase 1 por defecto.
 
 | Fase | Objetivo | Sistemas reutilizados | Archivos/rutas previstas | Desarrollo nuevo | Migración | Validación / aceptación | Dependencias | Riesgo |
 |---|---|---|---|---|---|---|---|---|
@@ -446,11 +449,11 @@ La tabla contiene los nueve campos solicitados (objetivo, reutilización, rutas,
 
 ## 15. Decisiones que requieren aprobación antes de cada fase
 
-### Antes de Fase 0
+### Validación runtime pendiente de Fase 0 (investigación ya autorizada)
 
 - Qué copia de mundo/servidor se puede usar y si se puede compartir su `world.mt`/settings redactados.
 - Confirmación de cliente/servidor objetivo exacto; no afirmar prueba visual hasta ejecutarla.
-- Aprobación para consultar el icono suministrado como asset de menú, sin editarlo; confirmar que es el icono final y que se puede empaquetar bajo la licencia aplicable.
+- La identidad del icono ya está confirmada. Integración y empaquetado siguen pendientes; no bloquean investigar las APIs ni entregar Fase 0.
 
 ### Antes de Fase 1
 
@@ -514,8 +517,136 @@ La tabla contiene los nueve campos solicitados (objetivo, reutilización, rutas,
 
 ## 17. Recomendación final
 
-Aprobar primero la Fase 0 en un mundo de prueba y resolver el icono como **recurso adjunto identificado pero no integrado**. Después, acordar el tratamiento de los efectos heredados que modifican XP vanilla y la política de migración. Solo entonces desarrollar el núcleo, preferiblemente probando una habilidad pasiva heredada como piloto sin tocar su valor.
+Fase 0 está autorizada: se entrega la validación estática y se distingue la verificación runtime todavía pendiente (§18). El yunque queda reconocido como icono propio, separado del header, con integración pendiente. Antes de Fase 1 deben resolverse los puntos de §21, incluido el alcance de la copia de prueba. La política de efectos heredados se propone en §20 sin ejecutarla. Solo entonces desarrollar el núcleo, preferiblemente probando una habilidad pasiva heredada como piloto sin tocar su valor.
 
 La arquitectura recomendada conserva Minecraft/Mineclonia, hace que eventos confirmados alimenten tres salidas independientes, guarda progreso personal y mundial por separado, y deja la historia optativa. El árbol y la diferenciación de calidades se dibujan a partir de datos aprobados; la UI y los efectos actuales se reutilizan antes de pedir arte nuevo.
 
 **No se inicia ninguna fase funcional hasta que el usuario apruebe este plan y las decisiones pendientes correspondientes.**
+
+
+## 18. Fase 0 — resultados y alcance comprobado (28/10/2026)
+
+### 18.1 Evidencia y resultado
+
+Base inspeccionada: commit `bc6264e93b7d439dc2dd0d567067e31b003bfe57`, cabeza remota de PR #2 al iniciar esta revisión (`arena/b11c7209-segundointento`). GitHub reportó `state=open`, `merged=false`. Se trabajó en una copia aislada; la carpeta de este chat pertenece a otro repositorio y la copia local de Everforge estaba atrasada. No se usaron ni abrieron bases de datos de partidas.
+
+| Comprobación | Resultado | Límite |
+|---|---|---|
+| Versión de juego y motor | README declara Mineclonia 0.124.1; `game.conf` exige como mínimo 5.10; se consultó el API oficial del tag Luanti 5.17.0 | No confirma versión efectiva de cliente/servidor |
+| Baseline de XP | `mcl_experience.add_xp` encadena transformadores; `set_xp` escribe metadata `xp`; muerte pone XP en cero salvo `mcl_keepInventory` | Inspección de código, no prueba de muerte/encantamiento/yunque |
+| Legado Everforge | Callback contextual altera XP vanilla; `earned_points` vincula puntos a niveles vanilla y actualiza el máximo guardado, también desde globalstep | Abrir la UI o ejecutar el juego actual puede escribir puntos; por eso no se abrió un perfil existente para «solo mirar» |
+| Región inicial compartida | Hay centro mundial, búsqueda de aparición, preparación asíncrona de terreno y respawn con camas/anclas | No existe todavía una región Everforge única ni un proveedor público de región/spawn listo para usar |
+| Persistencia | Mapa/nodos y `StorageRef` por mod/mundo disponibles | No hay transacción única mapa + mod storage + perfil |
+| Hooks para Fase 1 | `core.register_on_dignode(pos, oldnode, digger)`, `core.register_on_craft(itemstack, player, old_craft_grid, craft_inv)` y `mcl_worlds.register_on_dimension_change(player, dimension, last_dimension)` | Callback de dig no prueba origen natural; craft repetido válido requiere reglas antifarm; dimensión se observa periódicamente |
+| Combate y Forja | `mcl_mobs/physics.lua` invoca `self:on_die(pos, mcl_reason)`; melter Everforge confirma salida al aceptar `inv:add_item("output", out)` | No se verificó un bus universal de bajas; se necesita atribución del atacante. Timer del melter no identifica al autor: recoger un output no equivale automáticamente a haberlo fabricado |
+| Mundo y mods activos | Dependencias declaradas inspeccionadas | No se dispone de una copia de mundo designada ni settings efectivos. `tools/generate_translation_strings/world/world.mt` es fixture de traducciones, no la partida del usuario |
+| UI y marca | Paths separados `menu/icon.png`/`menu/header.png`; yunque confirmado como icono Everforge | No se cambió asset; no se verificó launcher, DPI, hotbar ni UI dentro del juego |
+
+No se encontró un ejecutable `luanti`/`minetest` en PATH ni una app con esos nombres en `/Applications`; `motor/` no aporta el binario. Esto no prueba que no exista otro launcher. No se inició servidor, no se creó mundo, no se aplicó migración y no se ejecutó el juego sobre una partida existente. Las pruebas dinámicas de §13 permanecen **PENDIENTES**, no aprobadas por inferencia.
+
+**Resultado de Fase 0:** viabilidad estática condicionada; no certificación de runtime. Hay APIs suficientes para diseñar una integración pequeña, con dos puntos a resolver: preparación/publicación segura de la región y conversión de XP heredada. No se declara completada la validación dinámica ni se habilita Fase 1 automáticamente.
+
+### 18.2 Fuentes verificables
+
+Fuentes de Mineclonia fijadas al commit inspeccionado (las referencias de línea describen esa versión):
+
+- [Spawn y camas/anclas](https://github.com/joerojas2810-collab/SegundoIntento/blob/bc6264e93b7d439dc2dd0d567067e31b003bfe57/mods/PLAYER/mcl_spawn/init.lua): `get_world_spawn_pos` L69, `get_player_spawn_pos` L152, `spawn` L209, callback de respawn L240.
+- [Centro mundial y aparición nueva](https://github.com/joerojas2810-collab/SegundoIntento/blob/bc6264e93b7d439dc2dd0d567067e31b003bfe57/mods/MAPGEN/mcl_biome_dispatch/init.lua): `get_spawn_point_2d` L467, `next_respawn_position` L559, generación inicial L626 y `register_on_newplayer` L648.
+- [Preparación del terreno y heightmap](https://github.com/joerojas2810-collab/SegundoIntento/blob/bc6264e93b7d439dc2dd0d567067e31b003bfe57/mods/MAPGEN/mcl_levelgen/post_processing.lua): `map_index_heightmap` L2751, `is_area_fully_regenerated` L3342 y `generate_area` L3478.
+- [Scripts de levelgen](https://github.com/joerojas2810-collab/SegundoIntento/blob/bc6264e93b7d439dc2dd0d567067e31b003bfe57/mods/MAPGEN/mcl_levelgen/scripting.lua), [API de features](https://github.com/joerojas2810-collab/SegundoIntento/blob/bc6264e93b7d439dc2dd0d567067e31b003bfe57/mods/MAPGEN/mcl_levelgen/API.txt) y [registro de entornos](https://github.com/joerojas2810-collab/SegundoIntento/blob/bc6264e93b7d439dc2dd0d567067e31b003bfe57/mods/MAPGEN/mcl_levelgen/register.lua).
+- [XP nativa](https://github.com/joerojas2810-collab/SegundoIntento/blob/bc6264e93b7d439dc2dd0d567067e31b003bfe57/mods/HUD/mcl_experience/init.lua) y [bonos/puntos Everforge](https://github.com/joerojas2810-collab/SegundoIntento/blob/bc6264e93b7d439dc2dd0d567067e31b003bfe57/mods/MISC/everforge/init.lua): puntos L72–84, física L87–100, bonus XP L107–119 y sondeo de puntos L1619.
+- [API oficial Luanti 5.17.0](https://github.com/luanti-org/luanti/blob/5.17.0/doc/lua_api.md): secciones «Environment access», «Registration functions», «Mapgen environment», «Schematic specifier», «Storage API» y «StorageRef». Se utilizó el tag objetivo y no solo la documentación web de la última versión.
+
+## 19. Región inicial única — decisión aprobada y propuesta mínima
+
+### 19.1 Contrato de mundo
+
+Cada mundo tendrá **una sola región inicial física**, compartida por todos sus jugadores. Se crea una vez sobre el terreno procedural de ese mundo; no es una instancia por jugador, un lobby separado ni una plantilla que se restaura. Su terreno, construcciones, destrucciones, cofres y metadata persisten mediante el mapa normal. El hecho de que falten bloques o se destruya un marcador no autoriza regenerar la región. No habrá reparación automática al entrar, morir o reiniciar.
+
+Un centro y un área de llegada pueden contener varios puntos seguros dentro de la misma región. «Compartida» no obliga a superponer a todos en un único nodo. Nuevos jugadores aparecen allí. Jugadores que vuelven conservan su posición; camas y anclas siguen las reglas normales de reaparición. La política recomendada es que el fallback mundial, cuando no hay cama/ancla válida, use esa misma región, sin alterar las comprobaciones ni los consumos nativos del ancla.
+
+### 19.2 APIs concretas y sus límites
+
+| API / punto de integración | Uso mínimo propuesto | Precaución comprobada |
+|---|---|---|
+| `core.get_mod_storage()` → `StorageRef:get_string/set_string` | Un manifiesto Everforge por mundo, obtenido al cargar el mod | No es un singleton de proceso compartido con los threads mapgen ni una transacción del mapa |
+| `mcl_biome_dispatch.get_spawn_point_2d()` | Tomar el centro procedural nativo como ancla inicial, evitando otra búsqueda global | Captura `static_spawnpoint` al cargar el módulo; cambiar settings después no actualiza esa variable local |
+| `mcl_levelgen.get_dimension("mcl_levelgen:overworld")` | Dimensión y límites verticales para preparar el área | No hardcodear Y=0 como suelo ni mezclar coordenadas de levelgen con coordenadas Luanti |
+| `mcl_levelgen.generate_area(x1,y1,z1,x2,y2,z2,cb_progress,data1,data2)` | Preparar el terreno del área durante creación controlada de un mundo nuevo | Callback de progreso puede repetirse; no es un único callback «terminado». Debe comprobarse la disponibilidad real del área |
+| `mcl_levelgen.is_area_fully_regenerated(dim,x1,y1,z1,x2,y2,z2)` | Barrera antes de colocar cualquier estructura | El nombre se refiere al pipeline propio de Mineclonia. No sustituye validar nodos/suelo ni permite reescribir una zona habitada |
+| `mcl_levelgen.map_index_heightmap(dim,x,z,false)` + lectura de nodos | Elegir apoyo y altura de una huella compacta, siguiendo la superficie natural | El heightmap es un índice de generación; tras ediciones no basta para certificar seguridad. Usar convenciones de `move_respawn_position`, incluyendo `dim.y_global`, y comprobar suelo/cabeza reales |
+| `core.emerge_area(pos1,pos2,callback,param)` | Cargar/generar bloques con el motor; comprobar acciones y `calls_remaining` | En levelgen no certifica por sí sola la terminación de su postprocesado. `EMERGE_CANCELLED` y `EMERGE_ERRORED` no son éxito; `core.load_area` solo carga |
+| `core.place_schematic` o `core.place_schematic_on_vmanip` | Colocar una única pieza compacta, ajustada al terreno ya preparado | No usar una estructura que aplaste todo el relieve; `force_placement=false` no garantiza por sí solo respetar construcciones. VoxelManip exige volumen completo, luz/líquidos y metadata inicializados de forma explícita |
+| `core.register_on_newplayer(player)` | Punto nativo de primera entrada | Mineclonia ya registra uno y puede dejar un teleport asíncrono pendiente. Añadir otro `set_pos` al final puede perder la carrera; no se recomienda |
+| `mcl_spawn.get_player_spawn_pos` / `mcl_spawn.spawn` | Conservar selección y validación de cama/ancla y fallback mundial | En levelgen el fallback retorna segundo valor `0`, que en Lua es verdadero. No convertirlo ingenuamente a `false` ni interceptar todo respawn |
+| `mcl_spawn.set_spawn_pos(player,pos,message)` | **No usar para definir la región** | Guarda `mcl_beds:spawn` y toca propiedad de cama; no es un setter del centro mundial |
+
+Las funciones de levelgen/spawn citadas son APIs concretas del checkout. Algunas están implementadas sin contrato público formal en `API.txt`; deben fijarse a esta versión y cubrirse con pruebas de integración. La ausencia de un setter/proveedor público de centro mundial listo para Everforge es una limitación real.
+
+### 19.3 Implementación mínima recomendada, todavía no implementada
+
+1. **Alcance inicial: mundos nuevos explícitamente habilitados**, con acceso de jugadores cerrado durante el bootstrap. La falta de un manifiesto no demuestra que un mundo sea nuevo: si ya existe mapa/perfiles, no colocar nada ni cambiar su spawn por defecto. La incorporación a un mundo existente requerirá otro procedimiento aprobado. No cambiar `chunksize`, mapgen o semilla de una partida.
+2. Un módulo propuesto `mods/MISC/everforge/start_region.lua` coordina desde el entorno servidor la única creación. `mod_storage` mantiene un manifiesto serializado/versionado: `schema`, `region_id`, semilla como texto, versión del generador/plantilla, centro, límites, puntos de llegada y `state=planned/building/ready/needs_review`. Se fija el ancla nativa una sola vez; reinicios leen el manifiesto, no buscan otra región.
+3. Preparar únicamente el volumen necesario y el margen de llegada con el pipeline de Mineclonia, esperar que termine, cargar los bloques y revisar pendientes, agua/lava, estructuras nativas y espacio libre. Elegir una huella pequeña con apoyos adaptados al suelo; si no cabe, detener con diagnóstico. No inventar aquí edificios, NPC, recompensas o un bioma completo. «Integrada» significa asentada en el terreno natural, no reemplazarlo por una plataforma plana. Tamaño/estética quedan por decidir.
+4. Registrar `building` antes de escribir; colocar la pieza aprobada una vez, inicializar sus nodos y validar la llegada. Verificar el resultado antes de publicar `ready`. Toda la preparación ocurre sin acceso de jugadores; ninguna rutina de join, respawn, ABM o LBM vuelve a colocarla.
+5. Proponer un **hook pequeño en el propietario `mcl_biome_dispatch`** para resolver una llegada mundial Everforge solo cuando el manifiesto está `ready`; el camino nativo permanece como alternativa cuando no se habilita esta función. Tanto la primera entrada (`next_respawn_position`) como el fallback de `mcl_spawn` deben consultar ese mismo proveedor. Una llamada pendiente al resolver debe volver a verificar disponibilidad y jugador conectado; nunca dejar un teleport nativo tardío que lo saque de la región. Declarar la dependencia de spawn/dispatch si se usa desde Everforge. No reemplazar funciones mediante monkey-patch ni registrar un segundo respawn que anule camas/anclas.
+6. Buscar posiciones seguras dentro de los límites persistidos, leyendo los nodos actuales: suelo válido, altura suficiente, sin líquidos dañinos/portales, respetando protecciones y colisión. Si todos los puntos quedan bloqueados por cambios de jugadores, no reconstruir ni borrar bloques: detener la llegada con un mecanismo de espera/error y aviso administrativo. Este caso necesita una política de producto aprobada. Tampoco devolver un punto peligroso ni mandar silenciosamente a otra región.
+7. Con `ready`, la región se carga como cualquier mapa. No se recalcula por jugador o por actualización de plantilla. Una actualización visual futura no implica volver a colocarla. Mantener el volumen pequeño; nada de forceload permanente por defecto.
+
+**Por qué no usar el registro de features aleatorias actual:** `register_feature` + `register_configured_feature` + `register_placed_feature` sirven para estructuras repetidas, no garantizan unicidad mundial. Mineclonia carga scripts con `register_levelgen_script` y el motor usa entornos mapgen separados; una bandera Lua local no coordina todos los workers. Si en el futuro se exige una región extensa generada dentro del pipeline, será otra integración: ID/posición deterministas, escrituras limitadas por chunk y notificaciones (`notify_generated`/`register_notification_handler` o `save_gen_notify`) al servidor; mayor alcance que el bootstrap mínimo.
+
+**Durabilidad e interrupciones:** se puede garantizar que la aplicación no reprograme una región publicada, pero no prometer «exactamente una vez» ante cualquier corte entre bases independientes. Si aparece `building` tras reinicio o `ready` no concuerda con el mapa, pasar a revisión sin recolocar automáticamente. Antes de publicar el mundo, validar tras guardado y reinicio limpio y respaldar mapa + mod storage conjuntamente. Para el mínimo, es preferible abortar/revisar un bootstrap interrumpido a sobrescribir la posible obra del jugador. No utilizar `delete_area` ni restaurar la plantilla para recuperarse.
+
+### 19.4 Pruebas requeridas al autorizar su implementación
+
+- Dos jugadores nuevos, entradas simultáneas y reinicio: mismo `region_id`, una sola colocación, llegadas dentro del área; reconexión de un jugador existente no lo mueve.
+- Construir, excavar y vaciar un cofre; descargar/cargar chunks, cerrar y reiniciar: todos los cambios permanecen y ningún objeto/recurso reaparece por cargar.
+- Morir con cama válida, cama destruida/bloqueada, ancla cargada/agotada y sin spawn personal: prioridad y consumo de Mineclonia intactos, fallback dentro de la región según política aprobada.
+- Múltiples seeds, pendientes, agua, límites de chunk, threads mapgen y spawn radius; ninguna segunda región ni cortes de estructura.
+- Interrumpir en `planned`, `building` y publicación: no reponer plantilla sobre modificaciones; error controlado, revisión o restauración conjunta desde backup.
+- Abrir una copia de mundo anterior sin manifiesto: cero generación Everforge y cero reubicación. Destruir marcadores o bloquear todos los puntos de llegada: cero reparación automática.
+
+## 20. XP heredada — análisis y transición propuesta, sin cambios
+
+### 20.1 Efecto exacto observado
+
+El callback L107–119 calcula `floor(xp * (1 + 0.05 * (rank_dungeoneer + clase_arcanist)))` para XP positiva si encuentra al menos un `everforge:dungeon_spawner` en una **caja** de ±18 nodos en cada eje. Arcanist aporta 1, Dungeoneer 0–3: entre 5% y 20% nominal; el redondeo puede anular el bono en entregas pequeñas (1 XP con rango efectivo 4 sigue siendo 1; 10 XP se vuelven 12). El radio no prueba una baja, participación ni finalización: puede afectar cualquier XP que llegue por `add_xp` allí, incluso fuentes ajenas a la mazmorra. No es un bonus directo a Dominio/disciplina.
+
+Arcanist también tiene gravedad `0.96` por `playerphysics`; retirar su bonus de XP no debe retirar silenciosamente ese otro beneficio. `earned_points` usa `max(everforge:earned, floor(nivel_vanilla/5))`, guarda el máximo y se invoca también cada cuatro segundos. Por tanto, independizar el futuro sistema exige resolver **dos** dependencias: multiplicador de XP y concesión de puntos por niveles. Crear nuevos contadores sin retirar ambos en el cutover mantendría el acoplamiento.
+
+### 20.2 Opciones para decidir
+
+| Alternativa | Conservación de progreso | Riesgo / condición |
+|---|---|---|
+| Retirar el multiplicador y reembolsar Dungeoneer una sola vez | Archivar rank y compra; liberar exactamente sus puntos pagados como crédito general, conservar XP vanilla y demás compras | Se pierde el beneficio contextual futuro, con compensación explícita; valorar aparte Arcanist, que no pagó un punto por su bono |
+| Transformar el rank en una especialización contextual aprobada | Compra ya pagada y rango se conservan en el nuevo nodo; sin reembolso simultáneo | Efecto, magnitud y elegibilidad nuevos requieren aprobación. No trasladar el 5–20% a Dominio automáticamente |
+| Conservar el bono vanilla de forma temporal | Mantiene el comportamiento actual mientras no haya cutover | Solo transición: no satisface la separación final acordada y no debe presentarse como solución permanente |
+
+**Recomendación:** retirada del multiplicador en el futuro cutover, devolución única de los puntos de Dungeoneer como crédito legado y snapshot del rank original. Para Arcanist, conservar constancia de clase/beneficios y decidir compensación de su bono de XP por separado; el valor no se inventa en Fase 0. Mantener la gravedad heredada solo durante una compatibilidad explícita o convertirla a un efecto aprobado, nunca dejar dos lectores aplicándola. No habrá clases permanentes nuevas. Esta recomendación no autoriza su ejecución.
+
+### 20.3 Contabilidad y prevención de duplicaciones
+
+- Snapshot inmutable de clase, `earned`, `spent`, cuatro ranks, factores Everforge y XP/nivel vanilla de diagnóstico. No restar XP histórica del perfil: no existe un historial con el que separar el bono de XP legítima. Tampoco compensar en XP vanilla ni convertir el nivel actual en Dominio/disciplina.
+- Para un perfil consistente, `E=earned` guardado, `S=spent`, `U=max(0,E-S)`, `r=rank_dungeoneer`. Si se elige reembolso, se conserva `E`, el gasto reconocido pasa a `S-r` y el saldo a `U+r`; no aumentar `E` además de reducir gasto. Ejemplo: E=10, S=7, r=2 → gasto reconocido 5, saldo 5; **no** saldo 7. Si se convierte al nuevo nodo, gasto y rank siguen reconocidos y el saldo no recibe esos `r` otra vez.
+- La fórmula exige validar `0<=r<=3`, `E>=S>=r` y coherencia entre gasto y todos los ranks. Un perfil parcial/corrupto/desconocido no se «arregla» inventando progreso; conservar valores, informar discrepancia y revisar. Si el nivel actual sugiere puntos no guardados, reportar diferencia para una decisión separada; no derivar automáticamente nuevo crédito de vanilla.
+- Registrar decisión/versionado y resultado absoluto por perfil, no ejecutar `saldo += r` en cada join. El snapshot y el campo de crédito no pueden ser simultáneamente dos fuentes gastables. Un reintento debe reconstruir el mismo resultado y no volver a reembolsar. Compensación de clase, si se aprueba, tendrá su propio ID y se concede una sola vez, nunca inferida como «otro rank pagado».
+- En el futuro cutover, un único modo persistido selecciona los lectores: `legacy` o `new`. El lector de XP heredada devuelve la entrada sin modificar para perfiles convertidos; el nuevo sistema escucha acciones confirmadas, nunca usa el delta de `add_xp` como práctica. Mientras esté en modo legacy no se activa su sustituto. No intentar cancelar el bono con otro callback inverso: el redondeo y el orden de callbacks hacen que no sea equivalente.
+- El antiguo generador de puntos deja de escribir para un perfil convertido, tanto desde UI como desde globalstep; los lectores nuevos no invocan `earned_points`. Los beneficios nuevos y los de compatibilidad no se suman sobre la misma fuente. Eliminar factores por ID con API `playerphysics`, conservando factores de otros mods.
+- La tabla de callbacks XP registra funciones y prioridades, pero no ofrece API pública para desregistrar un callback por ID. Cambiar su registro/gate requiere una modificación futura del código Everforge y reinicio; no manipular a ciegas `mcl_experience.on_add_xp` durante la partida.
+- Rollback requiere versión de código compatible y snapshot/copia conjunta de datos. Cambiar de modo no puede repetir recompensas ya consumidas. Ninguna migración ni compensación se aplica durante Fase 0.
+
+### 20.4 Evidencia pendiente de runtime
+
+Matriz: clase Arcanist/otra, ranks 0–3, caja dentro/fuera y límites, XP 0/negativa/positiva pequeña/grande, sin spawner, muerte/encantamiento/yunque, callbacks adicionales y recolección de XP. Comparar valores vanilla exactos antes/después del cutover; ensayar doble login, doble migración, interrupción y reanudación. Confirmar que XP vanilla ya obtenida y puntos/ranks históricos no disminuyen, y que ningún punto ni efecto se concede dos veces. Esto exige perfiles desechables o una copia autorizada, no editar personajes reales.
+
+## 21. Decisiones y condiciones antes de Fase 1
+
+Fase 1 **no empieza con esta entrega**. Su alcance mínimo propuesto es esquema/contratos/router en modo de observación y pruebas aisladas, sin recompensas nuevas, sin activar la región y sin migrar perfiles existentes. Esto restringe la fila de Fase 1 de §12: V1 snapshot será una entrega separada autorizada, no se ejecutará por defecto al crear el núcleo.
+
+1. **Entorno de validación:** indicar launcher/binario y versiones reales, y designar un mundo desechable o copia autorizada con configuración redactada. La autorización de Fase 0 no autoriza iniciar el juego sobre la partida original. Sin esta verificación no se certificará compatibilidad de runtime.
+2. **Alcance de Fase 1:** aprobar o ajustar el núcleo en observación, sin migración ni otorgamiento de XP/puntos. Propuesta de IDs: `mining`, `forging`, `combat`, `exploration`, `crafting`; «Dominio» visible y `mastery` interno. Aprobar que un evento dé como máximo un crédito de Dominio y pueda alimentar varios tracks solo según una tabla futura.
+3. **Legado XP:** elegir reembolso de Dungeoneer o conversión a nodo; decidir compensación del bono de Arcanist y destino de su gravedad. Estas políticas pueden permanecer pendientes si Fase 1 es solo observación, pero bloquean el cutover y toda prueba de conversión. No se necesita volver a decidir la independencia de XP: ya está aprobada.
+4. **Región inicial:** aprobar el mínimo solo para mundos nuevos, anclado al spawn procedural nativo, con bootstrap cerrado a jugadores y hook en el dueño del spawn. Confirmar dimensiones aproximadas/contenido de la región y política ante llegada totalmente bloqueada (recomendación: esperar y avisar, sin reparar el mapa). El fallback mundial a esta región sigue la semántica nativa de cama/ancla; confirmar ese alcance. La creación de la región no forma parte automática de Fase 1.
+5. **Durabilidad:** aceptar revisión manual/restauración conjunta para bootstrap interrumpido y aprobar cómo se probará el guardado/reinicio en copia. No se puede ofrecer una transacción global que estas APIs no tienen.
+
+No bloquea Fase 1: elegir arte nuevo, volver a confirmar la identidad del yunque, integrar el icono, redactar historia o definir las 45 habilidades. Todos siguen fuera del alcance. PR #2 permanece abierto; ninguna fase documental autoriza fusionarlo.
