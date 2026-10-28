@@ -49,9 +49,9 @@ and/or modify it under the terms of the MIT License.
 ### Licenses of textures
 
 * `hudbars_icon_health.png`—celeron55 (CC BY-SA 3.0), modified by BlockMen
-* `hudbars_bgicon_health.png`—celeron55 (CC BY-SA 3.0), modified by BlockMen
+* `hudbars_bgicon_health.png`—Pixel Perfection by Hugh "XSSheep" Rutland (CC BY-SA 4.0; see root `LEGAL.md`)
 * `hudbars_icon_breath.png`—kaeza (MIT License), modified by BlockMen, modified again by Wuzzy
-* `hudbars_bgicon_breath.png`—based on previous image, edited by Wuzzy (MIT License)
+* `hudbars_bgicon_breath.png`—Pixel Perfection by Hugh "XSSheep" Rutland (CC BY-SA 4.0; see root `LEGAL.md`)
 * `hudbars_bar_health.png`—Wuzzy (MIT License)
 * `hudbars_bar_breath.png`—Wuzzy (MIT License)
 * `hudbars_bar_background.png`—Wuzzy (MIT License)

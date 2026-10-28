@@ -26,10 +26,13 @@ Steel door sounds open & close (CC-BY-3.0) by HazMatt
 
 ### texture files
 
-Same as media license for Mineclonia (see root directory).
+Same as media license for Mineclonia (see root directory). `doors_item_steel.png`,
+`doors_trapdoor.png`, `doors_trapdoor_side.png`, `doors_trapdoor_steel.png` and
+`doors_trapdoor_steel_side.png` were updated from Pixel Perfection by Hugh
+"XSSheep" Rutland (CC BY-SA 4.0); see root `LEGAL.md` for source and conversion
+credits.
 
 With modifications by GitHub user kingoscargames:
-- `doors_item_steel.png`
 - `mcl_doors_door_iron_lower.png`
 - `mcl_doors_door_iron_upper.png`
 - `mcl_doors_trapdoor_acaica.png`

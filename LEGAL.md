@@ -28,18 +28,24 @@ license of Mineclonia.
 ## License of media (textures and sounds)
 No non-free licenses are used anywhere.
 
-Textures, unless otherwise noted, are based on the Pixel Perfection by XSSheep
-and Pixel Perfection Legacy by Nova Wostra resource packs. Most textures are
-verbatim copies, while some textures have been changed or redone from scratch.
-The glazed terracotta textures have been created by
+Textures, unless otherwise noted, are based on Pixel Perfection by Hugh
+"XSSheep" Rutland and Pixel Perfection Legacy by Nova Wostra. Most textures
+are verbatim copies, while some textures have been changed or redone from
+scratch. The glazed terracotta textures have been created by
 [MysticTempest](https://github.com/MysticTempest).
 
-Pixel Perfection by XSSeep: <https://www.planetminecraft.com/texture_pack/131pixel-perfection/>
-License: [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)
+Pixel Perfection by Hugh "XSSheep" Rutland:
+- Original thread: <https://forum.luanti.org/viewtopic.php?t=14289>
+- Original resource pack: <https://www.planetminecraft.com/texture_pack/131pixel-perfection/>
+- Luanti conversion: <https://github.com/minetest-texture-packs/Pixel-Perfection>
+- Imported files use upstream revision `7935d064fc6f993d1b5038ed5ec17a615600cf0a`.
+- The Luanti repository lists Toby109tt, tacotexmex and devurandom as contributors; the forum thread credits sofar and Texmex for conversion and curation.
+
+License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 
 Pixel Perfection Legacy by Nova Wostra (fan update of Pixel Perfection):
 <https://www.curseforge.com/minecraft/texture-packs/pixel-perfection-legacy>
-License: [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)
+License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 
 The main menu images are release under:
 [CC0](https://creativecommons.org/publicdomain/zero/1.0/)
