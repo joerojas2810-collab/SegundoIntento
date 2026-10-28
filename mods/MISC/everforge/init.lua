@@ -891,20 +891,73 @@ local function waila_enabled(player)
 	return saved == "" or saved == "1"
 end
 
+local WAILA_WRAP_BYTES = 46
+local WAILA_TEXTURE_SIZE = 16
+local WAILA_CHAR_WIDTH = 9
+local WAILA_LINE_HEIGHT = 20
+
+local function layout_waila_text(text)
+	if text == "" then return "", {x = 1, y = 1} end
+	local wrapped, longest = {}, 0
+	for source_line in (text .. "\n"):gmatch("(.-)\n") do
+		local line = ""
+		for word in source_line:gmatch("%S+") do
+			if line ~= "" and #line + 1 + #word > WAILA_WRAP_BYTES then
+				wrapped[#wrapped + 1] = line
+				longest = math.max(longest, #line)
+				line = word
+			elseif line == "" then
+				line = word
+			else
+				line = line .. " " .. word
+			end
+		end
+		wrapped[#wrapped + 1] = line
+		longest = math.max(longest, #line)
+	end
+	local rendered = table.concat(wrapped, "\n")
+	local width = math.max(220, longest * WAILA_CHAR_WIDTH + 32)
+	local height = math.max(40, #wrapped * WAILA_LINE_HEIGHT + 18)
+	return rendered, {
+		x = math.ceil(width / WAILA_TEXTURE_SIZE),
+		y = math.ceil(height / WAILA_TEXTURE_SIZE),
+	}
+end
+
+local function waila_bossbar_offset(player)
+	local bossbars = rawget(_G, "mcl_bossbars")
+	local visible_bars = bossbars and bossbars.huds and bossbars.huds[player:get_player_name()]
+	return 24 + (visible_bars and #visible_bars or 0) * 40
+end
+
 local function update_waila(player)
 	local name = player:get_player_name()
 	local enabled = waila_enabled(player)
-	local text = enabled and waila_text(player) or ""
+	local text, panel_scale = layout_waila_text(enabled and waila_text(player) or "")
+	local visible = text ~= ""
+	local offset_y = waila_bossbar_offset(player)
 	local hud = waila_huds[name]
 	if not hud then
-		local def = {type = "text", position = {x = 0.015, y = 0.12}, alignment = {x = -1, y = 0},
-			offset = {x = 2, y = 2}, scale = {x = 100, y = 100}, text = text, number = 0xFFFFFF, z_index = 5}
-		local shadow = table.copy(def); shadow.offset = {x = 3, y = 3}; shadow.number = 0x101010; shadow.z_index = 4
-		waila_huds[name] = {player:hud_add(def), player:hud_add(shadow), text}
-	elseif hud[3] ~= text then
-		hud[3] = text
-		player:hud_change(hud[1], "text", text)
+		local background = {
+			type = "image", position = {x = 0.5, y = 0}, alignment = {x = 0, y = -1},
+			offset = {x = 0, y = offset_y - 8}, scale = panel_scale,
+			text = visible and "everforge_waila_panel.png" or "", z_index = 4,
+		}
+		local label = {
+			type = "text", position = {x = 0.5, y = 0}, alignment = {x = 0, y = -1},
+			offset = {x = 0, y = offset_y}, scale = {x = 100, y = 100},
+			text = text, number = 0xF4F7FC, style = 1, z_index = 5,
+		}
+		waila_huds[name] = {
+			player:hud_add(background), player:hud_add(label), text, panel_scale.x, panel_scale.y, offset_y,
+		}
+	elseif hud[3] ~= text or hud[4] ~= panel_scale.x or hud[5] ~= panel_scale.y or hud[6] ~= offset_y then
+		hud[3], hud[4], hud[5], hud[6] = text, panel_scale.x, panel_scale.y, offset_y
+		player:hud_change(hud[1], "text", visible and "everforge_waila_panel.png" or "")
+		player:hud_change(hud[1], "scale", panel_scale)
+		player:hud_change(hud[1], "offset", {x = 0, y = offset_y - 8})
 		player:hud_change(hud[2], "text", text)
+		player:hud_change(hud[2], "offset", {x = 0, y = offset_y})
 	end
 end
 
