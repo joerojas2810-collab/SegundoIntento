@@ -418,43 +418,383 @@ core.register_lbm({
 	end,
 })
 
--- Components can be assembled into four separate MCL-diggroup tools. Their
--- mining caps are Mineclonia-native; no generic `groupcaps` are rewritten.
-local function forged_tool(name, desc, image, diggroup, speed, level, uses, fleshy)
-	core.register_tool("everforge:" .. name, {
-		description = desc, inventory_image = image, wield_scale = mcl_vars.tool_wield_scale,
-		groups = {tool = 1, [diggroup == "swordy" and "sword" or diggroup == "pickaxey" and "pickaxe" or diggroup == "axey" and "axe" or "shovel"] = 1, dig_speed_class = 4, enchantability = 8},
+-- Modular forging uses existing Mineclonia/More Ores/Adamantine ingots. The
+-- metal rarity is material data; manufacturing quality is selected separately
+-- with a tempering catalyst when the components are assembled.
+local forge_materials = {
+	tin = {
+		item = "moreores:tin_ingot", label = S("Tin"), rarity = "common", color = "#a9a9a1",
+		level = 2, speed = 4, uses = 120, damage = 0.1, dig_speed_class = 2, enchantability = 8,
+		binding_durability = 0.80, binding_speed = 0.96, binding_damage = 0.05, binding_attack = 0.96,
+		handle_durability = 0.82, handle_speed = 0.96, handle_damage = 0.05, handle_attack = 0.94,
+	},
+	copper = {
+		item = "mcl_copper:copper_ingot", label = S("Copper"), rarity = "common", color = "#c77b4a",
+		level = 3, speed = 5, uses = 191, damage = 0.25, dig_speed_class = 3, enchantability = 13,
+		binding_durability = 0.95, binding_speed = 1.00, binding_damage = 0.10, binding_attack = 1.00,
+		handle_durability = 0.95, handle_speed = 0.99, handle_damage = 0.10, handle_attack = 0.99,
+	},
+	iron = {
+		item = "mcl_core:iron_ingot", label = S("Iron"), rarity = "common", color = "#b9bdc2",
+		level = 4, speed = 6, uses = 251, damage = 0.45, dig_speed_class = 4, enchantability = 14,
+		binding_durability = 1.00, binding_speed = 1.00, binding_damage = 0.20, binding_attack = 1.00,
+		handle_durability = 1.00, handle_speed = 1.00, handle_damage = 0.20, handle_attack = 1.00,
+	},
+	gold = {
+		item = "mcl_core:gold_ingot", label = S("Gold"), rarity = "uncommon", color = "#f3c846",
+		level = 2, speed = 12, uses = 33, damage = 0.20, dig_speed_class = 6, enchantability = 22,
+		binding_durability = 0.68, binding_speed = 1.05, binding_damage = 0.08, binding_attack = 1.10,
+		handle_durability = 0.75, handle_speed = 1.04, handle_damage = 0.08, handle_attack = 1.06,
+	},
+	silver = {
+		item = "moreores:silver_ingot", label = S("Silver"), rarity = "uncommon", color = "#d9e2e8",
+		level = 4, speed = 6.5, uses = 600, damage = 0.75, dig_speed_class = 4, enchantability = 16,
+		binding_durability = 1.10, binding_speed = 1.02, binding_damage = 0.30, binding_attack = 1.02,
+		handle_durability = 1.05, handle_speed = 1.01, handle_damage = 0.25, handle_attack = 1.02,
+	},
+	mithril = {
+		item = "moreores:mithril_ingot", label = S("Mithril"), rarity = "rare", color = "#66d7e5",
+		level = 5, speed = 8, uses = 2000, damage = 1.15, dig_speed_class = 5, enchantability = 18,
+		binding_durability = 1.20, binding_speed = 1.04, binding_damage = 0.45, binding_attack = 1.04,
+		handle_durability = 1.15, handle_speed = 1.02, handle_damage = 0.40, handle_attack = 1.03,
+	},
+	adamantine = {
+		item = "adamantine:ingot", label = S("Adamantine"), rarity = "epic", color = "#a966e8",
+		level = 6, speed = 16, uses = 4062, damage = 1.60, dig_speed_class = 6, enchantability = 20,
+		binding_durability = 1.25, binding_speed = 1.06, binding_damage = 0.60, binding_attack = 1.06,
+		handle_durability = 1.20, handle_speed = 1.03, handle_damage = 0.50, handle_attack = 1.04,
+	},
+}
+
+local material_rarity_labels = {
+	common = S("Common material"), uncommon = S("Uncommon material"),
+	rare = S("Rare material"), epic = S("Epic material"), legendary = S("Legendary material"),
+}
+local quality_defs = {
+	common = {label = S("Common"), color = "#b7b7b7", speed = 1.00, durability = 1.00, damage = 1.00, attack = 1.00},
+	uncommon = {label = S("Uncommon"), color = "#45c14a", speed = 1.03, durability = 1.08, damage = 1.03, attack = 1.02, catalyst = "mcl_core:iron_nugget"},
+	rare = {label = S("Rare"), color = "#3584e4", speed = 1.06, durability = 1.15, damage = 1.06, attack = 1.04, catalyst = "mcl_core:gold_nugget"},
+	epic = {label = S("Epic"), color = "#a335ee", speed = 1.09, durability = 1.25, damage = 1.09, attack = 1.06, catalyst = "mcl_core:lapis"},
+	legendary = {label = S("Legendary"), color = "#ff8000", speed = 1.12, durability = 1.35, damage = 1.12, attack = 1.08, catalyst = "mcl_core:diamond"},
+}
+local quality_by_catalyst = {}
+for quality, def in pairs(quality_defs) do
+	if def.catalyst then quality_by_catalyst[def.catalyst] = quality end
+end
+
+local tool_defs = {
+	pick = {label = S("Pickaxe"), diggroup = "pickaxey", group = "pickaxe", icon = "default_tool_steelpick.png", damage = 3.0, interval = 0.85, head_icon = "everforge_part_head.png"},
+	axe = {label = S("Axe"), diggroup = "axey", group = "axe", icon = "default_tool_steelaxe.png", damage = 6.0, interval = 1.05, head_icon = "everforge_part_axe_head.png"},
+	shovel = {label = S("Shovel"), diggroup = "shovely", group = "shovel", icon = "default_tool_steelshovel.png", damage = 3.0, interval = 1.0, head_icon = "everforge_part_shovel_head.png"},
+	sword = {label = S("Sword"), diggroup = "swordy", group = "sword", icon = "default_tool_steelsword.png", damage = 6.0, interval = 0.625, head_icon = "everforge_part_sword_blade.png"},
+}
+local base_output_types = {
+	["everforge:alloy_pick"] = "pick", ["everforge:alloy_axe"] = "axe",
+	["everforge:alloy_shovel"] = "shovel", ["everforge:alloy_sword"] = "sword",
+}
+
+local function clamp(value, low, high)
+	return math.max(low, math.min(high, value))
+end
+
+local function calculate_modular_stats(tool_type, head_name, binding_name, handle_name, quality_name)
+	local head, binding, handle = forge_materials[head_name], forge_materials[binding_name], forge_materials[handle_name]
+	local quality = quality_defs[quality_name]
+	if not head or not binding or not handle or not quality then return nil end
+	local kind = tool_defs[tool_type]
+	local raw_speed_multiplier = binding.binding_speed * handle.handle_speed * quality.speed
+	local mining_speed = clamp(head.speed * raw_speed_multiplier, 2.5, 18)
+	local speed_multiplier = mining_speed / head.speed
+	local uses = clamp(math.floor(head.uses * binding.binding_durability * handle.handle_durability * quality.durability + 0.5), 60, 10000)
+	local damage = clamp((kind.damage + head.damage + binding.binding_damage + handle.handle_damage) * quality.damage, 1, 14)
+	local attack_speed = binding.binding_attack * handle.handle_attack * quality.attack
+	local interval = clamp(kind.interval / attack_speed, 0.35, 1.5)
+	return {
+		level = head.level, speed = mining_speed, speed_multiplier = speed_multiplier,
+		uses = uses, damage = damage, interval = interval, attack_speed = attack_speed,
+	}
+end
+
+local function format_percent(multiplier)
+	return tostring(math.floor((multiplier - 1) * 100 + 0.5))
+end
+
+local function build_modular_description(tool_type, head_name, binding_name, handle_name, quality_name, stats)
+	local tool, head, binding, handle, quality = tool_defs[tool_type], forge_materials[head_name], forge_materials[binding_name], forge_materials[handle_name], quality_defs[quality_name]
+	local title = quality.label .. " " .. head.label .. " " .. tool.label
+	if core.colorize then title = core.colorize(quality.color, title) end
+	return table.concat({
+		title,
+		S("Craft quality: @1", quality.label),
+		S("Head: @1 (@2); binding: @3 (@4); handle: @5 (@6)", head.label, material_rarity_labels[head.rarity], binding.label, material_rarity_labels[binding.rarity], handle.label, material_rarity_labels[handle.rarity]),
+		S("Damage: @1; attack interval: @2 s", string.format("%.1f", stats.damage), string.format("%.2f", stats.interval)),
+		S("Mining speed: @1; mining level: @2", string.format("%.1f", stats.speed), tostring(stats.level)),
+		S("Durability: @1 uses", tostring(stats.uses)),
+		S("Quality bonuses: +@1% damage, +@2% mining speed, +@3% durability, +@4% attack speed", format_percent(quality.damage), format_percent(quality.speed), format_percent(quality.durability), format_percent(quality.attack)),
+	}, "\n")
+end
+
+local function forged_after_use(stack, user, _node, digparams)
+	if user and user:is_player() and digparams and digparams.wear and digparams.wear > 0
+		and not core.is_creative_enabled(user:get_player_name()) then
+		stack:add_wear(math.floor(digparams.wear * perk_wear_multiplier(user)))
+	end
+	return stack
+end
+
+local function register_modular_tool(name, tool_type, head_name, legacy)
+	local tool, material = tool_defs[tool_type], forge_materials[head_name]
+	local itemname = name or ("everforge:modular_" .. tool_type .. "_" .. head_name)
+	local icon = tool.icon .. "^[colorize:" .. (legacy and "#ba7443" or material.color) .. ":100"
+	local legacy_damage = {pick = 5, axe = 6, shovel = 5, sword = 8}
+	local level = legacy and 4 or material.level
+	local speed = legacy and 8 or material.speed
+	local uses = legacy and 600 or material.uses
+	local attack_damage = legacy and legacy_damage[tool_type] or (tool.damage + material.damage)
+	local interval = legacy and 0.9 or tool.interval
+	local groups = {
+		tool = 1, [tool.group] = 1,
+		dig_speed_class = legacy and 4 or material.dig_speed_class,
+		enchantability = legacy and 8 or material.enchantability,
+	}
+	if not legacy then groups.offhand_item = 1 end
+	core.register_tool(itemname, {
+		description = legacy and S("Alloy Modular @1", tool.label) or S("Modular @1", tool.label),
+		_doc_items_longdesc = S("A modular Everforge tool. Its mining level is fixed by its head; binding, handle and tempering quality affect its other statistics."),
+		inventory_image = icon, wield_image = icon, wield_scale = mcl_vars.tool_wield_scale,
+		stack_max = 1,
+		groups = groups,
 		_mcl_toollike_wield = true,
-		_mcl_diggroups = {[diggroup] = {speed = speed, level = level, uses = uses}},
-		tool_capabilities = {full_punch_interval = 0.9, max_drop_level = level, damage_groups = {fleshy = fleshy}},
+		_mcl_diggroups = {[tool.diggroup] = {speed = speed, level = level, uses = uses}},
+		tool_capabilities = {full_punch_interval = interval, max_drop_level = level, punch_attack_uses = uses / (tool_type == "sword" and 1 or 2), damage_groups = {fleshy = attack_damage}},
+		on_place = mcl_tools.tool_place_funcs[tool_type],
 		sound = {breaks = "default_tool_breaks"},
-		after_use = function(stack, user, node, digparams)
-			if user and user:is_player() and digparams and digparams.wear and digparams.wear > 0 then
-				if not core.is_creative_enabled(user:get_player_name()) then
-					stack:add_wear(math.floor(digparams.wear * perk_wear_multiplier(user)))
-				end
-				return stack
-			end
-			return stack
-		end,
+		_repair_material = not legacy and material.item or nil,
+		after_use = forged_after_use,
+		_everforge_modular = {tool_type = tool_type, head_material = head_name},
+	})
+	return itemname
+end
+
+-- Keep the original item IDs for old tools and recipes. New crafts output these
+-- IDs transiently, then the craft callback replaces them with head-tier variants.
+local modular_variants = {}
+for tool_type in pairs(tool_defs) do
+	modular_variants[tool_type] = {}
+	register_modular_tool("everforge:alloy_" .. tool_type, tool_type, "iron", true)
+	for material_name in pairs(forge_materials) do
+		modular_variants[tool_type][material_name] = register_modular_tool(nil, tool_type, material_name, false)
+	end
+end
+
+local function component_item(kind, material_name, tool_type)
+	if kind == "head" then return "everforge:component_" .. tool_type .. "_head_" .. material_name end
+	if kind == "binding" then return "everforge:component_binding_" .. material_name end
+	return "everforge:component_handle_" .. material_name
+end
+
+local function register_component(itemname, kind, material_name, tool_type, label, image, groups)
+	local material = forge_materials[material_name]
+	core.register_craftitem(itemname, {
+		description = S("@1 @2", material.label, label),
+		_doc_items_longdesc = S("A reusable Everforge part made from @1. Material rarity and finished-tool craft quality are separate properties.", material.label),
+		inventory_image = image .. "^[colorize:" .. material.color .. ":130",
+		stack_max = 99,
+		groups = groups,
+		_everforge_component = {kind = kind, material = material_name, tool_type = tool_type},
 	})
 end
-forged_tool("alloy_pick", S("Alloy Modular Pickaxe"), "default_tool_steelpick.png^[colorize:#ba7443:100", "pickaxey", 8, 4, 600, 5)
-forged_tool("alloy_axe", S("Alloy Modular Axe"), "default_tool_steelaxe.png^[colorize:#ba7443:100", "axey", 8, 4, 600, 6)
-forged_tool("alloy_shovel", S("Alloy Modular Shovel"), "default_tool_steelshovel.png^[colorize:#ba7443:100", "shovely", 8, 4, 600, 5)
-forged_tool("alloy_sword", S("Alloy Modular Sword"), "default_tool_steelsword.png^[colorize:#ba7443:100", "swordy", 8, 4, 600, 8)
 
-core.register_craft({output = "everforge:alloy_melter", recipe = {{"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"}, {"mcl_core:iron_ingot", "mcl_furnaces:furnace", "mcl_core:iron_ingot"}, {"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"}}})
+local head_groups = {}
+for tool_type in pairs(tool_defs) do head_groups[tool_type] = "everforge_component_" .. tool_type .. "_head" end
+local binding_group, handle_group = "everforge_component_binding", "everforge_component_handle"
+
+-- Retain the old component item names as iron parts. Old saves and existing
+-- stacks remain usable in the new recipes.
+local legacy_head_groups = {craftitem = 1, everforge_component = 1}
+for _, group in pairs(head_groups) do legacy_head_groups[group] = 1 end
+core.register_craftitem("everforge:tool_head", {
+	description = S("Iron Tool Head (legacy component)"), inventory_image = "everforge_part_head.png^[colorize:#b9bdc2:130", stack_max = 99,
+	groups = legacy_head_groups, _everforge_component = {kind = "head", material = "iron", tool_type = "any"},
+})
+core.register_craftitem("everforge:tool_binding", {
+	description = S("Iron Tool Binding (legacy component)"), inventory_image = "everforge_part_binding.png^[colorize:#b9bdc2:130", stack_max = 99,
+	groups = {craftitem = 1, everforge_component = 1, [binding_group] = 1},
+	_everforge_component = {kind = "binding", material = "iron"},
+})
+core.register_craftitem("everforge:reinforced_handle", {
+	description = S("Iron-Reinforced Handle (legacy component)"), inventory_image = "everforge_part_handle.png^[colorize:#b9bdc2:130", stack_max = 99,
+	groups = {craftitem = 1, everforge_component = 1, [handle_group] = 1},
+	_everforge_component = {kind = "handle", material = "iron"},
+})
+
+local head_recipes = {
+	pick = function(m) return {{m, m, m}, {"", m, ""}} end,
+	axe = function(m) return {{m, m}, {m, ""}} end,
+	shovel = function(m) return {{m}} end,
+	sword = function(m) return {{m}, {m}} end,
+}
+local head_labels = {pick = S("Pickaxe Head"), axe = S("Axe Head"), shovel = S("Shovel Head"), sword = S("Sword Blade")}
+for material_name, material in pairs(forge_materials) do
+	for tool_type, tool in pairs(tool_defs) do
+		local groups = {craftitem = 1, everforge_component = 1, [head_groups[tool_type]] = 1}
+		local itemname = component_item("head", material_name, tool_type)
+		register_component(itemname, "head", material_name, tool_type, head_labels[tool_type], tool.head_icon, groups)
+		core.register_craft({output = itemname, recipe = head_recipes[tool_type](material.item)})
+	end
+	local binding = component_item("binding", material_name)
+	register_component(binding, "binding", material_name, nil, S("Tool Binding"), "everforge_part_binding.png", {craftitem = 1, everforge_component = 1, [binding_group] = 1})
+	core.register_craft({output = binding, recipe = {{material.item, material.item}, {"mcl_core:stick", ""}}})
+	local handle = component_item("handle", material_name)
+	register_component(handle, "handle", material_name, nil, S("Reinforced Handle"), "everforge_part_handle.png", {craftitem = 1, everforge_component = 1, [handle_group] = 1})
+	core.register_craft({output = handle, recipe = {{"mcl_core:stick"}, {material.item}, {"mcl_core:stick"}}})
+end
+
+-- Original recipes are kept for the legacy iron component IDs.
 core.register_craft({output = "everforge:tool_head 2", recipe = {{"mcl_core:iron_ingot", "mcl_core:iron_ingot"}, {"mcl_core:iron_ingot", ""}}})
 core.register_craft({output = "everforge:tool_binding 2", recipe = {{"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"}}})
 core.register_craft({output = "everforge:reinforced_handle 2", recipe = {{"mcl_core:stick"}, {"mcl_core:iron_ingot"}}})
-local function craft_modular(output, rows)
-	core.register_craft({output = output, recipe = rows})
+
+local function apply_modular_stack(stack)
+	local meta = stack:get_meta()
+	local tool_type = meta:get_string("everforge:tool_type")
+	local head_name = meta:get_string("everforge:head_material")
+	local binding_name = meta:get_string("everforge:binding_material")
+	local handle_name = meta:get_string("everforge:handle_material")
+	local quality_name = meta:get_string("everforge:quality")
+	local stats = calculate_modular_stats(tool_type, head_name, binding_name, handle_name, quality_name)
+	if not stats then return stack end
+
+	local itemname = stack:get_name()
+	local efficiency, unbreaking = 0, 0
+	if mcl_enchanting and mcl_enchanting.get_enchantment then
+		efficiency = mcl_enchanting.get_enchantment(stack, "efficiency") or 0
+		unbreaking = mcl_enchanting.get_enchantment(stack, "unbreaking") or 0
+	end
+	local caps = stack:get_tool_capabilities()
+	caps = table.copy(caps or {})
+	local groupcaps = mcl_autogroup.get_groupcaps(itemname, efficiency)
+	for _, groupcap in pairs(groupcaps) do
+		if groupcap.times then
+			for level, time in pairs(groupcap.times) do
+				groupcap.times[level] = math.max(0.05, time / stats.speed_multiplier)
+			end
+		end
+		groupcap.uses = math.floor(stats.uses * (1 + unbreaking) + 0.5)
+	end
+	caps.groupcaps = groupcaps
+	caps.full_punch_interval = stats.interval
+	caps.max_drop_level = stats.level
+	caps.punch_attack_uses = math.max(1, math.floor(stats.uses / (tool_type == "sword" and 1 or 2)))
+	caps.damage_groups = {fleshy = stats.damage}
+	meta:set_tool_capabilities(caps)
+
+	local head, binding, handle, quality = forge_materials[head_name], forge_materials[binding_name], forge_materials[handle_name], quality_defs[quality_name]
+	local description = build_modular_description(tool_type, head_name, binding_name, handle_name, quality_name, stats)
+	meta:set_string("description", description)
+	-- Toolranks retains this full materials/quality/stat summary when adding its
+	-- own persistent rank line to the stack description.
+	meta:set_string("toolranks:original_description", description)
+	meta:set_string("everforge:material_rarity:head", head.rarity)
+	meta:set_string("everforge:material_rarity:binding", binding.rarity)
+	meta:set_string("everforge:material_rarity:handle", handle.rarity)
+	meta:set_string("everforge:stats:mining_level", tostring(stats.level))
+	meta:set_string("everforge:stats:mining_speed", string.format("%.2f", stats.speed))
+	meta:set_string("everforge:stats:durability", tostring(stats.uses))
+	meta:set_string("everforge:stats:damage", string.format("%.2f", stats.damage))
+	meta:set_string("everforge:stats:attack_interval", string.format("%.3f", stats.interval))
+	meta:set_string("everforge:stats:quality_bonus", quality_name)
+	return stack
 end
-craft_modular("everforge:alloy_pick", {{"everforge:tool_head", "everforge:tool_head", "everforge:tool_head"}, {"", "everforge:reinforced_handle", ""}, {"", "everforge:reinforced_handle", ""}})
-craft_modular("everforge:alloy_axe", {{"everforge:tool_head", "everforge:tool_head"}, {"everforge:tool_head", "everforge:reinforced_handle"}, {"", "everforge:reinforced_handle"}})
-craft_modular("everforge:alloy_shovel", {{"everforge:tool_head"}, {"everforge:reinforced_handle"}, {"everforge:reinforced_handle"}})
-craft_modular("everforge:alloy_sword", {{"everforge:tool_head"}, {"everforge:tool_head"}, {"everforge:reinforced_handle"}})
+
+local function build_modular_tool(itemstack, old_craft_grid)
+	local tool_type = base_output_types[itemstack:get_name()]
+	if not tool_type then return itemstack end
+	local components, quality_name = {}, "common"
+	for _, ingredient in ipairs(old_craft_grid or {}) do
+		if ingredient and not ingredient:is_empty() then
+			local def = ingredient:get_definition()
+			local component = def and def._everforge_component
+			if component then
+				if components[component.kind] then return itemstack end
+				components[component.kind] = component
+			else
+				local found_quality = quality_by_catalyst[ingredient:get_name()]
+				if found_quality then quality_name = found_quality end
+			end
+		end
+	end
+	if not components.head or not components.binding or not components.handle then return itemstack end
+	if components.head.tool_type and components.head.tool_type ~= "any" and components.head.tool_type ~= tool_type then return itemstack end
+	local itemname = modular_variants[tool_type][components.head.material]
+	if not itemname then return itemstack end
+
+	itemstack:set_name(itemname)
+	local meta = itemstack:get_meta()
+	meta:set_string("everforge:tool_type", tool_type)
+	meta:set_string("everforge:head_material", components.head.material)
+	meta:set_string("everforge:binding_material", components.binding.material)
+	meta:set_string("everforge:handle_material", components.handle.material)
+	meta:set_string("everforge:quality", quality_name)
+	meta:set_string("everforge:quality_catalyst", quality_defs[quality_name].catalyst or "")
+	return apply_modular_stack(itemstack)
+end
+
+core.register_craft_predict(function(itemstack, _player, old_craft_grid)
+	return build_modular_tool(itemstack, old_craft_grid)
+end)
+core.register_on_craft(function(itemstack, _player, old_craft_grid)
+	return build_modular_tool(itemstack, old_craft_grid)
+end)
+
+local function register_modular_assembly_recipes()
+	local quality_positions = {
+		common = nil, uncommon = {1, 1}, rare = {1, 3}, epic = {3, 1}, legendary = {3, 3},
+	}
+	for tool_type in pairs(tool_defs) do
+		for quality_name, quality in pairs(quality_defs) do
+			local recipe = {
+				{"", "group:" .. head_groups[tool_type], ""},
+				{"", "group:" .. binding_group, ""},
+				{"", "group:" .. handle_group, ""},
+			}
+			local position = quality_positions[quality_name]
+			if position then recipe[position[1]][position[2]] = quality.catalyst end
+			core.register_craft({output = "everforge:alloy_" .. tool_type, recipe = recipe})
+		end
+	end
+end
+register_modular_assembly_recipes()
+
+-- Preserve the original component-only assembly patterns as legacy iron tools.
+-- New recipes add a binding and support mixed-material, quality-selected builds.
+core.register_craft({output = "everforge:alloy_pick", recipe = {{"everforge:tool_head", "everforge:tool_head", "everforge:tool_head"}, {"", "everforge:reinforced_handle", ""}, {"", "everforge:reinforced_handle", ""}}})
+core.register_craft({output = "everforge:alloy_axe", recipe = {{"everforge:tool_head", "everforge:tool_head"}, {"everforge:tool_head", "everforge:reinforced_handle"}, {"", "everforge:reinforced_handle"}}})
+core.register_craft({output = "everforge:alloy_shovel", recipe = {{"everforge:tool_head"}, {"everforge:reinforced_handle"}, {"everforge:reinforced_handle"}}})
+core.register_craft({output = "everforge:alloy_sword", recipe = {{"everforge:tool_head"}, {"everforge:tool_head"}, {"everforge:reinforced_handle"}}})
+
+-- MCL's enchanting mod creates hidden *_enchanted tool definitions and wraps
+-- their after_use callbacks. Reapply the per-stack alloy data after that wrapper
+-- so Efficiencies/Unbreaking keep working without replacing component stats.
+core.register_on_mods_loaded(function()
+	for tool_type, by_material in pairs(modular_variants) do
+		for _, variant_name in pairs(by_material) do
+			local enchanted_name = variant_name .. "_enchanted"
+			local def = core.registered_tools[enchanted_name]
+			if def and def.after_use then
+				local previous_after_use = def.after_use
+				core.override_item(enchanted_name, {
+					after_use = function(stack, user, node, digparams)
+						local result = previous_after_use(stack, user, node, digparams)
+						return apply_modular_stack(result or stack)
+					end,
+				})
+			end
+		end
+	end
+end)
+
+core.register_craft({output = "everforge:alloy_melter", recipe = {{"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"}, {"mcl_core:iron_ingot", "mcl_furnaces:furnace", "mcl_core:iron_ingot"}, {"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"}}})
 
 -- ---------------------------------------------------------------------------
 -- Persistent dungeon markers, procedural structures, loot and enemy spawns.
