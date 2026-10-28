@@ -7,10 +7,13 @@ msgstr ""
 msgid "@1 @2"
 msgstr ""
 
-msgid "@1 @2/@3 — @4"
+msgid "@1 — Rank @2 / @3"
 msgstr ""
 
 msgid "@1, Y @2 to @3; approximately @4 configured cluster placements per horizontal chunk."
+msgstr ""
+
+msgid "@1@nEach skill rank costs one point; earn 1 point every 5 XP levels."
 msgstr ""
 
 msgid "A modular Everforge tool. Its mining level is fixed by its head; binding, handle and tempering quality affect its other statistics."
@@ -58,7 +61,10 @@ msgstr ""
 msgid "Biomes: registered overworld biome entries for high, middle and deep features (@1, @2 and @3)."
 msgstr ""
 
-msgid "Biomes: registered overworld biomes; @1 stone and @2 deepslate feature entries are active."
+msgid "Biomes: registered overworld entries; @1 stone and @2 deepslate levelgen features."
+msgstr ""
+
+msgid "Block"
 msgstr ""
 
 msgid "Block information overlay disabled."
@@ -67,16 +73,13 @@ msgstr ""
 msgid "Block information overlay enabled."
 msgstr ""
 
-msgid "Block"
-msgstr ""
-
 msgid "Block: @1"
 msgstr ""
 
-msgid "Choose your class (selection is permanent):"
+msgid "Choose a class (selection is permanent):"
 msgstr ""
 
-msgid "Class: @1    Level: @2    Skill points: @3"
+msgid "Class: @1 | Level: @2 | Skill points: @3"
 msgstr ""
 
 msgid "Close"
@@ -151,6 +154,9 @@ msgstr ""
 msgid "Everforge heads, bindings and reinforced handles."
 msgstr ""
 
+msgid "Fallback frequency: scarcity @1 nodes, @2 ores per cluster, cluster size @3."
+msgstr ""
+
 msgid "Forged Tool Binding"
 msgstr ""
 
@@ -160,13 +166,22 @@ msgstr ""
 msgid "Forgemaster"
 msgstr ""
 
-msgid "Frequency: one placed-feature attempt per @1 chunks (configured rarity filter), cluster size @2."
+msgid "Frequency: each stone/deepslate feature has a 1-in-@1 filter per eligible chunk; cluster size @2."
 msgstr ""
 
 msgid "Fuel"
 msgstr ""
 
 msgid "Gain a small XP bonus near dungeon guardians."
+msgstr ""
+
+msgid "Generation path: Mineclonia levelgen placed features."
+msgstr ""
+
+msgid "Generation path: engine ore fallback; Mineclonia levelgen is disabled."
+msgstr ""
+
+msgid "Generation path: engine register_ore fallback; Mineclonia levelgen is disabled."
 msgstr ""
 
 msgid "Generation, mining, processing and uses for Everforge metals."
@@ -340,10 +355,13 @@ msgstr ""
 msgid "Shovel Head"
 msgstr ""
 
+msgid "Show registered Everforge and Adamantine generation paths (server only)."
+msgstr ""
+
 msgid "Silver"
 msgstr ""
 
-msgid "Skills: each rank costs one point (earned every 5 XP levels)."
+msgid "Skills — ranks, points and actions"
 msgstr ""
 
 msgid "Smelt alloys faster at Everforge melters."
@@ -358,6 +376,9 @@ msgstr ""
 msgid "Stone"
 msgstr ""
 
+msgid "Storage and construction blocks."
+msgstr ""
+
 msgid "Sword"
 msgstr ""
 
@@ -368,6 +389,9 @@ msgid "Takes 10% less mob and player melee damage."
 msgstr ""
 
 msgid "That skill is already at its maximum rank."
+msgstr ""
+
+msgid "The server has disabled the contextual block information overlay."
 msgstr ""
 
 msgid "Tin"
@@ -419,16 +443,4 @@ msgid "Your class is already set; it cannot be changed."
 msgstr ""
 
 msgid "[on|off]"
-msgstr ""
-
-msgid "The server has disabled the contextual block information overlay."
-msgstr ""
-
-msgid "Storage and construction blocks."
-msgstr ""
-
-msgid "Generation path: Mineclonia levelgen placed features."
-msgstr ""
-
-msgid "Generation path: engine ore fallback; Mineclonia levelgen is disabled."
 msgstr ""

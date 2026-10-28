@@ -234,10 +234,9 @@ minetest.register_node("adamantine:block", {
 })
 
 -- ---------------------------------------------------------------------------
--- Ore generation (newly generated chunks only)
--- Diamond in Mineclonia: about 4 ores per cluster, 1 cluster per 15^3 nodes.
--- Adamantine: 3 ores per cluster, 1 cluster per 25^3 nodes (about 6x fewer
--- ores than diamond), only in the deepest part of the overworld.
+-- Ore generation (newly generated chunks only). Preserve the existing
+-- levelgen and legacy-mapgen rates; this block records their actual settings
+-- for diagnostics rather than claiming they have identical distributions.
 -- ---------------------------------------------------------------------------
 local ORE_Y_MAX = -64
 local ore_y_min = (rawget(_G, "mcl_vars") and mcl_vars.mg_overworld_min) or -128
@@ -252,8 +251,13 @@ adamantine.generation = {
 	y_max = ORE_Y_MAX,
 	cluster_size = 2,
 	rarity_filter = 4,
+	legacy_scarcity = 24 * 24 * 24,
+	legacy_ores_per_cluster = 2,
+	legacy_ore_definitions = 0,
+	levelgen_features_registered = 0,
 	levelgen_enabled = mcl_vars and mcl_vars.enable_mcl_levelgen == true or false,
 	placed_features = {"adamantine:ore_stone_placed", "adamantine:ore_deepslate_placed"},
+	ore_nodes = {"adamantine:ore", "adamantine:deepslate_ore"},
 }
 
 local function register_adamantine_ore(ore_name, replacement, y_min, y_max, suffix)
@@ -262,9 +266,12 @@ local function register_adamantine_ore(ore_name, replacement, y_min, y_max, suff
 	-- a levelgen placed feature and does not read engine register_ore entries.
 	minetest.register_ore({
 		ore_type = "scatter", ore = ore_name, wherein = replacement,
-		clust_scarcity = 24 * 24 * 24, clust_num_ores = 2, clust_size = 2,
+		clust_scarcity = adamantine.generation.legacy_scarcity,
+		clust_num_ores = adamantine.generation.legacy_ores_per_cluster,
+		clust_size = adamantine.generation.cluster_size,
 		y_min = y_min, y_max = y_max,
 	})
+	adamantine.generation.legacy_ore_definitions = adamantine.generation.legacy_ore_definitions + 1
 	if not (mcl_levelgen and mcl_levelgen.register_configured_feature
 		and mcl_levelgen.uniform_height) then return end
 	local configured = "adamantine:ore_" .. suffix .. "_configured"
@@ -279,12 +286,13 @@ local function register_adamantine_ore(ore_name, replacement, y_min, y_max, suff
 	mcl_levelgen.register_placed_feature(placed, {
 		configured_feature = configured,
 		placement_modifiers = {
-			mcl_levelgen.build_rarity_filter(4),
+			mcl_levelgen.build_rarity_filter(adamantine.generation.rarity_filter),
 			mcl_levelgen.build_in_square(),
 			mcl_levelgen.build_height_range(mcl_levelgen.uniform_height(y_min, y_max)),
 			mcl_levelgen.build_in_biome(),
 		},
 	})
+	adamantine.generation.levelgen_features_registered = adamantine.generation.levelgen_features_registered + 1
 	for _, biome in pairs(mcl_levelgen.registered_biomes or {}) do
 		if biome.groups and biome.groups.is_overworld and biome.features[7]
 			and table.indexof(biome.features[7], placed) == -1 then

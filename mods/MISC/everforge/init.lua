@@ -84,47 +84,63 @@ mcl_experience.register_on_add_xp(function(player, xp)
 	return xp
 end)
 
-local function show_rpg(player)
+local function rpg_content(player, in_inventory)
 	local m = get_meta(player)
 	local class_key = m:get_string("everforge:class")
 	local class = everforge.classes[class_key]
 	local class_name = class and class.label or S("Unassigned")
 	local lv = mcl_experience.get_level(player) or 0
-	local fs = {"formspec_version[7]size[9,8]", "label[0.5,0.45;" .. core.formspec_escape(S("Everforge RPG")) .. "]",
-		"label[0.5,0.95;" .. core.formspec_escape(S("Class: @1    Level: @2    Skill points: @3", class_name, tostring(lv), tostring(get_points(player)))) .. "]",
-		"label[0.5,1.55;" .. core.formspec_escape(S("Choose your class (selection is permanent):")) .. "]"}
+	local fs = {
+		"box[0.3,0.18;11.1,0.62;#202733cc]",
+		"label[0.6,0.34;" .. core.formspec_escape(S("Everforge RPG")) .. "]",
+		"label[0.6,0.82;" .. core.formspec_escape(S("Class: @1 | Level: @2 | Skill points: @3", class_name, tostring(lv), tostring(get_points(player)))) .. "]",
+		"label[0.6,1.22;" .. core.formspec_escape(S("Choose a class (selection is permanent):")) .. "]",
+	}
 	local buttons = {{"vanguard", "Vanguard"}, {"ranger", "Ranger"}, {"arcanist", "Arcanist"}, {"smith", "Smith"}}
 	for i, b in ipairs(buttons) do
-		local x = 0.5 + ((i - 1) % 2) * 4.1
-		local y = 1.9 + math.floor((i - 1) / 2) * 0.65
-		fs[#fs + 1] = ("button[%s,%s;3.8,0.55;class_%s;%s]"):format(x, y, b[1], core.formspec_escape(S(b[2])))
-		fs[#fs + 1] = ("tooltip[class_%s;%s]"):format(b[1], core.formspec_escape(everforge.classes[b[1]].description))
+		local x = 0.5 + (i - 1) * 2.8
+		local field = "class_" .. b[1]
+		fs[#fs + 1] = ("button[%s,1.47;2.55,0.5;%s;%s]"):format(
+			x, field, core.formspec_escape(everforge.classes[b[1]].label))
+		fs[#fs + 1] = ("tooltip[%s;%s]"):format(field, core.formspec_escape(everforge.classes[b[1]].description))
 	end
-	fs[#fs + 1] = "label[0.5,3.35;" .. core.formspec_escape(S("Skills: each rank costs one point (earned every 5 XP levels).")) .. "]"
+	fs[#fs + 1] = "label[0.6,2.12;" .. core.formspec_escape(S("Skills — ranks, points and actions")) .. "]"
+	fs[#fs + 1] = "box[0.42,2.35;11.0,2.72;#11182066]"
 	local skills = {"trailblazer", "deep_miner", "dungeoneer", "forgemaster"}
 	for i, key in ipairs(skills) do
 		local skill = everforge.skills[key]
 		local rank = skill_rank(player, key)
-		local y = 3.7 + (i - 1) * 0.65
-		fs[#fs + 1] = ("label[0.55,%s;%s]"):format(y, core.formspec_escape(S("@1 @2/@3 — @4", skill.label, tostring(rank), tostring(skill.max), skill.description)))
-		fs[#fs + 1] = ("button[7.1,%s;1.35,0.5;skill_%s;%s]"):format(y - 0.1, key, core.formspec_escape(S("Learn")))
+		local y = 2.47 + (i - 1) * 0.63
+		local field = "skill_" .. key
+		fs[#fs + 1] = ("label[0.72,%s;%s]"):format(y, core.formspec_escape(
+			S("@1 — Rank @2 / @3", skill.label, tostring(rank), tostring(skill.max))))
+		fs[#fs + 1] = ("tooltip[%s;%s]"):format(field, core.formspec_escape(
+			S("@1@nEach skill rank costs one point; earn 1 point every 5 XP levels.", skill.description)))
+		fs[#fs + 1] = ("button[9.05,%s;2.1,0.48;%s;%s]"):format(
+			y - 0.08, field, core.formspec_escape(S("Learn")))
 	end
-	fs[#fs + 1] = "button_exit[7.0,7.25;1.5,0.55;close;" .. core.formspec_escape(S("Close")) .. "]"
-	core.show_formspec(player:get_player_name(), FORM, table.concat(fs))
+	if not in_inventory then
+		fs[#fs + 1] = "button_exit[9.85,5.34;1.45,0.52;close;" .. core.formspec_escape(S("Close")) .. "]"
+	end
+	return table.concat(fs)
 end
 
-core.register_chatcommand("everforge", {
-	params = "",
-	description = S("Open Everforge class and skill progression."),
-	func = function(name)
-		local player = core.get_player_by_name(name)
-		if player then show_rpg(player); return true end
-		return false, S("You must be online to use this command.")
-	end,
-})
+local function show_rpg(player)
+	core.show_formspec(player:get_player_name(), FORM,
+		"formspec_version[7]size[12,6.2]" .. rpg_content(player, false))
+end
 
-core.register_on_player_receive_fields(function(player, formname, fields)
-	if formname ~= FORM then return false end
+local function rpg_has_action(fields)
+	for key in pairs(everforge.classes) do
+		if fields["class_" .. key] then return true end
+	end
+	for key in pairs(everforge.skills) do
+		if fields["skill_" .. key] then return true end
+	end
+	return false
+end
+
+local function handle_rpg_fields(player, fields, in_inventory)
 	local m = get_meta(player)
 	for key in pairs(everforge.classes) do
 		if fields["class_" .. key] then
@@ -151,9 +167,43 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 			end
 		end
 	end
-	if not fields.quit then show_rpg(player) end
+	if not fields.quit then
+		if in_inventory then
+			if rpg_has_action(fields) and mcl_inventory and mcl_inventory.update_inventory then
+				mcl_inventory.update_inventory(player)
+			end
+		else
+			show_rpg(player)
+		end
+	end
+end
+
+core.register_chatcommand("everforge", {
+	params = "",
+	description = S("Open Everforge class and skill progression."),
+	func = function(name)
+		local player = core.get_player_by_name(name)
+		if player then show_rpg(player); return true end
+		return false, S("You must be online to use this command.")
+	end,
+})
+
+core.register_on_player_receive_fields(function(player, formname, fields)
+	if formname ~= FORM then return false end
+	handle_rpg_fields(player, fields, false)
 	return true
 end)
+
+mcl_inventory.register_survival_inventory_tab({
+	id = "everforge_rpg",
+	description = S("Everforge RPG"),
+	item_icon = "adamantine:ingot",
+	show_inventory = true,
+	build = function(player) return rpg_content(player, true) end,
+	handle = function(player, fields)
+		if rpg_has_action(fields) then handle_rpg_fields(player, fields, true) end
+	end,
+})
 
 core.register_on_joinplayer(function(player)
 	core.after(1, function()
@@ -909,14 +959,14 @@ local function ensure_waila_minimum_lines(text)
 	return text .. "\n" .. S("Type: @1", S("Block")) .. "\n" .. S("Recommended tool: Hand or any tool")
 end
 
-local function layout_waila_text(player, text)
+local function layout_waila_text(text)
 	if text == "" then return "", {x = 1, y = 1} end
-	local measured_text = text
-	local info = core.get_player_information(player:get_player_name())
-	if info and info.lang_code and core.get_translated_string then
-		local ok, localized = pcall(core.get_translated_string, info.lang_code, text)
-		if ok and type(localized) == "string" then measured_text = localized end
-	end
+	-- This is only a conservative sizing estimate. Do not feed a composite of
+	-- already-translated strings from several textdomains back through
+	-- get_translated_string: nested domain markers (for example Adamantine item
+	-- descriptions inside Everforge HUD text) are not a translation template.
+	-- Strip Luanti's markup from a copy while keeping the displayed string intact.
+	local measured_text = text:gsub("\27%([^)]-%)", ""):gsub("\27.", "")
 
 	local longest, line_count = 0, 0
 	for line in (measured_text .. "\n"):gmatch("(.-)\n") do
@@ -926,7 +976,7 @@ local function layout_waila_text(player, text)
 	-- Translation should retain explicit line breaks; use the source count if a
 	-- translation backend ever collapses them so the panel still reserves space.
 	line_count = math.max(line_count, waila_line_count(text))
-	local width = math.max(220, longest * WAILA_CHAR_WIDTH + 32)
+	local width = math.max(220, math.ceil(longest * WAILA_CHAR_WIDTH * 1.25 + 32))
 	local height = math.max(40, line_count * WAILA_LINE_HEIGHT + 18)
 	return text, {
 		x = math.ceil(width / WAILA_TEXTURE_SIZE),
@@ -945,7 +995,7 @@ local function update_waila(player)
 	local enabled = waila_enabled(player)
 	local content = enabled and waila_text(player) or ""
 	content = ensure_waila_minimum_lines(content)
-	local text, panel_scale = layout_waila_text(player, content)
+	local text, panel_scale = layout_waila_text(content)
 	local visible = text ~= ""
 	local offset_y = waila_bossbar_offset(player)
 	local hud = waila_huds[name]
@@ -1086,15 +1136,20 @@ local function mineral_entry_text(mineral, title, node_name, ingot, moreores_key
 		for _, band_line in ipairs(moreores_band_lines(moreores_key)) do lines[#lines + 1] = band_line end
 	else
 		local generation = adamantine and adamantine.generation or {}
-		lines[#lines + 1] = generation.levelgen_enabled and S("Generation path: Mineclonia levelgen placed features.")
-			or S("Generation path: engine ore fallback; Mineclonia levelgen is disabled.")
+		local levelgen_active = generation.levelgen_enabled and (generation.levelgen_features_registered or 0) > 0
+		lines[#lines + 1] = levelgen_active and S("Generation path: Mineclonia levelgen placed features.")
+			or S("Generation path: engine register_ore fallback; Mineclonia levelgen is disabled.")
 		local y_min = tonumber(generation.y_min or mcl_vars.mg_overworld_min or -128)
 		local y_max = tonumber(generation.y_max) or -64
 		lines[#lines + 1] = S("Depth: Y @1 to @2, taken from the active Adamantine generation bounds.", tostring(math.min(y_min, y_max)), tostring(math.max(y_min, y_max)))
-		lines[#lines + 1] = S("Frequency: one placed-feature attempt per @1 chunks (configured rarity filter), cluster size @2.", tostring(generation.rarity_filter or 4), tostring(generation.cluster_size or 2))
+		if levelgen_active then
+			lines[#lines + 1] = S("Frequency: each stone/deepslate feature has a 1-in-@1 filter per eligible chunk; cluster size @2.", tostring(generation.rarity_filter or 4), tostring(generation.cluster_size or 2))
+		else
+			lines[#lines + 1] = S("Fallback frequency: scarcity @1 nodes, @2 ores per cluster, cluster size @3.", tostring(generation.legacy_scarcity or 13824), tostring(generation.legacy_ores_per_cluster or 2), tostring(generation.cluster_size or 2))
+		end
 		local stone_count = active_overworld_biome_count("adamantine:ore_stone_placed")
 		local deep_count = active_overworld_biome_count("adamantine:ore_deepslate_placed")
-		lines[#lines + 1] = S("Biomes: registered overworld biomes; @1 stone and @2 deepslate feature entries are active.", tostring(stone_count), tostring(deep_count))
+		lines[#lines + 1] = S("Biomes: registered overworld entries; @1 stone and @2 deepslate levelgen features.", tostring(stone_count), tostring(deep_count))
 	end
 	local drop = mineral_drop_item(def)
 	local drop_name = drop and localized_item_name(drop) or S("Unknown registered drop")
@@ -1159,7 +1214,9 @@ local function register_structure_feature(id, kind)
 			if not node then return false end
 			local dirt = core.get_content_id("mcl_core:dirt")
 			local grass = core.get_content_id("mcl_core:dirt_with_grass")
-			if node ~= dirt and node ~= grass and node ~= core.get_content_id("mcl_core:snow") then return false end
+			local snow = core.get_content_id("mcl_core:snow")
+			local snow_block = core.get_content_id("mcl_core:snowblock")
+			if node ~= dirt and node ~= grass and node ~= snow and node ~= snow_block then return false end
 			local stone = "mcl_core:stonebrick"
 			local cobble = "mcl_core:cobble"
 			local chest = "everforge:reward_cache"
@@ -1355,3 +1412,62 @@ if mcl_vars.enable_mcl_levelgen and mcl_levelgen.register_feature then
 else
 	core.log("warning", "[Everforge] Graveyard and Ice Tower generation requires Mineclonia's singlenode levelgen. RPG, forging, minerals and difficulty remain available.")
 end
+
+local function biome_feature_count(placed_id, step, predicate)
+	local count = 0
+	for _, biome in pairs(mcl_levelgen.registered_biomes or {}) do
+		local features = biome.features and biome.features[step]
+		if biome.groups and biome.groups.is_overworld and features
+			and (not predicate or predicate(biome))
+			and table.indexof(features, placed_id) ~= -1 then
+			count = count + 1
+		end
+	end
+	return count
+end
+
+local function count_group_nodes(group)
+	local count = 0
+	for _, def in pairs(core.registered_nodes) do
+		if def.groups and (def.groups[group] or 0) > 0 then count = count + 1 end
+	end
+	return count
+end
+
+core.register_chatcommand("everforge_mapgen_status", {
+	params = "",
+	description = S("Show registered Everforge and Adamantine generation paths (server only)."),
+	privs = {server = true},
+	func = function(name)
+		local generation = adamantine and adamantine.generation or {}
+		local levelgen_enabled = mcl_vars.enable_mcl_levelgen == true
+		local levelgen_features = generation.levelgen_features_registered or 0
+		local ore_path = levelgen_enabled and levelgen_features > 0 and "Mineclonia levelgen"
+			or (not levelgen_enabled and (generation.legacy_ore_definitions or 0) > 0 and "legacy register_ore fallback")
+			or "ERROR: no Adamantine generation path registered"
+		local lines = {
+			"[Everforge mapgen] levelgen=" .. tostring(levelgen_enabled)
+				.. "; Adamantine path=" .. ore_path
+				.. "; legacy ore definitions=" .. tostring(generation.legacy_ore_definitions or 0)
+				.. "; levelgen placed features=" .. tostring(levelgen_features) .. ".",
+			"[Adamantine] Y=" .. tostring(generation.y_min or "?") .. ".." .. tostring(generation.y_max or "?")
+				.. "; stone targets=" .. tostring(count_group_nodes("stone_ore_target"))
+				.. "; deepslate targets=" .. tostring(count_group_nodes("deepslate_ore_target"))
+				.. "; biome entries stone=" .. tostring(active_overworld_biome_count("adamantine:ore_stone_placed"))
+				.. ", deepslate=" .. tostring(active_overworld_biome_count("adamantine:ore_deepslate_placed")) .. ".",
+			"[Adamantine rates] levelgen filter=1/" .. tostring(generation.rarity_filter or "?")
+				.. " per eligible chunk per feature; legacy scarcity=" .. tostring(generation.legacy_scarcity or "?")
+				.. " nodes, ores/cluster=" .. tostring(generation.legacy_ores_per_cluster or "?")
+				.. "; only new mapblocks generate ore.",
+			"[Everforge structures] levelgen=" .. tostring(levelgen_enabled)
+				.. "; graveyard biome entries=" .. tostring(biome_feature_count("everforge:graveyard_placed", 4))
+				.. "; ice tower entries=" .. tostring(biome_feature_count("everforge:ice_tower_placed", 4, function(biome)
+					return biome.temperature <= 0.15 or (biome.groups and biome.groups.is_taiga)
+				end))
+				.. "; placement=1/256 candidate per eligible chunk; surface floor must be dirt, grass, snow or a snow block.",
+			"[Everforge structures] no forced generation or world edits are performed by this diagnostic.",
+		}
+		for _, line in ipairs(lines) do core.chat_send_player(name, line) end
+		return true, "Generation registration status sent to chat."
+	end,
+})

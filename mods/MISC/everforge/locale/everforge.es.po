@@ -10,11 +10,14 @@ msgstr ""
 msgid "@1 @2"
 msgstr "@1 @2"
 
-msgid "@1 @2/@3 — @4"
-msgstr "@1 @2/@3 — @4"
+msgid "@1 — Rank @2 / @3"
+msgstr "@1 — Rango @2 / @3"
 
 msgid "@1, Y @2 to @3; approximately @4 configured cluster placements per horizontal chunk."
 msgstr "@1, Y @2 a @3; aproximadamente @4 intentos de grupo configurados por sección horizontal."
+
+msgid "@1@nEach skill rank costs one point; earn 1 point every 5 XP levels."
+msgstr "@1@nCada rango de habilidad cuesta un punto; obtén 1 punto cada 5 niveles de XP."
 
 msgid "A modular Everforge tool. Its mining level is fixed by its head; binding, handle and tempering quality affect its other statistics."
 msgstr "Herramienta modular de Everforge. El cabezal fija su nivel de minería; la unión, el mango y la calidad de fabricación modifican las demás estadísticas."
@@ -61,8 +64,11 @@ msgstr "Cabezal de hacha"
 msgid "Biomes: registered overworld biome entries for high, middle and deep features (@1, @2 and @3)."
 msgstr "Biomas: entradas de biomas registrados del supramundo para las capas superior, intermedia y profunda (@1, @2 y @3)."
 
-msgid "Biomes: registered overworld biomes; @1 stone and @2 deepslate feature entries are active."
-msgstr "Biomas: biomas registrados del supramundo; @1 entradas activas de piedra y @2 de pizarra profunda."
+msgid "Biomes: registered overworld entries; @1 stone and @2 deepslate levelgen features."
+msgstr "Biomas: entradas registradas del supramundo; @1 funciones de piedra y @2 de pizarra profunda en levelgen."
+
+msgid "Block"
+msgstr "Bloque"
 
 msgid "Block information overlay disabled."
 msgstr "Interfaz de identificación de bloques desactivada."
@@ -70,17 +76,14 @@ msgstr "Interfaz de identificación de bloques desactivada."
 msgid "Block information overlay enabled."
 msgstr "Interfaz de identificación de bloques activada."
 
-msgid "Block"
-msgstr "Bloque"
-
 msgid "Block: @1"
 msgstr "Bloque: @1"
 
-msgid "Choose your class (selection is permanent):"
-msgstr "Elige tu clase (la selección es permanente):"
+msgid "Choose a class (selection is permanent):"
+msgstr "Elige una clase (la selección es permanente):"
 
-msgid "Class: @1    Level: @2    Skill points: @3"
-msgstr "Clase: @1    Nivel: @2    Puntos de habilidad: @3"
+msgid "Class: @1 | Level: @2 | Skill points: @3"
+msgstr "Clase: @1 | Nivel: @2 | Puntos de habilidad: @3"
 
 msgid "Close"
 msgstr "Cerrar"
@@ -154,6 +157,9 @@ msgstr "Pulso de aparición de criaturas de mazmorra de Everforge"
 msgid "Everforge heads, bindings and reinforced handles."
 msgstr "Cabezales, uniones y mangos reforzados de Everforge."
 
+msgid "Fallback frequency: scarcity @1 nodes, @2 ores per cluster, cluster size @3."
+msgstr "Frecuencia alternativa: rareza de @1 nodos, @2 menas por grupo, tamaño del grupo @3."
+
 msgid "Forged Tool Binding"
 msgstr "Unión de herramienta forjada"
 
@@ -163,14 +169,23 @@ msgstr "Cabezal de herramienta forjado"
 msgid "Forgemaster"
 msgstr "Maestro forjador"
 
-msgid "Frequency: one placed-feature attempt per @1 chunks (configured rarity filter), cluster size @2."
-msgstr "Frecuencia: un intento de colocación cada @1 chunks (filtro de rareza configurado), tamaño del grupo @2."
+msgid "Frequency: each stone/deepslate feature has a 1-in-@1 filter per eligible chunk; cluster size @2."
+msgstr "Frecuencia: cada función de piedra/pizarra tiene un filtro de 1 entre @1 por sección elegible; tamaño del grupo @2."
 
 msgid "Fuel"
 msgstr "Combustible"
 
 msgid "Gain a small XP bonus near dungeon guardians."
 msgstr "Obtén una pequeña bonificación de experiencia cerca de los guardianes de mazmorra."
+
+msgid "Generation path: Mineclonia levelgen placed features."
+msgstr "Generación mediante funciones de colocación de Mineclonia levelgen."
+
+msgid "Generation path: engine ore fallback; Mineclonia levelgen is disabled."
+msgstr "Generación alternativa del motor; Mineclonia levelgen está desactivado."
+
+msgid "Generation path: engine register_ore fallback; Mineclonia levelgen is disabled."
+msgstr "Ruta de generación: alternativa del motor register_ore; levelgen de Mineclonia está desactivado."
 
 msgid "Generation, mining, processing and uses for Everforge metals."
 msgstr "Generación, extracción, procesamiento y usos de los metales de Everforge."
@@ -343,11 +358,14 @@ msgstr "Pala"
 msgid "Shovel Head"
 msgstr "Cabezal de pala"
 
+msgid "Show registered Everforge and Adamantine generation paths (server only)."
+msgstr "Muestra las rutas de generación registradas de Everforge y Adamantina (solo servidor)."
+
 msgid "Silver"
 msgstr "Plata"
 
-msgid "Skills: each rank costs one point (earned every 5 XP levels)."
-msgstr "Habilidades: cada rango cuesta un punto (se obtiene cada 5 niveles de experiencia)."
+msgid "Skills — ranks, points and actions"
+msgstr "Habilidades — rangos, puntos y acciones"
 
 msgid "Smelt alloys faster at Everforge melters."
 msgstr "Funde aleaciones más rápido en los fundidores de Everforge."
@@ -361,6 +379,9 @@ msgstr "Estado: @1"
 msgid "Stone"
 msgstr "Piedra"
 
+msgid "Storage and construction blocks."
+msgstr "Bloques de almacenamiento y construcción."
+
 msgid "Sword"
 msgstr "Espada"
 
@@ -372,6 +393,9 @@ msgstr "Recibe un 10% menos de daño cuerpo a cuerpo de criaturas y jugadores."
 
 msgid "That skill is already at its maximum rank."
 msgstr "Esa habilidad ya alcanzó su rango máximo."
+
+msgid "The server has disabled the contextual block information overlay."
+msgstr "El servidor ha desactivado la interfaz contextual de información de bloques."
 
 msgid "Tin"
 msgstr "Estaño"
@@ -423,15 +447,3 @@ msgstr "Tu clase ya está elegida y no se puede cambiar."
 
 msgid "[on|off]"
 msgstr "[on|off]"
-
-msgid "The server has disabled the contextual block information overlay."
-msgstr "El servidor ha desactivado la interfaz contextual de información de bloques."
-
-msgid "Storage and construction blocks."
-msgstr "Bloques de almacenamiento y construcción."
-
-msgid "Generation path: Mineclonia levelgen placed features."
-msgstr "Generación mediante funciones de colocación de Mineclonia levelgen."
-
-msgid "Generation path: engine ore fallback; Mineclonia levelgen is disabled."
-msgstr "Generación alternativa del motor; Mineclonia levelgen está desactivado."
