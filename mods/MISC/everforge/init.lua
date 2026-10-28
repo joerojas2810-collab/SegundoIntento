@@ -180,73 +180,206 @@ local smelt_recipes = {
 	["mcl_raw_ores:raw_gold"] = {output = "mcl_core:gold_ingot", time = 9},
 }
 
-local forge_formspec = "formspec_version[7]size[9,8]label[0.5,0.4;Everforge Alloy Melter]" ..
-	"list[context;input;1,1;1,1;]list[context;fuel;1,3;1,1;]" ..
-	"list[context;output;6.5,2;2,1;]" ..
-	"label[0.45,0.8;Ore / metal]label[0.45,2.8;Fuel]label[6.3,1.65;Alloy output]" ..
-	"list[current_player;main;0.5,4.1;8,4;]listring[context;input]listring[current_player;main]"
+local forge_formspec = table.concat({
+	"formspec_version[4]",
+	"size[11.75,10.425]",
+	"label[0.375,0.375;" .. core.formspec_escape(S("Everforge Alloy Melter")) .. "]",
+	"label[0.375,0.85;" .. core.formspec_escape(S("Accepts: Tin, silver, mithril or adamantine lumps.")) .. "]",
+	"label[0.375,1.2;" .. core.formspec_escape(S("Also raw iron and raw gold; ingots are not accepted.")) .. "]",
+	"label[3.5,1.45;" .. core.formspec_escape(S("Input")) .. "]",
+	mcl_formspec.get_itemslot_bg_v4(3.5, 1.8, 1, 1),
+	"list[context;input;3.5,1.8;1,1;]",
+	"image[3.5,2.8;1,1;default_furnace_fire_bg.png]",
+	"label[3.5,3.55;" .. core.formspec_escape(S("Fuel")) .. "]",
+	mcl_formspec.get_itemslot_bg_v4(3.5, 3.85, 1, 1),
+	"list[context;fuel;3.5,3.85;1,1;]",
+	"image[5.0,2.8;1.5,1;gui_furnace_arrow_bg.png^[transformR270]",
+	"label[6.5,1.45;" .. core.formspec_escape(S("Products")) .. "]",
+	mcl_formspec.get_itemslot_bg_v4(6.5, 1.8, 4, 2),
+	"list[context;output;6.5,1.8;4,2;]",
+	"label[0.375,4.7;" .. core.formspec_escape(S("Inventory")) .. "]",
+	mcl_formspec.get_itemslot_bg_v4(0.375, 5.1, 9, 3),
+	"list[current_player;main;0.375,5.1;9,3;9]",
+	mcl_formspec.get_itemslot_bg_v4(0.375, 9.05, 9, 1),
+	"list[current_player;main;0.375,9.05;9,1;]",
+	"listring[context;output]listring[current_player;main]",
+	"listring[context;input]listring[current_player;main]",
+	"listring[context;fuel]listring[current_player;main]",
+})
 
 core.register_craftitem("everforge:tool_head", {description = S("Forged Tool Head"), inventory_image = "default_steel_ingot.png^[colorize:#b36a3c:100", stack_max = 99})
 core.register_craftitem("everforge:tool_binding", {description = S("Forged Tool Binding"), inventory_image = "default_steel_ingot.png^[colorize:#6d7381:100", stack_max = 99})
 core.register_craftitem("everforge:reinforced_handle", {description = S("Reinforced Handle"), inventory_image = "default_stick.png^[colorize:#6b4029:80", stack_max = 99})
 
+local melter_lists = {input = true, fuel = true, output = true}
+
+local function melter_inventory(pos)
+	return core.get_meta(pos):get_inventory()
+end
+
+local function ensure_melter(pos)
+	local meta = core.get_meta(pos)
+	local inv = meta:get_inventory()
+	inv:set_size("input", 1)
+	inv:set_size("fuel", 1)
+	inv:set_size("output", 8)
+	meta:set_string("formspec", forge_formspec)
+	if meta:get_int("burn") < 0 then meta:set_int("burn", 0) end
+	if meta:get_int("progress") < 0 then meta:set_int("progress", 0) end
+end
+
+local function melter_is_protected(pos, player)
+	if player and player:is_player() and core.is_protected(pos, player:get_player_name()) then
+		core.record_protection_violation(pos, player:get_player_name())
+		return true
+	end
+	return false
+end
+
+local function sync_melter_input(pos)
+	local meta = core.get_meta(pos)
+	local input = melter_inventory(pos):get_stack("input", 1)
+	local name = input:is_empty() and "" or input:get_name()
+	if meta:get_string("active_input") ~= name then
+		meta:set_string("active_input", name)
+		meta:set_int("progress", 0)
+	end
+end
+
+local function melter_allow_put(pos, listname, index, stack, player, requested_count)
+	if melter_is_protected(pos, player) then return 0 end
+	local inv = melter_inventory(pos)
+	if not melter_lists[listname] or index < 1 or index > inv:get_size(listname) then return 0 end
+	local count = math.min(requested_count or stack:get_count(), stack:get_count())
+	if count <= 0 then return 0 end
+
+	if listname == "output" then return 0 end
+	if listname == "input" then
+		return smelt_recipes[stack:get_name()] and count or 0
+	end
+	if listname == "fuel" then
+		local test = ItemStack(stack)
+		test:set_count(1)
+		local fuel, afterfuel = core.get_craft_result({method = "fuel", width = 1, items = {test}})
+		if not fuel or not fuel.time or fuel.time <= 0 then return 0 end
+		local replacement = afterfuel and afterfuel.items and afterfuel.items[1]
+		if replacement and not replacement:is_empty() then
+			return inv:get_stack("fuel", index):is_empty() and math.min(1, count) or 0
+		end
+		return count
+	end
+	return 0
+end
+
+local function melter_allow_take(pos, listname, index, stack, player, requested_count)
+	if melter_is_protected(pos, player) then return 0 end
+	local inv = melter_inventory(pos)
+	if not melter_lists[listname] or index < 1 or index > inv:get_size(listname) then return 0 end
+	return math.min(requested_count or stack:get_count(), stack:get_count())
+end
+
+local function melter_allow_move(pos, from_list, from_index, to_list, to_index, count, player)
+	if melter_is_protected(pos, player) then return 0 end
+	local inv = melter_inventory(pos)
+	local source_inv
+	if melter_lists[from_list] then
+		source_inv = inv
+	elseif player and player.get_inventory then
+		source_inv = player:get_inventory()
+	end
+	if not source_inv or from_index < 1 or from_index > source_inv:get_size(from_list) then return 0 end
+	local stack = source_inv:get_stack(from_list, from_index)
+	local move_count = math.min(count or stack:get_count(), stack:get_count())
+	if stack:is_empty() or move_count <= 0 then return 0 end
+
+	if melter_lists[to_list] then
+		local moving = ItemStack(stack)
+		moving:set_count(move_count)
+		return melter_allow_put(pos, to_list, to_index, moving, player, move_count)
+	elseif melter_lists[from_list] then
+		return melter_allow_take(pos, from_list, from_index, stack, player, move_count)
+	end
+	return 0
+end
+
+local function restart_melter(pos)
+	sync_melter_input(pos)
+	core.get_node_timer(pos):start(1)
+end
+
+local function melter_hopper_in(hopper_pos, melter_pos)
+	if not mcl_util or not mcl_util.get_eligible_transfer_item_slot or not mcl_util.move_item then return false end
+	local source = core.get_inventory({type = "node", pos = hopper_pos})
+	local destination = core.get_inventory({type = "node", pos = melter_pos})
+	if not source or not destination then return false end
+	local target_list = hopper_pos.y == melter_pos.y and "fuel" or "input"
+	local slot = mcl_util.get_eligible_transfer_item_slot(source, "main", destination, target_list,
+		function(stack)
+			local one = ItemStack(stack)
+			one:set_count(1)
+			return melter_allow_put(melter_pos, target_list, 1, one, nil, 1) > 0
+				and destination:room_for_item(target_list, one)
+		end)
+	if not slot then return false end
+	local moved = mcl_util.move_item(source, "main", slot, destination, target_list)
+	if moved then restart_melter(melter_pos) end
+	return moved
+end
+
+local function melter_hopper_out(melter_pos, hopper_pos)
+	if not mcl_util or not mcl_util.move_item_container then return false end
+	local moved = mcl_util.move_item_container(melter_pos, hopper_pos, "output")
+	if moved then restart_melter(melter_pos) end
+	return moved
+end
+
 core.register_node("everforge:alloy_melter", {
 	description = S("Alloy Melter"),
 	tiles = {"default_stone.png^default_steel_ingot.png", "default_stone.png", "default_stone.png", "default_stone.png", "default_stone.png", "default_stone.png"},
-	groups = {pickaxey = 1, material_stone = 1, level = 2},
+	groups = {pickaxey = 1, material_stone = 1, level = 2, container = 4},
 	_mcl_hardness = 3.5,
 	_mcl_blast_resistance = 3.5,
 	is_ground_content = false,
 	paramtype2 = "facedir",
 	on_construct = function(pos)
 		local meta = core.get_meta(pos)
-		meta:set_string("formspec", forge_formspec)
-		local inv = meta:get_inventory()
-		inv:set_size("input", 1); inv:set_size("fuel", 1); inv:set_size("output", 8)
-		meta:set_int("burn", 0); meta:set_int("progress", 0)
+		ensure_melter(pos)
+		meta:set_int("burn", 0)
+		meta:set_int("progress", 0)
+		meta:set_string("active_input", "")
 		core.get_node_timer(pos):start(1)
 	end,
 	can_dig = function(pos, player)
-		local inv = core.get_meta(pos):get_inventory()
+		local inv = melter_inventory(pos)
 		return player and inv:is_empty("input") and inv:is_empty("fuel") and inv:is_empty("output")
 	end,
-	allow_metadata_inventory_put = function(pos, listname, _index, stack)
-		if listname == "output" then return 0 end
-		if listname == "input" then return smelt_recipes[stack:get_name()] and stack:get_count() or 0 end
-		if listname == "fuel" then
-			local test = ItemStack(stack)
-			test:set_count(1)
-			local fuel, afterfuel = core.get_craft_result({method = "fuel", width = 1, items = {test}})
-			if not fuel or fuel.time <= 0 then return 0 end
-			local replacement = afterfuel and afterfuel.items and afterfuel.items[1]
-			if replacement and not replacement:is_empty() then
-				local inv = core.get_meta(pos):get_inventory()
-				return inv:get_stack("fuel", _index):is_empty() and 1 or 0
-			end
-			return stack:get_count()
-		end
-		return 0
-	end,
-	on_metadata_inventory_put = function(pos)
-		core.get_node_timer(pos):start(1)
-	end,
-	on_metadata_inventory_take = function(pos)
-		core.get_node_timer(pos):start(1)
-	end,
+	allow_metadata_inventory_put = melter_allow_put,
+	allow_metadata_inventory_take = melter_allow_take,
+	allow_metadata_inventory_move = melter_allow_move,
+	_on_hopper_in = melter_hopper_in,
+	_on_hopper_out = melter_hopper_out,
+	on_metadata_inventory_put = restart_melter,
+	on_metadata_inventory_take = restart_melter,
+	on_metadata_inventory_move = restart_melter,
 	on_timer = function(pos)
-		local meta, inv = core.get_meta(pos), core.get_meta(pos):get_inventory()
+		local meta = core.get_meta(pos)
+		local inv = meta:get_inventory()
 		local input = inv:get_stack("input", 1)
 		local recipe = smelt_recipes[input:get_name()]
+		sync_melter_input(pos)
 		if not recipe then meta:set_int("progress", 0); return false end
+
 		local out = ItemStack(recipe.output)
 		if not inv:room_for_item("output", out) then return false end
 		if meta:get_int("burn") <= 0 then
-			local fuel = inv:get_stack("fuel", 1)
-			local fuel_def, afterfuel = core.get_craft_result({method = "fuel", width = 1, items = {fuel}})
-			if not fuel_def or fuel_def.time <= 0 then return false end
-			meta:set_int("burn", math.max(1, math.floor(fuel_def.time)))
-			inv:set_stack("fuel", 1, afterfuel.items[1])
+			local fuel_stack = inv:get_stack("fuel", 1)
+			local fuel, afterfuel = core.get_craft_result({method = "fuel", width = 1, items = {fuel_stack}})
+			if not fuel or not fuel.time or fuel.time <= 0 then return false end
+			meta:set_int("burn", math.max(1, math.floor(fuel.time)))
+			local remaining_fuel = afterfuel and afterfuel.items and afterfuel.items[1] or ItemStack("")
+			inv:set_stack("fuel", 1, remaining_fuel)
 		end
+
 		meta:set_int("burn", meta:get_int("burn") - 1)
 		local effective_time = recipe.time
 		for _, player in ipairs(core.get_connected_players()) do
@@ -259,11 +392,29 @@ core.register_node("everforge:alloy_melter", {
 		effective_time = math.max(3, effective_time)
 		local progress = meta:get_int("progress") + 1
 		if progress >= effective_time then
-			input:take_item(1); inv:set_stack("input", 1, input)
-			inv:add_item("output", out); progress = 0
+			-- Add the output before consuming the ingredient, and verify the
+			-- inventory accepted it. This keeps a full output slot lossless.
+			local leftover = inv:add_item("output", out)
+			if not leftover:is_empty() then return false end
+			input:take_item(1)
+			inv:set_stack("input", 1, input)
+			progress = 0
 		end
 		meta:set_int("progress", progress)
 		return true
+	end,
+})
+
+-- Refresh already-placed melters after updates, without clearing their saved
+-- inventories or smelting state. This also repairs old list sizes/formspecs.
+core.register_lbm({
+	label = "Update Everforge alloy melter inventory and interface",
+	name = "everforge:update_alloy_melter_interface",
+	nodenames = {"everforge:alloy_melter"},
+	run_at_every_load = true,
+	action = function(pos)
+		ensure_melter(pos)
+		core.get_node_timer(pos):start(1)
 	end,
 })
 
