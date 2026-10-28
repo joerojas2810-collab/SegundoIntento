@@ -1002,6 +1002,19 @@ local function get_node_extra(node_name, def, pos, meta)
 	return extra
 end
 
+local function localize_waila_lines(lines, lang_code)
+	lang_code = lang_code or "en"
+	local translated = {}
+	for index, line in ipairs(lines) do
+		translated[index] = core.get_translated_string(lang_code, line)
+	end
+	return translated
+end
+
+-- Kept private-by-convention so the translation regression test can exercise
+-- the exact conversion used by the HUD without needing a pointed player.
+everforge._localize_waila_lines = localize_waila_lines
+
 local function waila_text(player)
 	local pointed = mcl_util.get_pointed_thing(player, false, false)
 	if not pointed or pointed.type ~= "node" or not pointed.under then return "" end
@@ -1019,6 +1032,11 @@ local function waila_text(player)
 		core.log("warning", "[everforge] WAILA required fields were missing; restoring block name, category and tool line")
 		lines = {name, S("Type: @1", kind), recommended or S("Recommended tool: Hand or any tool")}
 	end
+	-- Resolve each independently translated field in the player's language
+	-- before joining the HUD. This prevents a domain marker from one field
+	-- being interpreted as part of another field's translation template.
+	local player_info = core.get_player_information(player:get_player_name())
+	lines = localize_waila_lines(lines, player_info and player_info.lang_code or "en")
 	return table.concat(lines, "\n")
 end
 
