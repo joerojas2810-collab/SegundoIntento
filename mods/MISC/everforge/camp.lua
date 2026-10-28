@@ -51,6 +51,16 @@ function C.place(center)
  local plan=C.plan(center)
  -- Missing bundled resources must fail before the first block is placed.
  for _,op in ipairs(plan) do assert(core.registered_nodes[op.name],"Missing camp node: "..op.name) end
+ -- Clear only initial vegetation in the small camp envelope. In dense woods,
+ -- giant mushroom caps/branches otherwise hang through the courtyard sightline.
+ for x=-5,6 do for z=-5,10 do for y=0,10 do
+  local pos=vector.offset(center,x,y,z)
+  local name=core.get_node(pos).name
+  if core.get_item_group(name,"tree")>0 or core.get_item_group(name,"leaves")>0
+  or core.get_item_group(name,"huge_mushroom")>0 or core.get_item_group(name,"plant")>0 then
+   core.set_node(pos,{name="air"})
+  end
+ end end end
  local final={}
  for _,op in ipairs(plan) do
   core.set_node(op.pos,{name=op.name,param2=op.param2})

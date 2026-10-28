@@ -131,7 +131,7 @@ local function build()
  if not ok then return fail(tostring(counts)) end
  region.revision=camp.revision
  region.components=counts
- region.arrival={x=c.x-1,y=c.y,z=c.z+6}
+ region.arrival={x=c.x,y=c.y,z=c.z+7}
  region.state = "ready"; save()
  if not find_arrival() then return fail("camp has no safe arrival") end
  core.log("action", "[Everforge] REGION_READY " .. core.write_json(region))
