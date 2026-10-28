@@ -84,6 +84,23 @@ mcl_experience.register_on_add_xp(function(player, xp)
 	return xp
 end)
 
+-- Presentation is local to Everforge forms; never change mcl_vars or defaults.
+local function forge_theme(width, height)
+	return table.concat({
+		"bgcolor[#08090BEF;true]",
+		"background9[0,0;" .. width .. "," .. height .. ";everforge_ui_panel.png;false;8]",
+		"style_type[label;textcolor=#F2E8D9]",
+		"style_type[textarea;textcolor=#F2E8D9]",
+		"style_type[button,button_exit;textcolor=#FFF1DC;border=false;bgimg=everforge_ui_button.png;bgimg_pressed=everforge_ui_button_pressed.png;bgimg_middle=4;font=bold]",
+		"style_type[button:hovered,button_exit:hovered;bgimg=everforge_ui_button_hover.png]",
+		"listcolors[#17191C;#704F39;#00000000;#151619;#F2E8D9]",
+	})
+end
+
+local function forge_slots(x, y, w, h)
+	return mcl_formspec.get_itemslot_bg_v4(x, y, w, h, nil, "everforge_ui_slot.png")
+end
+
 local function rpg_content(player, in_inventory)
 	local m = get_meta(player)
 	local class_key = m:get_string("everforge:class")
@@ -91,31 +108,35 @@ local function rpg_content(player, in_inventory)
 	local class_name = class and class.label or S("Unassigned")
 	local lv = mcl_experience.get_level(player) or 0
 	local fs = {
-		"box[0.3,0.18;11.1,0.62;#191e24dd]",
-		"box[0.3,0.18;0.055,0.62;#c27a4a]",
-		"label[0.6,0.34;" .. core.formspec_escape(core.colorize("#e8b17d", S("Everforge RPG"))) .. "]",
-		"label[0.6,0.82;" .. core.formspec_escape(S("Class: @1 | Level: @2 | Skill points: @3", class_name, tostring(lv), tostring(get_points(player)))) .. "]",
-		"label[0.6,1.22;" .. core.formspec_escape(S("Choose a class (selection is permanent):")) .. "]",
+		forge_theme(11.75, in_inventory and 10.9 or 6.2),
+		"box[0.3,0.18;11.1,0.5;#242325]",
+		"box[0.3,0.18;0.055,0.5;#c27a4a]",
+		"label[0.6,0.43;" .. core.formspec_escape(core.colorize("#e8b17d", S("Everforge RPG"))) .. "]",
+		"label[0.6,0.96;" .. core.formspec_escape(S("Class: @1 | Level: @2 | Skill points: @3", class_name, tostring(lv), tostring(get_points(player)))) .. "]",
+		"label[0.6,1.34;" .. core.formspec_escape(S("Choose a class (selection is permanent):")) .. "]",
 	}
 	local buttons = {{"vanguard", "Vanguard"}, {"ranger", "Ranger"}, {"arcanist", "Arcanist"}, {"smith", "Smith"}}
 	for i, b in ipairs(buttons) do
 		local x = 0.5 + (i - 1) * 2.8
 		local field = "class_" .. b[1]
-		fs[#fs + 1] = ("button[%s,1.47;2.55,0.5;%s;%s]"):format(
+		if class_key == b[1] then
+			fs[#fs + 1] = "style[" .. field .. ";bgimg=everforge_ui_button_hover.png]"
+		end
+		fs[#fs + 1] = ("button[%s,1.58;2.55,0.5;%s;%s]"):format(
 			x, field, core.formspec_escape(everforge.classes[b[1]].label))
-		fs[#fs + 1] = ("tooltip[%s;%s]"):format(field, core.formspec_escape(everforge.classes[b[1]].description))
+		fs[#fs + 1] = ("tooltip[%s;%s;#151619;#F2E8D9]"):format(field, core.formspec_escape(everforge.classes[b[1]].description))
 	end
-	fs[#fs + 1] = "label[0.6,2.12;" .. core.formspec_escape(core.colorize("#d79767", S("Skills — ranks, points and actions"))) .. "]"
-	fs[#fs + 1] = "box[0.42,2.35;11.0,2.72;#11182066]"
+	fs[#fs + 1] = "label[0.6,2.28;" .. core.formspec_escape(core.colorize("#d79767", S("Skills — ranks, points and actions"))) .. "]"
+	fs[#fs + 1] = "box[0.42,2.55;11.0,2.52;#111214EE]"
 	local skills = {"trailblazer", "deep_miner", "dungeoneer", "forgemaster"}
 	for i, key in ipairs(skills) do
 		local skill = everforge.skills[key]
 		local rank = skill_rank(player, key)
-		local y = 2.47 + (i - 1) * 0.63
+		local y = 2.75 + (i - 1) * 0.58
 		local field = "skill_" .. key
 		fs[#fs + 1] = ("label[0.72,%s;%s]"):format(y, core.formspec_escape(
 			S("@1 — Rank @2 / @3", skill.label, tostring(rank), tostring(skill.max))))
-		fs[#fs + 1] = ("tooltip[%s;%s]"):format(field, core.formspec_escape(
+		fs[#fs + 1] = ("tooltip[%s;%s;#151619;#F2E8D9]"):format(field, core.formspec_escape(
 			S("@1@nEach skill rank costs one point; earn 1 point every 5 XP levels.", skill.description)))
 		fs[#fs + 1] = ("button[9.05,%s;2.1,0.48;%s;%s]"):format(
 			y - 0.08, field, core.formspec_escape(S("Learn")))
@@ -128,7 +149,7 @@ end
 
 local function show_rpg(player)
 	core.show_formspec(player:get_player_name(), FORM,
-		"formspec_version[7]size[12,6.2]" .. rpg_content(player, false))
+		"formspec_version[7]size[11.75,6.2]" .. rpg_content(player, false))
 end
 
 local function rpg_has_action(fields)
@@ -291,31 +312,32 @@ local function build_forge_formspec(pos)
 	end
 	local fs = {
 		"formspec_version[7]", "size[11.75,10.425]",
-		"box[0.2,0.15;11.35,5.15;#191e24dd]",
+		forge_theme(11.75, 10.425),
+		"box[0.2,0.15;11.35,5.15;#191A1DEE]",
 		"box[0.38,0.32;0.055,0.38;#c27a4a]",
 		"label[0.58,0.375;" .. colored(S("Everforge Alloy Melter"), "#e8b17d") .. "]",
 		"label[0.375,0.85;" .. core.formspec_escape(S("Accepts: Tin, silver, mithril or adamantine lumps.")) .. "]",
 		"label[0.375,1.2;" .. core.formspec_escape(S("Also raw iron and raw gold; ingots are not accepted.")) .. "]",
-		"box[0.35,1.45;11.0,3.85;#30343acc]",
+		"box[0.35,1.45;11.0,3.85;#242326EE]",
 		"label[0.5,1.55;" .. core.formspec_escape(S("Status")) .. "]",
 		"label[1.6,1.55;" .. colored(state, state_color) .. "]",
 		"label[0.5,1.9;" .. core.formspec_escape(S("Fuel: @1%", tostring(fuel_percent))) .. "]",
 		"label[5.0,1.9;" .. core.formspec_escape(S("Progress: @1%", tostring(progress_percent))) .. "]",
 		"label[0.75,2.35;" .. core.formspec_escape(S("Input")) .. "]",
-		mcl_formspec.get_itemslot_bg_v4(0.75, 2.65, 1, 1),
+		forge_slots(0.75, 2.65, 1, 1),
 		"list[context;input;0.75,2.65;1,1;]",
 		"image[2.1,2.65;1,1;" .. fire .. "]",
 		"label[2.1,3.7;" .. core.formspec_escape(S("Fuel")) .. "]",
-		mcl_formspec.get_itemslot_bg_v4(2.1, 3.95, 1, 1),
+		forge_slots(2.1, 3.95, 1, 1),
 		"list[context;fuel;2.1,3.95;1,1;]",
 		"image[4.5,2.65;1.5,1;" .. arrow .. "]",
-		"label[7.0,2.35;" .. core.formspec_escape(S("Products")) .. "]",
-		mcl_formspec.get_itemslot_bg_v4(7.0, 2.65, 4, 2),
-		"list[context;output;7.0,2.65;4,2;]",
+		"label[6.5,2.35;" .. core.formspec_escape(S("Products")) .. "]",
+		forge_slots(6.5, 2.65, 4, 2),
+		"list[context;output;6.5,2.65;4,2;]",
 		"label[0.375,5.45;" .. core.formspec_escape(S("Inventory")) .. "]",
-		mcl_formspec.get_itemslot_bg_v4(0.375, 5.8, 9, 3),
+		forge_slots(0.375, 5.8, 9, 3),
 		"list[current_player;main;0.375,5.8;9,3;9]",
-		mcl_formspec.get_itemslot_bg_v4(0.375, 9.05, 9, 1),
+		forge_slots(0.375, 9.05, 9, 1),
 		"list[current_player;main;0.375,9.05;9,1;]",
 		"listring[context;output]listring[current_player;main]",
 		"listring[context;input]listring[current_player;main]",
@@ -1046,7 +1068,7 @@ local function waila_enabled(player)
 	return saved == "" or saved == "1"
 end
 
-local WAILA_TEXTURE_SIZE = 16
+local WAILA_TEXTURE_SIZE = 256
 local WAILA_CHAR_WIDTH = 9
 local WAILA_LINE_HEIGHT = 20
 
@@ -1082,8 +1104,8 @@ local function layout_waila_text(text)
 	local width = math.max(220, math.ceil(longest * WAILA_CHAR_WIDTH * 1.25 + 32))
 	local height = math.max(40, line_count * WAILA_LINE_HEIGHT + 18)
 	return text, {
-		x = math.ceil(width / WAILA_TEXTURE_SIZE),
-		y = math.ceil(height / WAILA_TEXTURE_SIZE),
+		x = math.ceil(width / 16) * 16 / WAILA_TEXTURE_SIZE,
+		y = math.ceil(height / 16) * 16 / WAILA_TEXTURE_SIZE,
 	}
 end
 
@@ -1277,7 +1299,9 @@ if doc and doc.add_category and doc.add_entry then
 			local body = doc.entry_builders.text_and_gallery({text = data.text, images = {{imagetype = "item", image = data.item}}}, playername)
 			-- Keep doc's native gallery/layout, but tint the text panel to the
 			-- same warm dark palette used by Everforge's RPG and forge forms.
-			return "style_type[textarea;textcolor=#EEE5DA;bgcolor=#191E24]" .. body
+			body = body:gsub("#000000%]", "#17191C]")
+			return "style_type[textarea;textcolor=#F2E8D9]" .. body
+				.. ("box[%s,%s;0.035,%s;#C27A4A]"):format(doc.FORMSPEC.ENTRY_START_X - 0.175, doc.FORMSPEC.ENTRY_START_Y, doc.FORMSPEC.ENTRY_HEIGHT - 1)
 		end,
 	})
 	local entries = {
@@ -1425,7 +1449,17 @@ core.register_lbm({
 	action = function(pos)
 		local meta = core.get_meta(pos)
 		meta:set_string("infotext", S("Sealed Dungeon Cache"))
-		meta:set_string("formspec", "formspec_version[7]size[8,7]label[0.5,0.4;" .. core.formspec_escape(S("Dungeon Reward Cache")) .. "]list[context;main;1,1;4,4;]list[current_player;main;0,4.7;8,3;]listring[context;main]listring[current_player;main]")
+		meta:set_string("formspec", table.concat({
+			"formspec_version[7]size[11.75,11.35]",
+			forge_theme(11.75, 11.35),
+			"label[0.5,0.45;" .. core.formspec_escape(core.colorize("#E8B17D", S("Dungeon Reward Cache"))) .. "]",
+			forge_slots(3.5, 1.1, 4, 4),
+			"list[context;main;3.5,1.1;4,4;]",
+			"label[0.375,6.25;" .. core.formspec_escape(S("Inventory")) .. "]",
+			forge_slots(0.375, 6.6, 8, 3),
+			"list[current_player;main;0.375,6.6;8,3;]",
+			"listring[context;main]listring[current_player;main]",
+		}))
 		if meta:get_int("everforge:initialized") == 1 then return end
 		local inv = meta:get_inventory(); inv:set_size("main", 16)
 		inv:add_item("main", ItemStack("everforge:relic 1"))
