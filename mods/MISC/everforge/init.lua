@@ -6,6 +6,39 @@ local random = PcgRandom(249955)
 
 everforge = { version = "1.0.0", classes = {}, skills = {} }
 
+local waila_huds = {}
+local waila_suppressed = {}
+
+local function hide_waila_for_player(player)
+	local hud = waila_huds[player:get_player_name()]
+	if not hud or hud[3] == false then return end
+	player:hud_change(hud[1], "text", "")
+	player:hud_change(hud[2], "text", "")
+	-- Force the next visible update to restore the cached HUD text.
+	hud[3] = false
+end
+
+local function suppress_waila_for_player(player, form_key)
+	local name = player:get_player_name()
+	waila_suppressed[name] = form_key
+	hide_waila_for_player(player)
+end
+
+local function restore_waila_for_player(player, form_key)
+	local name = player:get_player_name()
+	if waila_suppressed[name] == form_key then
+		waila_suppressed[name] = nil
+	end
+end
+
+core.register_on_player_receive_fields(function(player, formname, fields)
+	if not fields.quit then return end
+	local key = waila_suppressed[player:get_player_name()]
+	if key == formname or (key == "doc:" and formname:sub(1, 4) == "doc:") then
+		restore_waila_for_player(player, key)
+	end
+end)
+
 -- Class and skill definitions are deliberately small stat modifiers. Physics
 -- changes go through playerphysics so they compose with Mineclonia and other mods.
 everforge.classes = {
@@ -148,6 +181,7 @@ local function rpg_content(player, in_inventory)
 end
 
 local function show_rpg(player)
+	suppress_waila_for_player(player, FORM)
 	core.show_formspec(player:get_player_name(), FORM,
 		"formspec_version[7]size[11.75,6.2]" .. rpg_content(player, false))
 end
@@ -311,9 +345,9 @@ local function build_forge_formspec(pos)
 		arrow = "gui_furnace_arrow_bg.png^[lowpart:" .. progress_percent .. ":gui_furnace_arrow_fg.png^[transformR270"
 	end
 	local fs = {
-		"formspec_version[7]", "size[11.75,10.425]",
-		forge_theme(11.75, 10.425),
-		"box[0.2,0.15;11.35,5.15;#191A1DEE]",
+		"formspec_version[7]", "size[11.75,10.95]",
+		forge_theme(11.75, 10.95),
+		"box[0.2,0.15;11.35,4.95;#191A1DEE]",
 		"box[0.38,0.32;0.055,0.38;#c27a4a]",
 		"label[0.58,0.375;" .. colored(S("Everforge Alloy Melter"), "#e8b17d") .. "]",
 		"label[0.375,0.85;" .. core.formspec_escape(S("Accepts: Tin, silver, mithril or adamantine lumps.")) .. "]",
@@ -326,19 +360,19 @@ local function build_forge_formspec(pos)
 		"label[0.75,2.35;" .. core.formspec_escape(S("Input")) .. "]",
 		forge_slots(0.75, 2.65, 1, 1),
 		"list[context;input;0.75,2.65;1,1;]",
-		"image[2.1,2.65;1,1;" .. fire .. "]",
-		"label[2.1,3.7;" .. core.formspec_escape(S("Fuel")) .. "]",
-		forge_slots(2.1, 3.95, 1, 1),
-		"list[context;fuel;2.1,3.95;1,1;]",
+		"image[2.1,2.4;1,1;" .. fire .. "]",
+		"label[2.1,3.78;" .. core.formspec_escape(S("Fuel")) .. "]",
+		forge_slots(2.1, 4.05, 1, 1),
+		"list[context;fuel;2.1,4.05;1,1;]",
 		"image[4.5,2.65;1.5,1;" .. arrow .. "]",
 		"label[6.5,2.35;" .. core.formspec_escape(S("Products")) .. "]",
 		forge_slots(6.5, 2.65, 4, 2),
 		"list[context;output;6.5,2.65;4,2;]",
-		"label[0.375,5.45;" .. core.formspec_escape(S("Inventory")) .. "]",
-		forge_slots(0.375, 5.8, 9, 3),
-		"list[current_player;main;0.375,5.8;9,3;9]",
-		forge_slots(0.375, 9.05, 9, 1),
-		"list[current_player;main;0.375,9.05;9,1;]",
+		"label[0.375,5.2;" .. core.formspec_escape(S("Inventory")) .. "]",
+		forge_slots(0.375, 5.55, 9, 3),
+		"list[current_player;main;0.375,5.55;9,3;9]",
+		forge_slots(0.375, 9.5, 9, 1),
+		"list[current_player;main;0.375,9.5;9,1;]",
 		"listring[context;output]listring[current_player;main]",
 		"listring[context;input]listring[current_player;main]",
 		"listring[context;fuel]listring[current_player;main]",
@@ -502,6 +536,17 @@ core.register_node("everforge:alloy_melter", {
 		meta:set_string("active_input", "")
 		core.get_node_timer(pos):start(1)
 	end,
+	on_rightclick = function(_, _, clicker, itemstack)
+		if clicker and clicker:is_player() then
+			suppress_waila_for_player(clicker, "melter")
+		end
+		return itemstack
+	end,
+	on_receive_fields = function(_, _, fields, sender)
+		if fields.quit and sender and sender:is_player() then
+			restore_waila_for_player(sender, "melter")
+		end
+	end,
 	can_dig = function(pos, player)
 		local inv = melter_inventory(pos)
 		return player and inv:is_empty("input") and inv:is_empty("fuel") and inv:is_empty("output")
@@ -558,6 +603,9 @@ core.register_node("everforge:alloy_melter", {
 			progress = 0
 		end
 		meta:set_int("progress", progress)
+		-- Keep the open node formspec in step with these authoritative timer
+		-- values; metadata formspecs are refreshed when their metadata changes.
+		update_melter_interface(pos)
 		return true
 	end,
 })
@@ -958,7 +1006,6 @@ core.register_craft({output = "everforge:alloy_melter", recipe = {{"mcl_core:iro
 -- Mineclonia's doc system remains the source of rich item descriptions; this
 -- small HUD only adds the live target, native mining groups and available state.
 -- ---------------------------------------------------------------------------
-local waila_huds = {}
 local waila_timer = 0
 local waila_interval = math.max(0.15, math.min(1.5, core.settings:get("everforge_waila_interval") and tonumber(core.settings:get("everforge_waila_interval")) or 0.35))
 local waila_default_enabled = core.settings:get_bool("everforge_waila_enabled", true)
@@ -1117,6 +1164,10 @@ end
 
 local function update_waila(player)
 	local name = player:get_player_name()
+	if waila_suppressed[name] then
+		hide_waila_for_player(player)
+		return
+	end
 	local enabled = waila_enabled(player)
 	local content = enabled and waila_text(player) or ""
 	content = ensure_waila_minimum_lines(content)
@@ -1158,7 +1209,11 @@ core.register_globalstep(function(dtime)
 	for _, player in ipairs(core.get_connected_players()) do update_waila(player) end
 end)
 
-core.register_on_leaveplayer(function(player) waila_huds[player:get_player_name()] = nil end)
+core.register_on_leaveplayer(function(player)
+	local name = player:get_player_name()
+	waila_huds[name] = nil
+	waila_suppressed[name] = nil
+end)
 
 core.register_chatcommand("everforge_waila", {
 	params = S("[on|off]"), description = S("Enable or disable the contextual block information overlay."),
@@ -1318,6 +1373,8 @@ if doc and doc.add_category and doc.add_entry then
 		params = "", description = S("Open the in-game mineral generation and mining guide."),
 		func = function(name)
 			if doc.get_entry_count(category_id) == 0 then return false, S("No mineral entries are available.") end
+			local player = core.get_player_by_name(name)
+			if player then suppress_waila_for_player(player, "doc:") end
 			doc.show_category(name, category_id)
 			return true
 		end,
@@ -1406,6 +1463,24 @@ local function cache_is_protected(pos, player)
 	return false
 end
 
+local function build_reward_cache_formspec(pos)
+	local node_inv = ("nodemeta:%s,%s,%s"):format(pos.x, pos.y, pos.z)
+	return table.concat({
+		"formspec_version[7]size[11.75,11.75]",
+		forge_theme(11.75, 11.75),
+		"label[0.5,0.4;" .. core.formspec_escape(core.colorize("#E8B17D", S("Dungeon Reward Cache"))) .. "]",
+		forge_slots(3.5, 1, 4, 4),
+		("list[%s;main;3.5,1;4,4;]"):format(node_inv),
+		"label[0.375,6.1;" .. core.formspec_escape(S("Inventory")) .. "]",
+		forge_slots(0.375, 6.45, 9, 3),
+		"list[current_player;main;0.375,6.45;9,3;9]",
+		forge_slots(0.375, 10.4, 9, 1),
+		"list[current_player;main;0.375,10.4;9,1;]",
+		("listring[%s;main]"):format(node_inv),
+		"listring[current_player;main]",
+	})
+end
+
 core.register_node("everforge:reward_cache", {
 	description = S("Sealed Dungeon Cache"), tiles = {"mcl_chests_normal.png^default_gold_ingot.png"},
 	groups = {choppy = 2, material_wood = 1}, is_ground_content = false, paramtype2 = "facedir",
@@ -1413,7 +1488,10 @@ core.register_node("everforge:reward_cache", {
 	on_rightclick = function(pos, _, clicker)
 		if not clicker or not clicker:is_player() or cache_is_protected(pos, clicker) then return end
 		local meta = core.get_meta(pos)
-		core.show_formspec(clicker:get_player_name(), "everforge:reward_cache", meta:get_string("formspec"))
+		local formname = "everforge:reward_cache"
+		suppress_waila_for_player(clicker, formname)
+		core.show_formspec(clicker:get_player_name(), formname,
+			meta:get_string("formspec") ~= "" and meta:get_string("formspec") or build_reward_cache_formspec(pos))
 	end,
 	allow_metadata_inventory_put = function() return 0 end,
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
@@ -1449,17 +1527,7 @@ core.register_lbm({
 	action = function(pos)
 		local meta = core.get_meta(pos)
 		meta:set_string("infotext", S("Sealed Dungeon Cache"))
-		meta:set_string("formspec", table.concat({
-			"formspec_version[7]size[11.75,11.35]",
-			forge_theme(11.75, 11.35),
-			"label[0.5,0.45;" .. core.formspec_escape(core.colorize("#E8B17D", S("Dungeon Reward Cache"))) .. "]",
-			forge_slots(3.5, 1.1, 4, 4),
-			"list[context;main;3.5,1.1;4,4;]",
-			"label[0.375,6.25;" .. core.formspec_escape(S("Inventory")) .. "]",
-			forge_slots(0.375, 6.6, 8, 3),
-			"list[current_player;main;0.375,6.6;8,3;]",
-			"listring[context;main]listring[current_player;main]",
-		}))
+		meta:set_string("formspec", build_reward_cache_formspec(pos))
 		if meta:get_int("everforge:initialized") == 1 then return end
 		local inv = meta:get_inventory(); inv:set_size("main", 16)
 		inv:add_item("main", ItemStack("everforge:relic 1"))

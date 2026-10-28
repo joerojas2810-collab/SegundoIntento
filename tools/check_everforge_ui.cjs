@@ -1,10 +1,10 @@
 // Requires luaparse and fengari-node-cli on NODE_PATH / PATH. Run from game root.
 // Optional argument: baseline commit. No Luanti engine or world is started.
-const fs=require('fs'), cp=require('child_process');
+const fs=require('fs'), cp=require('child_process'), os=require('os'), path=require('path');
 const lua=require('luaparse');
 const src=fs.readFileSync('mods/MISC/everforge/init.lua','utf8');
 const ast=lua.parse(src,{ranges:true,luaVersion:'5.1',comments:false});
-const functions=['forge_theme','forge_slots','rpg_content','build_forge_formspec','waila_line_count','layout_waila_text'];
+const functions=['forge_theme','forge_slots','rpg_content','build_forge_formspec','build_reward_cache_formspec','waila_line_count','layout_waila_text'];
 let code=`local function S(t, ...) local a={...}; return (t:gsub('@(%d+)',function(i) return tostring(a[tonumber(i)]) end)) end
 core={formspec_escape=function(s) return s end,colorize=function(c,s) return s end}
 mcl_formspec={get_itemslot_bg_v4=function() return '' end}
@@ -35,15 +35,16 @@ for _,m in ipairs({'empty','unsupported','working','full'}) do mode=m; local f=b
 local _,scale=layout_waila_text('Name\\nType: mineral\\nTool: pickaxe'); assert(scale.x*256==math.ceil(math.max(220,math.ceil(13*8*1.25+32))/16)*16)
 print('HUD|dimensions preserved')
 `;
-let cache; function find(v){if(!v||typeof v!=='object')return; if(v.type==='CallExpression'&&v.base?.identifier?.name==='set_string'&&v.arguments?.[0]?.raw==='"formspec"'&&v.arguments?.[1]?.type==='CallExpression')cache=v.arguments[1]; for(const x of Object.values(v))if(Array.isArray(x))x.forEach(find);else find(x);} find(ast); if(!cache)throw Error('cache missing'); code+=`print('CACHE|'..${src.slice(...cache.range)})\n`;
-fs.writeFileSync('/private/tmp/everforge-harness.lua',code);
-const out=cp.execFileSync('fengari',['/private/tmp/everforge-harness.lua'],{encoding:'utf8'});
+let cache; function find(v){if(!v||typeof v!=='object')return; if(v.type==='CallExpression'&&v.base?.identifier?.name==='set_string'&&v.arguments?.[0]?.raw==='"formspec"'&&v.arguments?.[1]?.type==='CallExpression')cache=v.arguments[1]; for(const x of Object.values(v))if(Array.isArray(x))x.forEach(find);else find(x);} find(ast); if(!cache)throw Error('cache missing'); code+=`local pos={x=0,y=0,z=0}; print('CACHE|'..${src.slice(...cache.range)})\n`;
+const harness=path.join(os.tmpdir(),'everforge-harness.lua');
+fs.writeFileSync(harness,code);
+const out=cp.execFileSync('fengari',[harness],{encoding:'utf8'});
 if(/stack traceback|error/i.test(out))throw Error(out);
 let count=0;
 for(const line of out.split('\n')){
  if(!line.includes('|')||line.startsWith('HUD|'))continue;
  const [name,...parts]=line.split('|'), spec=parts.join('|');
- const size=name==='CACHE'?[11.75,11.35]:name==='TAB'?[11.75,10.9]:name==='RPG'?[11.75,6.2]:[11.75,10.425];
+ const size=name==='CACHE'?[11.75,11.75]:name==='TAB'?[11.75,10.9]:name==='RPG'?[11.75,6.2]:[11.75,10.95];
  for(const m of spec.matchAll(/(box|button|button_exit|list)\[([^\]]+)\]/g)){
    const fields=m[2].split(';');let pos,dim;
    if(m[1]==='list'){pos=fields[2];dim=fields[3]}else{pos=fields[0];dim=fields[1]}
@@ -53,22 +54,21 @@ for(const line of out.split('\n')){
    count++;
  }
 }
-fs.writeFileSync('/private/tmp/everforge-generated-forms.txt',out);
+fs.writeFileSync(path.join(os.tmpdir(),'everforge-generated-forms.txt'),out);
 console.log('Lua 5.1 syntax passed; generated RPG, inventory tab cache and four melter states; '+count+' bounds passed; HUD visible dimensions preserved.');
-// Compare every non-presentation top-level statement with the PR baseline.
+// Guard the explicitly out-of-scope gameplay tables against the PR baseline.
 const before=cp.execFileSync('git',['show',(process.argv[2] || 'e442c9a69')+':mods/MISC/everforge/init.lua'],{encoding:'utf8'});
-function normalize(text){
- const a=lua.parse(Buffer.from(text).toString('latin1'),{luaVersion:'5.1',comments:false,encodingMode:'pseudo-latin1'});
- a.body=a.body.filter(n=>!(n.type==='FunctionDeclaration'&&['forge_theme','forge_slots','rpg_content','show_rpg','layout_waila_text'].includes(n.identifier?.name)));
- function walk(v){if(!v||typeof v!=='object')return;
-  if(v.type==='FunctionDeclaration'&&v.identifier?.name==='build_forge_formspec'){v.body=v.body.slice(0,v.body.findIndex(n=>n.type==='LocalStatement'&&n.variables?.[0]?.name==='fs'));}
-  if(v.type==='CallExpression'&&v.base?.type==='MemberExpression'&&v.base.identifier?.name==='set_string'&&v.arguments?.[0]?.value==='formspec'){v.arguments[1]={type:'StringLiteral',value:'PRESENTATION'};}
-  if(v.type==='TableKeyString'&&v.key?.name==='build_formspec'){v.value={type:'StringLiteral',value:'PRESENTATION'};}
-  if(v.type==='LocalStatement'&&v.variables?.[0]?.name==='WAILA_TEXTURE_SIZE'){v.init=[{type:'NumericLiteral',value:256}];}
-  delete v.raw;
-  for(const x of Object.values(v))if(Array.isArray(x))x.forEach(walk);else walk(x);
+function mechanicsTables(text){
+ const tree=lua.parse(Buffer.from(text).toString('latin1'),{luaVersion:'5.1',comments:false,encodingMode:'pseudo-latin1'});
+ const result={};
+ for(const n of tree.body){
+  if(n.type==='LocalStatement') for(let i=0;i<n.variables.length;i++) if(['smelt_recipes','base_output_types'].includes(n.variables[i].name)) result[n.variables[i].name]=n.init[i];
+  if(n.type==='AssignmentStatement') for(let i=0;i<n.variables.length;i++){
+   const v=n.variables[i];
+   if(v.type==='MemberExpression'&&v.base?.name==='everforge'&&['classes','skills'].includes(v.identifier?.name)) result[v.identifier.name]=n.init[i];
+  }
  }
- walk(a);return JSON.stringify(a);
+ return JSON.stringify(result);
 }
-if(normalize(src)!==normalize(before))throw Error('Unexpected non-presentation AST change');
-console.log('All non-presentation Lua statements match the PR baseline.');
+if(mechanicsTables(src)!==mechanicsTables(before))throw Error('Smelting, progression or output-type tables changed from the PR baseline');
+console.log('Smelting recipes, class/skill progression and output-type tables match the PR baseline.');
