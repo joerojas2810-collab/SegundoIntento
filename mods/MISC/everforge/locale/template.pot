@@ -43,10 +43,16 @@ msgstr ""
 msgid "Alloy Modular @1"
 msgstr ""
 
+msgid "Already scaled by a version that did not record its multipliers"
+msgstr ""
+
 msgid "Also raw iron and raw gold; ingots are not accepted."
 msgstr ""
 
 msgid "Ancient Dungeon Spawner"
+msgstr ""
+
+msgid "Applied (stored)"
 msgstr ""
 
 msgid "Arcanist"
@@ -133,6 +139,9 @@ msgstr ""
 msgid "Durability: @1 uses"
 msgstr ""
 
+msgid "Eligible; scaling applies when a player is within 34 nodes"
+msgstr ""
+
 msgid "Enable or disable the contextual block information overlay."
 msgstr ""
 
@@ -145,6 +154,9 @@ msgstr ""
 msgid "Everforge Alloy Melter"
 msgstr ""
 
+msgid "Everforge Alloy Melter — @1"
+msgstr ""
+
 msgid "Everforge RPG"
 msgstr ""
 
@@ -152,6 +164,9 @@ msgid "Everforge dungeon spawn pulse"
 msgstr ""
 
 msgid "Everforge heads, bindings and reinforced handles."
+msgstr ""
+
+msgid "Excluded: scaling only affects native Overworld monsters"
 msgstr ""
 
 msgid "Fallback frequency: scarcity @1 nodes, @2 ores per cluster, cluster size @3."
@@ -170,6 +185,9 @@ msgid "Frequency: each stone/deepslate feature has a 1-in-@1 filter per eligible
 msgstr ""
 
 msgid "Fuel"
+msgstr ""
+
+msgid "Fuel: @1%"
 msgstr ""
 
 msgid "Gain a small XP bonus near dungeon guardians."
@@ -262,6 +280,9 @@ msgstr ""
 msgid "Mithril"
 msgstr ""
 
+msgid "Mob: @1; health: @2 / @3; configured melee damage: @4; Y: @5; depth below Y=-32: @6; health multiplier: @7x; damage multiplier: @8x; @9"
+msgstr ""
+
 msgid "Mobile explorer and ranged specialist."
 msgstr ""
 
@@ -269,6 +290,12 @@ msgid "Modular @1"
 msgstr ""
 
 msgid "No additional Everforge recipes use this metal."
+msgstr ""
+
+msgid "No fuel"
+msgstr ""
+
+msgid "No materials"
 msgstr ""
 
 msgid "No mineral entries are available."
@@ -286,6 +313,9 @@ msgstr ""
 msgid "Ore"
 msgstr ""
 
+msgid "Output full"
+msgstr ""
+
 msgid "Pickaxe"
 msgstr ""
 
@@ -293,6 +323,9 @@ msgid "Pickaxe Head"
 msgstr ""
 
 msgid "Plant"
+msgstr ""
+
+msgid "Point at a mob and run this command again."
 msgstr ""
 
 msgid "Processing: @1 → @2"
@@ -307,6 +340,9 @@ msgstr ""
 msgid "Products"
 msgstr ""
 
+msgid "Progress: @1%"
+msgstr ""
+
 msgid "Quality bonuses: +@1% damage, +@2% mining speed, +@3% durability, +@4% attack speed"
 msgstr ""
 
@@ -317,6 +353,9 @@ msgid "Rare"
 msgstr ""
 
 msgid "Rare material"
+msgstr ""
+
+msgid "Ready"
 msgstr ""
 
 msgid "Recommended tool: @1"
@@ -355,6 +394,9 @@ msgstr ""
 msgid "Shovel Head"
 msgstr ""
 
+msgid "Show health, configured melee damage, depth and scaling for the mob you point at."
+msgstr ""
+
 msgid "Show registered Everforge and Adamantine generation paths (server only)."
 msgstr ""
 
@@ -368,6 +410,9 @@ msgid "Smelt alloys faster at Everforge melters."
 msgstr ""
 
 msgid "Smith"
+msgstr ""
+
+msgid "Status"
 msgstr ""
 
 msgid "Status: @1"
@@ -389,6 +434,9 @@ msgid "Takes 10% less mob and player melee damage."
 msgstr ""
 
 msgid "That skill is already at its maximum rank."
+msgstr ""
+
+msgid "The pointed object is not a Mineclonia monster."
 msgstr ""
 
 msgid "The server has disabled the contextual block information overlay."
@@ -421,6 +469,9 @@ msgstr ""
 msgid "Unknown registered drop"
 msgstr ""
 
+msgid "Unsupported material"
+msgstr ""
+
 msgid "Update Everforge alloy melter inventory and interface"
 msgstr ""
 
@@ -428,6 +479,9 @@ msgid "Vanguard"
 msgstr ""
 
 msgid "Wood"
+msgstr ""
+
+msgid "Working"
 msgstr ""
 
 msgid "You must be online to change this setting."
@@ -443,4 +497,10 @@ msgid "Your class is already set; it cannot be changed."
 msgstr ""
 
 msgid "[on|off]"
+msgstr ""
+
+msgid "custom / not exposed"
+msgstr ""
+
+msgid "unknown"
 msgstr ""

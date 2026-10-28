@@ -46,11 +46,17 @@ msgstr "Fundidor de aleaciones"
 msgid "Alloy Modular @1"
 msgstr "@1 modular de aleación"
 
+msgid "Already scaled by a version that did not record its multipliers"
+msgstr "Ya escalado por una versión que no registraba sus multiplicadores"
+
 msgid "Also raw iron and raw gold; ingots are not accepted."
 msgstr "También acepta hierro y oro en bruto; no acepta lingotes."
 
 msgid "Ancient Dungeon Spawner"
 msgstr "Generador de mazmorra antigua"
+
+msgid "Applied (stored)"
+msgstr "Aplicado (guardado)"
 
 msgid "Arcanist"
 msgstr "Arcanista"
@@ -136,6 +142,9 @@ msgstr "Explorador de mazmorras"
 msgid "Durability: @1 uses"
 msgstr "Durabilidad: @1 usos"
 
+msgid "Eligible; scaling applies when a player is within 34 nodes"
+msgstr "Elegible; el escalado se aplica cuando hay un jugador a menos de 34 nodos"
+
 msgid "Enable or disable the contextual block information overlay."
 msgstr "Activa o desactiva la interfaz contextual de información de bloques."
 
@@ -148,6 +157,9 @@ msgstr "Material épico"
 msgid "Everforge Alloy Melter"
 msgstr "Fundidor de aleaciones de Everforge"
 
+msgid "Everforge Alloy Melter — @1"
+msgstr "Fundidor de aleaciones Everforge — @1"
+
 msgid "Everforge RPG"
 msgstr "Everforge RPG"
 
@@ -156,6 +168,9 @@ msgstr "Pulso de aparición de criaturas de mazmorra de Everforge"
 
 msgid "Everforge heads, bindings and reinforced handles."
 msgstr "Cabezales, uniones y mangos reforzados de Everforge."
+
+msgid "Excluded: scaling only affects native Overworld monsters"
+msgstr "Excluido: el escalado solo afecta a monstruos nativos del supramundo"
 
 msgid "Fallback frequency: scarcity @1 nodes, @2 ores per cluster, cluster size @3."
 msgstr "Frecuencia alternativa: rareza de @1 nodos, @2 menas por grupo, tamaño del grupo @3."
@@ -174,6 +189,9 @@ msgstr "Frecuencia: cada función de piedra/pizarra tiene un filtro de 1 entre @
 
 msgid "Fuel"
 msgstr "Combustible"
+
+msgid "Fuel: @1%"
+msgstr "Combustible: @1%"
 
 msgid "Gain a small XP bonus near dungeon guardians."
 msgstr "Obtén una pequeña bonificación de experiencia cerca de los guardianes de mazmorra."
@@ -265,6 +283,9 @@ msgstr "Velocidad de minería: @1; nivel de minería: @2"
 msgid "Mithril"
 msgstr "Mitrilo"
 
+msgid "Mob: @1; health: @2 / @3; configured melee damage: @4; Y: @5; depth below Y=-32: @6; health multiplier: @7x; damage multiplier: @8x; @9"
+msgstr "Monstruo: @1; salud: @2 / @3; daño cuerpo a cuerpo configurado: @4; Y: @5; profundidad bajo Y=-32: @6; multiplicador de salud: @7x; multiplicador de daño: @8x; @9"
+
 msgid "Mobile explorer and ranged specialist."
 msgstr "Explorador ágil y especialista en combate a distancia."
 
@@ -273,6 +294,12 @@ msgstr "@1 modular"
 
 msgid "No additional Everforge recipes use this metal."
 msgstr "No hay otras recetas de Everforge que usen este metal."
+
+msgid "No fuel"
+msgstr "Sin combustible"
+
+msgid "No materials"
+msgstr "Sin materiales"
 
 msgid "No mineral entries are available."
 msgstr "No hay entradas de minerales disponibles."
@@ -289,6 +316,9 @@ msgstr "Abre la guía de generación y extracción de minerales."
 msgid "Ore"
 msgstr "Mineral"
 
+msgid "Output full"
+msgstr "Salida llena"
+
 msgid "Pickaxe"
 msgstr "Pico"
 
@@ -297,6 +327,9 @@ msgstr "Cabezal de pico"
 
 msgid "Plant"
 msgstr "Planta"
+
+msgid "Point at a mob and run this command again."
+msgstr "Señala a un monstruo y vuelve a ejecutar este comando."
 
 msgid "Processing: @1 → @2"
 msgstr "Procesamiento: @1 → @2"
@@ -310,6 +343,9 @@ msgstr "Procesamiento: @1 → @2 en un horno de Mineclonia."
 msgid "Products"
 msgstr "Productos"
 
+msgid "Progress: @1%"
+msgstr "Progreso: @1%"
+
 msgid "Quality bonuses: +@1% damage, +@2% mining speed, +@3% durability, +@4% attack speed"
 msgstr "Bonificaciones de calidad: +@1% de daño, +@2% de velocidad de minería, +@3% de durabilidad y +@4% de velocidad de ataque"
 
@@ -321,6 +357,9 @@ msgstr "Rara"
 
 msgid "Rare material"
 msgstr "Material raro"
+
+msgid "Ready"
+msgstr "Listo"
 
 msgid "Recommended tool: @1"
 msgstr "Herramienta recomendada: @1"
@@ -358,6 +397,9 @@ msgstr "Pala"
 msgid "Shovel Head"
 msgstr "Cabezal de pala"
 
+msgid "Show health, configured melee damage, depth and scaling for the mob you point at."
+msgstr "Muestra la salud, el daño cuerpo a cuerpo configurado, la profundidad y el escalado del monstruo señalado."
+
 msgid "Show registered Everforge and Adamantine generation paths (server only)."
 msgstr "Muestra las rutas de generación registradas de Everforge y Adamantina (solo servidor)."
 
@@ -372,6 +414,9 @@ msgstr "Funde aleaciones más rápido en los fundidores de Everforge."
 
 msgid "Smith"
 msgstr "Herrero"
+
+msgid "Status"
+msgstr "Estado"
 
 msgid "Status: @1"
 msgstr "Estado: @1"
@@ -393,6 +438,9 @@ msgstr "Recibe un 10% menos de daño cuerpo a cuerpo de criaturas y jugadores."
 
 msgid "That skill is already at its maximum rank."
 msgstr "Esa habilidad ya alcanzó su rango máximo."
+
+msgid "The pointed object is not a Mineclonia monster."
+msgstr "El objeto señalado no es un monstruo de Mineclonia."
 
 msgid "The server has disabled the contextual block information overlay."
 msgstr "El servidor ha desactivado la interfaz contextual de información de bloques."
@@ -424,6 +472,9 @@ msgstr "Material poco común"
 msgid "Unknown registered drop"
 msgstr "Recurso registrado desconocido"
 
+msgid "Unsupported material"
+msgstr "Material no válido"
+
 msgid "Update Everforge alloy melter inventory and interface"
 msgstr "Actualizar inventario e interfaz del fundidor de aleaciones de Everforge"
 
@@ -432,6 +483,9 @@ msgstr "Vanguardia"
 
 msgid "Wood"
 msgstr "Madera"
+
+msgid "Working"
+msgstr "En funcionamiento"
 
 msgid "You must be online to change this setting."
 msgstr "Debes estar en línea para cambiar este ajuste."
@@ -447,3 +501,9 @@ msgstr "Tu clase ya está elegida y no se puede cambiar."
 
 msgid "[on|off]"
 msgstr "[on|off]"
+
+msgid "custom / not exposed"
+msgstr "personalizado / no expuesto"
+
+msgid "unknown"
+msgstr "desconocido"

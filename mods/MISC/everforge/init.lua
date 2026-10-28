@@ -91,8 +91,9 @@ local function rpg_content(player, in_inventory)
 	local class_name = class and class.label or S("Unassigned")
 	local lv = mcl_experience.get_level(player) or 0
 	local fs = {
-		"box[0.3,0.18;11.1,0.62;#202733cc]",
-		"label[0.6,0.34;" .. core.formspec_escape(S("Everforge RPG")) .. "]",
+		"box[0.3,0.18;11.1,0.62;#191e24dd]",
+		"box[0.3,0.18;0.055,0.62;#c27a4a]",
+		"label[0.6,0.34;" .. core.formspec_escape(core.colorize("#e8b17d", S("Everforge RPG"))) .. "]",
 		"label[0.6,0.82;" .. core.formspec_escape(S("Class: @1 | Level: @2 | Skill points: @3", class_name, tostring(lv), tostring(get_points(player)))) .. "]",
 		"label[0.6,1.22;" .. core.formspec_escape(S("Choose a class (selection is permanent):")) .. "]",
 	}
@@ -104,7 +105,7 @@ local function rpg_content(player, in_inventory)
 			x, field, core.formspec_escape(everforge.classes[b[1]].label))
 		fs[#fs + 1] = ("tooltip[%s;%s]"):format(field, core.formspec_escape(everforge.classes[b[1]].description))
 	end
-	fs[#fs + 1] = "label[0.6,2.12;" .. core.formspec_escape(S("Skills — ranks, points and actions")) .. "]"
+	fs[#fs + 1] = "label[0.6,2.12;" .. core.formspec_escape(core.colorize("#d79767", S("Skills — ranks, points and actions"))) .. "]"
 	fs[#fs + 1] = "box[0.42,2.35;11.0,2.72;#11182066]"
 	local skills = {"trailblazer", "deep_miner", "dungeoneer", "forgemaster"}
 	for i, key in ipairs(skills) do
@@ -229,32 +230,106 @@ local smelt_recipes = {
 	["mcl_raw_ores:raw_gold"] = {output = "mcl_core:gold_ingot", time = 9},
 }
 
-local forge_formspec = table.concat({
-	"formspec_version[4]",
-	"size[11.75,10.425]",
-	"label[0.375,0.375;" .. core.formspec_escape(S("Everforge Alloy Melter")) .. "]",
-	"label[0.375,0.85;" .. core.formspec_escape(S("Accepts: Tin, silver, mithril or adamantine lumps.")) .. "]",
-	"label[0.375,1.2;" .. core.formspec_escape(S("Also raw iron and raw gold; ingots are not accepted.")) .. "]",
-	"label[3.5,1.45;" .. core.formspec_escape(S("Input")) .. "]",
-	mcl_formspec.get_itemslot_bg_v4(3.5, 1.8, 1, 1),
-	"list[context;input;3.5,1.8;1,1;]",
-	"image[3.5,2.8;1,1;default_furnace_fire_bg.png]",
-	"label[3.5,3.55;" .. core.formspec_escape(S("Fuel")) .. "]",
-	mcl_formspec.get_itemslot_bg_v4(3.5, 3.85, 1, 1),
-	"list[context;fuel;3.5,3.85;1,1;]",
-	"image[5.0,2.8;1.5,1;gui_furnace_arrow_bg.png^[transformR270]",
-	"label[6.5,1.45;" .. core.formspec_escape(S("Products")) .. "]",
-	mcl_formspec.get_itemslot_bg_v4(6.5, 1.8, 4, 2),
-	"list[context;output;6.5,1.8;4,2;]",
-	"label[0.375,4.7;" .. core.formspec_escape(S("Inventory")) .. "]",
-	mcl_formspec.get_itemslot_bg_v4(0.375, 5.1, 9, 3),
-	"list[current_player;main;0.375,5.1;9,3;9]",
-	mcl_formspec.get_itemslot_bg_v4(0.375, 9.05, 9, 1),
-	"list[current_player;main;0.375,9.05;9,1;]",
-	"listring[context;output]listring[current_player;main]",
-	"listring[context;input]listring[current_player;main]",
-	"listring[context;fuel]listring[current_player;main]",
-})
+local function forge_bonus_at(pos)
+	local forge_bonus = 0
+	for _, player in ipairs(core.get_connected_players()) do
+		if vector.distance(player:get_pos(), pos) <= 8 then
+			local player_meta = player:get_meta()
+			local personal_bonus = skill_rank(player, "forgemaster")
+			if player_meta:get_string("everforge:class") == "smith" then personal_bonus = personal_bonus + 2 end
+			forge_bonus = math.max(forge_bonus, personal_bonus)
+		end
+	end
+	return forge_bonus
+end
+
+local function build_forge_formspec(pos)
+	local meta = core.get_meta(pos)
+	local inv = meta:get_inventory()
+	local input = inv:get_stack("input", 1)
+	local recipe = smelt_recipes[input:get_name()]
+	local burn_total = math.max(0, meta:get_int("burn_total"))
+	local burn = math.max(0, meta:get_int("burn"))
+	local fuel_percent = burn_total > 0 and math.max(0, math.min(100, math.floor(burn * 100 / burn_total + 0.5))) or 0
+	local progress_percent = 0
+	if recipe then
+		local effective_time = math.max(3, recipe.time - forge_bonus_at(pos))
+		progress_percent = math.max(0, math.min(100, math.floor(meta:get_int("progress") * 100 / effective_time + 0.5)))
+	end
+
+	local state, state_color
+	if not recipe then
+		if input:is_empty() then
+			state, state_color = S("No materials"), "#b7a58c"
+		else
+			state, state_color = S("Unsupported material"), "#e08b72"
+		end
+	elseif not inv:room_for_item("output", ItemStack(recipe.output)) then
+		state, state_color = S("Output full"), "#e08b72"
+	elseif burn > 0 then
+		state, state_color = S("Working"), "#8bcf91"
+	else
+		local fuel_stack = inv:get_stack("fuel", 1)
+		local fuel = core.get_craft_result({method = "fuel", width = 1, items = {fuel_stack}})
+		if fuel and fuel.time and fuel.time > 0 then
+			state, state_color = S("Ready"), "#e0b26f"
+		else
+			state, state_color = S("No fuel"), "#e08b72"
+		end
+	end
+
+	local function colored(text, color)
+		return core.formspec_escape(core.colorize(color, text))
+	end
+	local fire = "default_furnace_fire_bg.png"
+	if fuel_percent > 0 then
+		fire = fire .. "^[lowpart:" .. fuel_percent .. ":default_furnace_fire_fg.png"
+	end
+	local arrow = "gui_furnace_arrow_bg.png^[transformR270"
+	if progress_percent > 0 then
+		arrow = "gui_furnace_arrow_bg.png^[lowpart:" .. progress_percent .. ":gui_furnace_arrow_fg.png^[transformR270"
+	end
+	local fs = {
+		"formspec_version[7]", "size[11.75,10.425]",
+		"box[0.2,0.15;11.35,5.15;#191e24dd]",
+		"box[0.38,0.32;0.055,0.38;#c27a4a]",
+		"label[0.58,0.375;" .. colored(S("Everforge Alloy Melter"), "#e8b17d") .. "]",
+		"label[0.375,0.85;" .. core.formspec_escape(S("Accepts: Tin, silver, mithril or adamantine lumps.")) .. "]",
+		"label[0.375,1.2;" .. core.formspec_escape(S("Also raw iron and raw gold; ingots are not accepted.")) .. "]",
+		"box[0.35,1.45;11.0,3.85;#30343acc]",
+		"label[0.5,1.55;" .. core.formspec_escape(S("Status")) .. "]",
+		"label[1.6,1.55;" .. colored(state, state_color) .. "]",
+		"label[0.5,1.9;" .. core.formspec_escape(S("Fuel: @1%", tostring(fuel_percent))) .. "]",
+		"label[5.0,1.9;" .. core.formspec_escape(S("Progress: @1%", tostring(progress_percent))) .. "]",
+		"label[0.75,2.35;" .. core.formspec_escape(S("Input")) .. "]",
+		mcl_formspec.get_itemslot_bg_v4(0.75, 2.65, 1, 1),
+		"list[context;input;0.75,2.65;1,1;]",
+		"image[2.1,2.65;1,1;" .. fire .. "]",
+		"label[2.1,3.7;" .. core.formspec_escape(S("Fuel")) .. "]",
+		mcl_formspec.get_itemslot_bg_v4(2.1, 3.95, 1, 1),
+		"list[context;fuel;2.1,3.95;1,1;]",
+		"image[4.5,2.65;1.5,1;" .. arrow .. "]",
+		"label[7.0,2.35;" .. core.formspec_escape(S("Products")) .. "]",
+		mcl_formspec.get_itemslot_bg_v4(7.0, 2.65, 4, 2),
+		"list[context;output;7.0,2.65;4,2;]",
+		"label[0.375,5.45;" .. core.formspec_escape(S("Inventory")) .. "]",
+		mcl_formspec.get_itemslot_bg_v4(0.375, 5.8, 9, 3),
+		"list[current_player;main;0.375,5.8;9,3;9]",
+		mcl_formspec.get_itemslot_bg_v4(0.375, 9.05, 9, 1),
+		"list[current_player;main;0.375,9.05;9,1;]",
+		"listring[context;output]listring[current_player;main]",
+		"listring[context;input]listring[current_player;main]",
+		"listring[context;fuel]listring[current_player;main]",
+	}
+	return table.concat(fs), state
+end
+
+local function update_melter_interface(pos)
+	local meta = core.get_meta(pos)
+	local formspec, state = build_forge_formspec(pos)
+	meta:set_string("formspec", formspec)
+	meta:set_string("infotext", S("Everforge Alloy Melter — @1", state))
+end
 
 core.register_craftitem("everforge:tool_head", {description = S("Forged Tool Head"), inventory_image = "default_steel_ingot.png^[colorize:#b36a3c:100", stack_max = 99})
 core.register_craftitem("everforge:tool_binding", {description = S("Forged Tool Binding"), inventory_image = "default_steel_ingot.png^[colorize:#6d7381:100", stack_max = 99})
@@ -272,9 +347,14 @@ local function ensure_melter(pos)
 	inv:set_size("input", 1)
 	inv:set_size("fuel", 1)
 	inv:set_size("output", 8)
-	meta:set_string("formspec", forge_formspec)
 	if meta:get_int("burn") < 0 then meta:set_int("burn", 0) end
 	if meta:get_int("progress") < 0 then meta:set_int("progress", 0) end
+	if meta:get_int("burn_total") < meta:get_int("burn") then
+		-- Adopt the remaining time of a melter saved by an older build without
+		-- changing its fuel consumption or duration.
+		meta:set_int("burn_total", math.max(0, meta:get_int("burn")))
+	end
+	update_melter_interface(pos)
 end
 
 local function melter_is_protected(pos, player)
@@ -353,6 +433,7 @@ end
 
 local function restart_melter(pos)
 	sync_melter_input(pos)
+	update_melter_interface(pos)
 	core.get_node_timer(pos):start(1)
 end
 
@@ -394,6 +475,7 @@ core.register_node("everforge:alloy_melter", {
 		local meta = core.get_meta(pos)
 		ensure_melter(pos)
 		meta:set_int("burn", 0)
+		meta:set_int("burn_total", 0)
 		meta:set_int("progress", 0)
 		meta:set_string("active_input", "")
 		core.get_node_timer(pos):start(1)
@@ -416,30 +498,33 @@ core.register_node("everforge:alloy_melter", {
 		local input = inv:get_stack("input", 1)
 		local recipe = smelt_recipes[input:get_name()]
 		sync_melter_input(pos)
-		if not recipe then meta:set_int("progress", 0); return false end
+		if not recipe then
+			meta:set_int("progress", 0)
+			update_melter_interface(pos)
+			return false
+		end
 
 		local out = ItemStack(recipe.output)
-		if not inv:room_for_item("output", out) then return false end
+		if not inv:room_for_item("output", out) then
+			update_melter_interface(pos)
+			return false
+		end
 		if meta:get_int("burn") <= 0 then
 			local fuel_stack = inv:get_stack("fuel", 1)
 			local fuel, afterfuel = core.get_craft_result({method = "fuel", width = 1, items = {fuel_stack}})
-			if not fuel or not fuel.time or fuel.time <= 0 then return false end
-			meta:set_int("burn", math.max(1, math.floor(fuel.time)))
+			if not fuel or not fuel.time or fuel.time <= 0 then
+				update_melter_interface(pos)
+				return false
+			end
+			local fuel_duration = math.max(1, math.floor(fuel.time))
+			meta:set_int("burn", fuel_duration)
+			meta:set_int("burn_total", fuel_duration)
 			local remaining_fuel = afterfuel and afterfuel.items and afterfuel.items[1] or ItemStack("")
 			inv:set_stack("fuel", 1, remaining_fuel)
 		end
 
 		meta:set_int("burn", meta:get_int("burn") - 1)
-		local forge_bonus = 0
-		for _, player in ipairs(core.get_connected_players()) do
-			if vector.distance(player:get_pos(), pos) <= 8 then
-				local player_meta = player:get_meta()
-				local personal_bonus = skill_rank(player, "forgemaster")
-				if player_meta:get_string("everforge:class") == "smith" then personal_bonus = personal_bonus + 2 end
-				forge_bonus = math.max(forge_bonus, personal_bonus)
-			end
-		end
-		local effective_time = math.max(3, recipe.time - forge_bonus)
+		local effective_time = math.max(3, recipe.time - forge_bonus_at(pos))
 		local progress = meta:get_int("progress") + 1
 		if progress >= effective_time then
 			-- Add the output before consuming the ingredient, and verify the
@@ -1011,7 +1096,7 @@ local function update_waila(player)
 		local label = {
 			type = "text", position = {x = 0.5, y = 0.04}, alignment = {x = 0, y = 1},
 			offset = {x = 0, y = offset_y}, size = {x = 1},
-			text = text, number = 0xF4F7FC, style = 1, z_index = 5,
+			text = text, number = 0xF2E8D9, style = 1, z_index = 5,
 		}
 		waila_huds[name] = {
 			player:hud_add(background), player:hud_add(label), text, panel_scale.x, panel_scale.y, offset_y,
@@ -1171,7 +1256,10 @@ if doc and doc.add_category and doc.add_entry then
 	doc.add_category(category_id, {
 		name = S("Minerals"), description = S("Generation, mining, processing and uses for Everforge metals."),
 		build_formspec = function(data, playername)
-			return doc.entry_builders.text_and_gallery({text = data.text, images = {{imagetype = "item", image = data.item}}}, playername)
+			local body = doc.entry_builders.text_and_gallery({text = data.text, images = {{imagetype = "item", image = data.item}}}, playername)
+			-- Keep doc's native gallery/layout, but tint the text panel to the
+			-- same warm dark palette used by Everforge's RPG and forge forms.
+			return "style_type[textarea;textcolor=#EEE5DA;bgcolor=#191E24]" .. body
 		end,
 	})
 	local entries = {
@@ -1331,9 +1419,72 @@ core.register_lbm({
 })
 
 local mob_names = {"mobs_mc:skeleton", "mobs_mc:stray", "mobs_mc:zombie"}
+local function mob_scale_context(ent, pos)
+	if not ent or not pos or not ent.name or not ent.name:match("^mobs_mc:") or ent.type ~= "monster"
+		or mcl_worlds.pos_to_dimension(pos) ~= "overworld" then
+		return nil
+	end
+	local depth = math.max(0, -pos.y - 32)
+	local zone = math.floor(depth / 48)
+	local in_dungeon = ent.everforge_dungeon == true
+	local hp_multiplier = math.min(2.2, 1 + zone * 0.12)
+	if in_dungeon then hp_multiplier = math.min(2.5, hp_multiplier + 0.35) end
+	local damage_multiplier = 1 + zone * 0.08 + (in_dungeon and 0.2 or 0)
+	return {depth = depth, zone = zone, in_dungeon = in_dungeon,
+		hp_multiplier = hp_multiplier, damage_multiplier = damage_multiplier}
+end
+
+core.register_chatcommand("everforge_mobdiag", {
+	params = "",
+	description = S("Show health, configured melee damage, depth and scaling for the mob you point at."),
+	privs = {server = true},
+	func = function(name)
+		local player = core.get_player_by_name(name)
+		if not player then return false, S("You must be online to use this command.") end
+		local pointed = mcl_util.get_pointed_thing(player, true, false)
+		if not pointed or pointed.type ~= "object" or not pointed.ref then
+			return false, S("Point at a mob and run this command again.")
+		end
+		local obj = pointed.ref
+		local ent = obj:get_luaentity()
+		local pos = obj:get_pos()
+		if not ent or not ent.name or not ent.name:match("^mobs_mc:") or ent.type ~= "monster" or not pos then
+			return false, S("The pointed object is not a Mineclonia monster.")
+		end
+		local context = mob_scale_context(ent, pos)
+		local health = ent.health or obj:get_hp()
+		local health_max = ent.hp_max or obj:get_properties().hp_max or 0
+		local damage = type(ent.damage) == "number" and ent.damage or nil
+		local hp_multiplier, damage_multiplier, scale_state
+		if ent.everforge_scaled then
+			hp_multiplier = ent.everforge_hp_multiplier
+			damage_multiplier = ent.everforge_damage_multiplier
+			if hp_multiplier then
+				scale_state = S("Applied (stored)")
+			else
+				scale_state = S("Already scaled by a version that did not record its multipliers")
+			end
+		elseif context then
+			hp_multiplier, damage_multiplier = context.hp_multiplier, context.damage_multiplier
+			scale_state = S("Eligible; scaling applies when a player is within 34 nodes")
+		else
+			hp_multiplier, damage_multiplier = 1, 1
+			scale_state = S("Excluded: scaling only affects native Overworld monsters")
+		end
+		local hp_factor_text = hp_multiplier and string.format("%.2f", hp_multiplier) or S("unknown")
+		local damage_factor_text = damage_multiplier and string.format("%.2f", damage_multiplier) or S("unknown")
+		local damage_text = damage and tostring(damage) or S("custom / not exposed")
+		local message = S("Mob: @1; health: @2 / @3; configured melee damage: @4; Y: @5; depth below Y=-32: @6; health multiplier: @7x; damage multiplier: @8x; @9",
+			ent.name, tostring(health), tostring(health_max), damage_text, tostring(math.floor(pos.y)),
+			context and tostring(math.floor(context.depth)) or "—", hp_factor_text, damage_factor_text, scale_state)
+		core.chat_send_player(name, message)
+		return true
+	end,
+})
+
 core.register_globalstep(function(dtime)
-	-- Scaling is applied per mob in a small radius around players. Values are
-	-- bounded and based on depth, preventing global difficulty overrides.
+	-- Scaling is applied once per native Mineclonia monster in a small radius
+	-- around players, and only in the Overworld. Values remain depth-based.
 	local now = core.get_us_time() / 1000000
 	if now - (everforge._last_scale or 0) < 4 then return end
 	everforge._last_scale = now
@@ -1343,18 +1494,19 @@ core.register_globalstep(function(dtime)
 		for _, obj in ipairs(core.get_objects_inside_radius(ppos, 34)) do
 			local ent = obj:get_luaentity()
 			local pos = obj:get_pos()
-			if ent and pos and ent.name and ent.name:match("^mobs_mc:") and ent.type == "monster" and not ent.everforge_scaled
-				and mcl_worlds.pos_to_dimension(pos) == "overworld" then
-				local depth = math.max(0, -pos.y - 32)
-				local zone = math.floor(depth / 48)
-				local in_dungeon = ent.everforge_dungeon == true
-				local factor = math.min(2.2, 1 + zone * 0.12)
-				if in_dungeon then factor = math.min(2.5, factor + 0.35) end
+			local context = mob_scale_context(ent, pos)
+			if context and not ent.everforge_scaled then
 				local hp = ent.hp_max or 20
-				ent.hp_max = math.floor(hp * factor)
+				ent.everforge_base_hp_max = hp
+				ent.everforge_hp_multiplier = context.hp_multiplier
+				ent.hp_max = math.floor(hp * context.hp_multiplier)
 				obj:set_properties({hp_max = ent.hp_max})
 				obj:set_hp(ent.hp_max)
-				if type(ent.damage) == "number" then ent.damage = math.ceil(ent.damage * (1 + zone * 0.08 + (in_dungeon and 0.2 or 0))) end
+				if type(ent.damage) == "number" then
+					ent.everforge_base_damage = ent.damage
+					ent.everforge_damage_multiplier = context.damage_multiplier
+					ent.damage = math.ceil(ent.damage * context.damage_multiplier)
+				end
 				ent.everforge_scaled = true
 			end
 		end
