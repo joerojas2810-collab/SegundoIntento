@@ -1,6 +1,7 @@
 -- SPDX-License-Identifier: GPL-3.0-or-later
 local P = everforge.progression
 local M = P.model
+local S = core.get_translator(core.get_current_modname())
 local labels = {mining = "Minería", forging = "Forja", combat = "Combate", exploration = "Exploración", crafting = "Artesanía"}
 local order = {"deep_miner", "forgemaster", "guard", "trailblazer"}
 local form = "everforge:progression"
@@ -21,7 +22,7 @@ local function content(player)
   fs[#fs+1] = ("button[.5,%s;3.1,.55;learn_%s;%s %d/%d]"):format(4.1+i*.65, id, skill.label, p.skills[id] or 0, skill.max)
   fs[#fs+1] = ("label[3.85,%s;%s]"):format(4.35+i*.65, core.formspec_escape(skill.description))
  end
- fs[#fs+1] = "button_exit[.5,7.35;2.2,.55;guide;Guía Everforge]"
+ fs[#fs+1] = ("button_exit[.5,7.35;2.2,.55;guide;%s]"):format(core.formspec_escape(S("Everforge Guide")))
  fs[#fs+1] = "button_exit[9.4,7.35;1.6,.55;quit;Cerrar]"
  return table.concat(fs)
 end
@@ -62,5 +63,9 @@ end)
 
 mcl_inventory.register_survival_inventory_tab({id = "everforge_rpg", description = "Everforge", item_icon = "adamantine:ingot",
  show_inventory = false, build = content, handle = function(player, fields)
+ if fields.guide then
+  if everforge.onboarding then everforge.onboarding.show_hub(player) end
+  return
+ end
  if receive(player, fields) then mcl_inventory.update_inventory(player) end
 end})

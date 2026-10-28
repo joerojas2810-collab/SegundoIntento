@@ -53,6 +53,20 @@ class EverforgeOnboardingContract(unittest.TestCase):
         self.assertIn("wooden axe", ONBOARDING)
         self.assertIn("five disciplines", ONBOARDING)
         self.assertIn("health and hunger", ONBOARDING)
+        self.assertIn("open your inventory (I)", ONBOARDING)
+        self.assertIn("press T to open chat", ONBOARDING)
+        self.assertIn("Settings > Change keys", ONBOARDING)
+
+    def test_hypertext_uses_global_as_a_style_setting_not_a_container(self) -> None:
+        self.assertIn('<global valign=middle><style color=#F2E8D9 size=22>', ONBOARDING)
+        self.assertIn('escape_hypertext(text) .. "</style>"', ONBOARDING)
+        self.assertNotIn('escape_hypertext(text) .. "</global>', ONBOARDING)
+
+    def test_inventory_tab_has_a_live_direct_route_to_the_guide(self) -> None:
+        self.assertIn('S("Everforge Guide")', UI)
+        self.assertIn('if fields.guide then', UI)
+        self.assertIn('everforge.onboarding.show_hub(player)', UI)
+        self.assertIn('build = content, handle = function(player, fields)', UI)
 
     def test_introduction_matches_the_current_five_discipline_system(self) -> None:
         for discipline in ("mining", "forging", "combat", "exploration", "crafting"):
@@ -95,6 +109,11 @@ class EverforgeOnboardingContract(unittest.TestCase):
             po_translation(ES, "Would you like to see a few first steps?"),
             "¿Quieres conocer algunos primeros pasos?",
         )
+        self.assertEqual(po_translation(ES, "Everforge Guide"), "Guía de Everforge")
+        self.assertIsNotNone(po_translation(POT, "Everforge Guide"))
+        self.assertIn("Para volver a esta guía sin escribir un comando", ES)
+        visible = re.findall(r'S\("((?:[^"\\]|\\.)*)"\)', ONBOARDING)
+        self.assertFalse(any("Mineclonia" in value for value in visible))
 
     def test_guidance_does_not_create_quests_or_reveal_hidden_content(self) -> None:
         self.assertNotIn("register_on_dig", ONBOARDING)

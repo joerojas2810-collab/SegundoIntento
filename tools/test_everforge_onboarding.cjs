@@ -31,6 +31,9 @@ local player=make_player("Tester")
 core={}
 function core.get_current_modname() return "everforge" end
 function core.get_translator() return function(s,...)
+  if s=="There is no prescribed route. Set your own pace: explore, build, mine, or let the landscape suggest a direction. This story is yours." then
+    s="Unsafe <tag> & translated </global> text"
+  end
   local args={...}
   return (s:gsub("@(%d+)",function(i) return tostring(args[tonumber(i)]) end))
 end end
@@ -67,8 +70,16 @@ assert(command.func("Tester","") == true)
 assert(current_form == "everforge:guide")
 assert(current_spec:find("craftguide_book.png",1,true) and current_spec:find("mcl_achievements_button.png",1,true))
 callbacks[1](player,current_form,{intro=true})
-assert(current_form == "everforge:introduction" and current_spec:find("A World Without a Written Destination",1,true))
-for _=1,4 do callbacks[1](player,current_form,{next=true}) end
+assert(current_form == "everforge:introduction")
+local intro_titles={"A World Without a Written Destination","What You Do Defines You","Forge Your Own Path","Not Everything Is in Sight","The World Continues With You"}
+for i,title in ipairs(intro_titles) do
+  assert(current_spec:find(title,1,true),"missing narrative card "..i)
+  assert(not current_spec:find("</global>",1,true),"invalid global closing tag in narrative card "..i)
+  if i==1 then
+    assert(current_spec:find("Unsafe &lt;tag&gt; &amp; translated &lt;/global&gt; text",1,true),"translated hypertext was not escaped")
+  end
+  if i<#intro_titles then callbacks[1](player,current_form,{next=true}) end
+end
 assert(current_spec:find("The World Continues With You",1,true))
 assert(current_spec:find("Would you like to see a few first steps?",1,true))
 callbacks[1](player,current_form,{next=true})
@@ -87,6 +98,17 @@ command.func("Tester","help"); assert(current_form=="everforge:guide_help")
 command.func("Tester","controls"); assert(native=="basics:controls")
 command.func("Tester","commands"); assert(native=="advanced:commands")
 command.func("Tester","progression"); assert(native=="progression")
+
+local full_steps=make_player("FullSteps")
+command.func("FullSteps","first_steps")
+local step_titles={"Your First Tools","Learn by Doing","Prepare Your Shelter","Discover the Unknown","Know Your Tools"}
+for i,title in ipairs(step_titles) do
+  assert(current_spec:find(title,1,true),"missing practical card "..i)
+  assert(not current_spec:find("</global>",1,true),"invalid global closing tag in practical card "..i)
+  if i<#step_titles then callbacks[1](full_steps,current_form,{next=true}) end
+end
+callbacks[1](full_steps,current_form,{next=true})
+assert(closed["everforge:first_steps"]==1,"finishing practical cards must close the form")
 
 local optional=make_player("Optional")
 command.func("Optional","intro")
@@ -110,6 +132,12 @@ assert(current_form=="everforge:introduction")
 assert(newcomer.meta:get_int("everforge:onboarding:auto_intro_seen") == 1)
 join_callback(newcomer)
 assert(#queue==0)
+local saved_auto=player.meta:get_int("everforge:onboarding:auto_intro_seen")
+local saved_done=player.meta:get_int("everforge:onboarding:intro_done")
+dofile("mods/MISC/everforge/onboarding.lua")
+assert(player.meta:get_int("everforge:onboarding:auto_intro_seen")==saved_auto)
+assert(player.meta:get_int("everforge:onboarding:intro_done")==saved_done)
+assert(command.func("Tester","")==true and current_form=="everforge:guide")
 for _,screen in ipairs(screens) do print("SCREEN|"..screen[1].."|"..screen[2]) end
 print("Onboarding runtime harness passed: navigation, persistence, camp-ready gate, optional prompt, and Mineclonia-native routes.")
 `;
@@ -123,6 +151,11 @@ for (const line of output.split(/\r?\n/)) {
   const [, name, ...rest] = line.split('|');
   const spec = rest.join('|');
   const size = name === 'everforge:guide_help' ? [12, 6.2] : [12, 7.5];
+  if (spec.includes('</global>')) throw new Error(`${name}: invalid closing global tag reached the client`);
+  if (spec.includes('Mineclonia')) throw new Error(`${name}: internal dependency brand leaked into Everforge UI`);
+  const stylesOpen = (spec.match(/<style/g) || []).length;
+  const stylesClose = (spec.match(/<\/style>/g) || []).length;
+  if (stylesOpen !== stylesClose) throw new Error(`${name}: unbalanced hypertext style tags`);
   screens++;
   for (const match of spec.matchAll(/(box|button|button_exit|image|hypertext)\[([^\]]+)\]/g)) {
     const fields = match[2].split(';');

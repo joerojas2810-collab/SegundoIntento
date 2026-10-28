@@ -1,6 +1,6 @@
 -- SPDX-License-Identifier: GPL-3.0-or-later
 -- Welcome cards and a permanent guide, built only with native Luanti formspecs
--- and Mineclonia's existing help, recipe-book, and advancement interfaces.
+-- and the game's existing help, recipe-book, and achievement interfaces.
 local S = core.get_translator(core.get_current_modname())
 local unpack = table.unpack or unpack
 
@@ -44,7 +44,7 @@ local introductions = {
 local first_steps = {
 	{
 		title = S("Your First Tools"),
-		text = S("Collect a few logs. Turn them into planks in your inventory, make a crafting table, then use Mineclonia's recipe book to look up and craft a wooden axe."),
+		text = S("Collect logs. Open your inventory, place logs in the crafting grid, and take the planks. Use them to make a crafting table; the recipe book (book icon) shows how to make a wooden axe."),
 		icon = "mcl_crafting_table_inv_fill.png",
 	},
 	{
@@ -64,7 +64,7 @@ local first_steps = {
 	},
 	{
 		title = S("Know Your Tools"),
-		text = S("Open /everforge for the native controls and commands help, Mineclonia's recipe book, and its achievements. You can return to this guide whenever you want."),
+		text = S("To return to this guide without typing a command, open your inventory (I), select the Everforge tab, and choose \"Everforge Guide\". Or press T to open chat, type /everforge, and press Enter. I and T are Luanti's default keys; you can change them in Settings > Change keys."),
 		icon = "doc_button_icon_lores.png",
 	},
 }
@@ -101,9 +101,11 @@ local function escape_hypertext(text)
 end
 
 local function card_text(text)
-	-- Keep the hypertext markup static; escape translated copy before adding the
-	-- only permitted line-break element, then escape formspec delimiters.
-	return core.formspec_escape("<style color=#F2E8D9 size=22><global valign=middle>" .. escape_hypertext(text) .. "</global></style>")
+	-- In Luanti hypertext, <global> sets global styles and is not a container;
+	-- closing it is invalid and the client renders </global> as literal text.
+	-- Keep it open for this element, close only the nested style, and escape
+	-- translated copy before formspec delimiters are escaped.
+	return core.formspec_escape("<global valign=middle><style color=#F2E8D9 size=22>" .. escape_hypertext(text) .. "</style>")
 end
 
 local function subtitle_text(text)
@@ -137,8 +139,8 @@ local function show_hub(player, manual)
 		{4.35, 1.7, "first_steps", S("First Steps"), S("Suggestions, never missions"), "mcl_crafting_table_inv_fill.png"},
 		{8.15, 1.7, "progression", S("Progress"), S("Five disciplines and skills"), "everforge_part_head.png"},
 		{0.55, 3.25, "help", S("Help"), S("Controls and commands"), "doc_button_icon_lores.png"},
-		{4.35, 3.25, "recipes", S("Recipes"), S("Mineclonia recipe book"), "craftguide_book.png"},
-		{8.15, 3.25, "achievements", S("Achievements"), S("Mineclonia interface"), "mcl_achievements_button.png"},
+		{4.35, 3.25, "recipes", S("Recipes"), S("Recipe book"), "craftguide_book.png"},
+		{8.15, 3.25, "achievements", S("Achievements"), S("Game achievements"), "mcl_achievements_button.png"},
 	}
 	for _, tile in ipairs(tiles) do
 		local x, y, field, title, subtitle, icon = unpack(tile)
@@ -158,10 +160,10 @@ local function show_help(player, manual)
 		"box[0.35,0.25;11.3,0.75;#242325]",
 		"box[0.35,0.25;0.06,0.75;#C27A4A]",
 		"label[0.72,0.49;" .. core.formspec_escape(core.colorize("#E8B17D", S("Controls and Commands"))) .. "]",
-		"label[0.72,1.25;" .. core.formspec_escape(S("Open Mineclonia's existing help entries. Controls can be remapped in Luanti settings.")) .. "]",
+		"label[0.72,1.25;" .. core.formspec_escape(S("Open the available help pages. Controls can be changed in the game settings.")) .. "]",
 		button(0.8, 2.1, 4.5, 0.8, "controls", S("Controls")),
 		button(6.7, 2.1, 4.5, 0.8, "commands", S("Commands")),
-		button(0.8, 3.3, 4.5, 0.8, "all_help", S("Full Mineclonia Help")),
+		button(0.8, 3.3, 4.5, 0.8, "all_help", S("Complete Help")),
 		button(0.8, 4.85, 2.0, 0.55, "back", S("Back")),
 		button_exit(9.2, 4.85, 2.0, 0.55, "close", S("Close")),
 	}
@@ -238,7 +240,7 @@ local function show_doc_entry(player, category, entry)
 		doc.show_doc(name)
 		return true
 	end
-	core.chat_send_player(name, S("Mineclonia's help interface is not available right now."))
+	core.chat_send_player(name, S("The help pages are unavailable right now."))
 	return false
 end
 
@@ -250,7 +252,7 @@ local function open_recipes(player)
 		mcl_craftguide.show(player:get_player_name())
 		return true
 	end
-	core.chat_send_player(player:get_player_name(), S("The Mineclonia recipe book is not available right now."))
+	core.chat_send_player(player:get_player_name(), S("The recipe book is unavailable right now."))
 	return false
 end
 
@@ -264,7 +266,7 @@ local function open_achievements(player)
 		awards.show_to(player:get_player_name(), player:get_player_name(), nil, false)
 		return true
 	end
-	core.chat_send_player(player:get_player_name(), S("Mineclonia's achievements interface is not available in this world."))
+	core.chat_send_player(player:get_player_name(), S("The achievements screen is unavailable in this world."))
 	return false
 end
 
@@ -359,7 +361,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 				if everforge._suppress_waila then everforge._suppress_waila(player, "doc:") end
 				doc.show_doc(name)
 			else
-				core.chat_send_player(name, S("Mineclonia's help interface is not available right now."))
+				core.chat_send_player(name, S("The help pages are unavailable right now."))
 			end
 		elseif fields.back then show_hub(player, false) end
 		return true

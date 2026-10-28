@@ -541,8 +541,8 @@ msgstr "Tu viaje no termina con esta bienvenida. Construye, transforma y habita 
 msgid "Your First Tools"
 msgstr "Tus primeras herramientas"
 
-msgid "Collect a few logs. Turn them into planks in your inventory, make a crafting table, then use Mineclonia's recipe book to look up and craft a wooden axe."
-msgstr "Recoge algunos troncos. Conviértelos en tablones en tu inventario, fabrica una mesa de trabajo y consulta el recetario de Mineclonia para encontrar y fabricar un hacha de madera."
+msgid "Collect logs. Open your inventory, place logs in the crafting grid, and take the planks. Use them to make a crafting table; the recipe book (book icon) shows how to make a wooden axe."
+msgstr "Recoge troncos. Abre el inventario, coloca los troncos en la cuadrícula de fabricación y recoge los tablones. Úsalos para fabricar una mesa de trabajo; el recetario (icono del libro) muestra cómo hacer un hacha de madera."
 
 msgid "Learn by Doing"
 msgstr "Aprende haciendo"
@@ -565,8 +565,8 @@ msgstr "Sal cuando quieras. Observa el paisaje y elige tu propio rumbo; explorar
 msgid "Know Your Tools"
 msgstr "Conoce tus herramientas"
 
-msgid "Open /everforge for the native controls and commands help, Mineclonia's recipe book, and its achievements. You can return to this guide whenever you want."
-msgstr "Abre /everforge para consultar los controles y comandos nativos, el recetario de Mineclonia y sus logros. Puedes volver a esta guía cuando quieras."
+msgid "To return to this guide without typing a command, open your inventory (I), select the Everforge tab, and choose \"Everforge Guide\". Or press T to open chat, type /everforge, and press Enter. I and T are Luanti's default keys; you can change them in Settings > Change keys."
+msgstr "Para volver a esta guía sin escribir un comando, abre el inventario con I, elige la pestaña Everforge y pulsa «Guía de Everforge». También puedes pulsar T para abrir el chat, escribir /everforge y pulsar Enter. I y T son las teclas predeterminadas de Luanti; puedes cambiarlas en Ajustes > Teclas."
 
 msgid "Everforge — Guide and Path"
 msgstr "Everforge — Guía y camino"
@@ -601,20 +601,20 @@ msgstr "Controles y comandos"
 msgid "Recipes"
 msgstr "Recetas"
 
-msgid "Mineclonia recipe book"
-msgstr "Recetario de Mineclonia"
+msgid "Recipe book"
+msgstr "Recetario"
 
 msgid "Achievements"
 msgstr "Logros"
 
-msgid "Mineclonia interface"
-msgstr "Interfaz de Mineclonia"
+msgid "Game achievements"
+msgstr "Logros del juego"
 
 msgid "Controls and Commands"
 msgstr "Controles y comandos"
 
-msgid "Open Mineclonia's existing help entries. Controls can be remapped in Luanti settings."
-msgstr "Abre las entradas de ayuda existentes de Mineclonia. Puedes reasignar los controles desde los ajustes de Luanti."
+msgid "Open the available help pages. Controls can be changed in the game settings."
+msgstr "Abre las páginas de ayuda disponibles. Puedes cambiar los controles en los ajustes del juego."
 
 msgid "Controls"
 msgstr "Controles"
@@ -622,8 +622,8 @@ msgstr "Controles"
 msgid "Commands"
 msgstr "Comandos"
 
-msgid "Full Mineclonia Help"
-msgstr "Ayuda completa de Mineclonia"
+msgid "Complete Help"
+msgstr "Ayuda completa"
 
 msgid "Back"
 msgstr "Volver"
@@ -658,14 +658,14 @@ msgstr "Saltar"
 msgid "Would you like to see a few first steps? You can open them any time with /everforge first_steps; the world is ready to explore."
 msgstr "¿Quieres conocer algunos primeros pasos? Puedes abrirlos cuando quieras con /everforge first_steps; el mundo está listo para explorar."
 
-msgid "Mineclonia's help interface is not available right now."
-msgstr "La interfaz de ayuda de Mineclonia no está disponible ahora."
+msgid "The help pages are unavailable right now."
+msgstr "Las páginas de ayuda no están disponibles ahora."
 
-msgid "The Mineclonia recipe book is not available right now."
-msgstr "El recetario de Mineclonia no está disponible ahora."
+msgid "The recipe book is unavailable right now."
+msgstr "El recetario no está disponible ahora."
 
-msgid "Mineclonia's achievements interface is not available in this world."
-msgstr "La interfaz de logros de Mineclonia no está disponible en este mundo."
+msgid "The achievements screen is unavailable in this world."
+msgstr "La pantalla de logros no está disponible en este mundo."
 
 msgid "Everforge progression is not available right now."
 msgstr "El progreso de Everforge no está disponible ahora."
@@ -678,3 +678,6 @@ msgstr "Sección desconocida; se muestra la guía de Everforge."
 
 msgid "Card @1 of @2"
 msgstr "Tarjeta @1 de @2"
+
+msgid "Everforge Guide"
+msgstr "Guía de Everforge"
