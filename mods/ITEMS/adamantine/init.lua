@@ -442,7 +442,14 @@ local ARMOR_PIECES = { "helmet", "chestplate", "leggings", "boots" }
 if minetest.global_exists("mcl_armor") and mcl_armor.register_set then
 	mcl_armor.register_set({
 		name = "adamantine",
-		description = S("Adamantine"),
+		-- register_set's deprecated `description` is translated again by
+		-- Mineclonia. Supply complete localized names through its current API.
+		descriptions = {
+			head = S("Adamantine Helmet"),
+			torso = S("Adamantine Chestplate"),
+			legs = S("Adamantine Leggings"),
+			feet = S("Adamantine Boots"),
+		},
 		durability = 800,
 		enchantability = ENCHANTABILITY,
 		points = { head = 3, torso = 8, legs = 6, feet = 3 },

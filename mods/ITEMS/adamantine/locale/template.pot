@@ -102,3 +102,15 @@ msgstr ""
 
 msgid "Deepslate Adamantine Ore"
 msgstr ""
+
+msgid "Adamantine Helmet"
+msgstr ""
+
+msgid "Adamantine Chestplate"
+msgstr ""
+
+msgid "Adamantine Leggings"
+msgstr ""
+
+msgid "Adamantine Boots"
+msgstr ""

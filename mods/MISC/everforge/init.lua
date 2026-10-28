@@ -384,7 +384,11 @@ local function update_melter_interface(pos)
 	local meta = core.get_meta(pos)
 	local formspec, state = build_forge_formspec(pos)
 	meta:set_string("formspec", formspec)
-	meta:set_string("infotext", S("Everforge Alloy Melter — @1", state))
+	-- Luanti renders `infotext` as a separate native label, independently
+	-- of our WAILA HUD. Keep the full status for WAILA and the formspec,
+	-- but do not publish a second copy to the client's native label.
+	meta:set_string("everforge:machine_infotext", S("Everforge Alloy Melter — @1", state))
+	meta:set_string("infotext", "")
 end
 
 core.register_craftitem("everforge:tool_head", {description = S("Forged Tool Head"), inventory_image = "default_steel_ingot.png^[colorize:#b36a3c:100", stack_max = 99})
@@ -1050,6 +1054,9 @@ local localized_item_name
 local function get_node_extra(node_name, def, pos, meta)
 	local extra = {}
 	local info = meta and meta:get_string("infotext") or ""
+	if node_name == "everforge:alloy_melter" and meta then
+		info = meta:get_string("everforge:machine_infotext")
+	end
 	if def.on_timer or node_name == "everforge:alloy_melter" then
 		local active = meta and meta:get_string("active_input") or ""
 		local recipe = smelt_recipes[active]
@@ -1743,3 +1750,8 @@ core.register_chatcommand("everforge_mapgen_status", {
 		return true, "Generation registration status sent to chat."
 	end,
 })
+
+-- Run only on explicit administrator request; no global translation wrappers.
+dofile(core.get_modpath(modname) .. "/ui_probe.lua")(function(player)
+	return waila_enabled(player), waila_suppressed[player:get_player_name()] ~= nil
+end)
