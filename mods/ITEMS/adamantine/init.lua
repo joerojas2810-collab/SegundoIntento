@@ -3,6 +3,9 @@
 -- Tool stats are read from the netherite tools at load time so every
 -- adamantine tool is guaranteed to beat its netherite counterpart.
 
+adamantine = rawget(_G, "adamantine") or {}
+local S = minetest.get_translator("adamantine")
+
 local TINT = "^[hsl:90:30:0^[contrast:20:0"
 
 local METAL_TINT = "^[multiply:#b266ff^[contrast:15:0"
@@ -149,15 +152,15 @@ end
 -- Materials
 -- ---------------------------------------------------------------------------
 minetest.register_craftitem("adamantine:lump", {
-	description = "Adamantine Lump",
-	_doc_items_longdesc = "A lump of raw adamantine. Smelt it in a furnace to get an adamantine ingot.",
+	description = S("Adamantine Lump"),
+	_doc_items_longdesc = S("A lump of raw adamantine. Smelt it in a furnace to get an adamantine ingot."),
 	inventory_image = TEX.lump,
 	groups = { craftitem = 1 },
 })
 
 minetest.register_craftitem("adamantine:ingot", {
-	description = "Adamantine Ingot",
-	_doc_items_longdesc = "An ingot of adamantine, a metal harder and tougher than diamond and netherite.",
+	description = S("Adamantine Ingot"),
+	_doc_items_longdesc = S("An ingot of adamantine, a metal harder and tougher than diamond and netherite."),
 	inventory_image = TEX.ingot,
 	groups = { craftitem = 1 },
 })
@@ -192,8 +195,8 @@ end
 -- Nodes
 -- ---------------------------------------------------------------------------
 minetest.register_node("adamantine:ore", {
-	description = "Adamantine Ore",
-	_doc_items_longdesc = "Adamantine ore is found very deep underground. It needs at least a diamond pickaxe to mine.",
+	description = S("Adamantine Ore"),
+	_doc_items_longdesc = S("Adamantine ore is found very deep underground. It needs at least a diamond pickaxe to mine."),
 	tiles = TILES_ORE,
 	is_ground_content = true,
 	groups = { pickaxey = ORE_LEVEL, building_block = 1, material_stone = 1 },
@@ -206,8 +209,8 @@ minetest.register_node("adamantine:ore", {
 })
 
 minetest.register_node("adamantine:deepslate_ore", {
-	description = "Deepslate Adamantine Ore",
-	_doc_items_longdesc = "Adamantine ore embedded in deepslate. It needs at least a diamond pickaxe to mine.",
+	description = S("Deepslate Adamantine Ore"),
+	_doc_items_longdesc = S("Adamantine ore embedded in deepslate. It needs at least a diamond pickaxe to mine."),
 	tiles = TILES_DEEPSLATE_ORE,
 	is_ground_content = true,
 	groups = { pickaxey = ORE_LEVEL, building_block = 1, material_stone = 1 },
@@ -220,8 +223,8 @@ minetest.register_node("adamantine:deepslate_ore", {
 })
 
 minetest.register_node("adamantine:block", {
-	description = "Block of Adamantine",
-	_doc_items_longdesc = "A block of adamantine. Very hard; needs at least a diamond pickaxe to mine.",
+	description = S("Block of Adamantine"),
+	_doc_items_longdesc = S("A block of adamantine. Very hard; needs at least a diamond pickaxe to mine."),
 	tiles = TILES_BLOCK,
 	is_ground_content = false,
 	groups = { pickaxey = ORE_LEVEL, building_block = 1 },
@@ -241,6 +244,17 @@ local ore_y_min = (rawget(_G, "mcl_vars") and mcl_vars.mg_overworld_min) or -128
 if ore_y_min >= ORE_Y_MAX then
 	ore_y_min = -128
 end
+
+-- Expose the exact registered bounds and placement parameters so in-game
+-- guides and audits never copy stale generation numbers from documentation.
+adamantine.generation = {
+	y_min = ore_y_min,
+	y_max = ORE_Y_MAX,
+	cluster_size = 2,
+	rarity_filter = 4,
+	levelgen_enabled = mcl_vars and mcl_vars.enable_mcl_levelgen == true or false,
+	placed_features = {"adamantine:ore_stone_placed", "adamantine:ore_deepslate_placed"},
+}
 
 local function register_adamantine_ore(ore_name, replacement, y_min, y_max, suffix)
 	if not minetest.registered_nodes[replacement] then return end
@@ -293,8 +307,8 @@ local diamond_hoe = minetest.registered_tools["mcl_farming:hoe_diamond"]
 local sword_s = derive_stats(NETHERITE.sword, "swordy", 10, 0.625)
 log_stats("sword", sword_s)
 minetest.register_tool("adamantine:sword", {
-	description = "Adamantine Sword",
-	_doc_items_longdesc = "An adamantine sword. Deals more damage than diamond or netherite and lasts far longer.",
+	description = S("Adamantine Sword"),
+	_doc_items_longdesc = S("An adamantine sword. Deals more damage than diamond or netherite and lasts far longer."),
 	inventory_image = TEX.sword,
 	wield_scale = wield_scale,
 	groups = { weapon = 1, sword = 1, dig_speed_class = 6, enchantability = ENCHANTABILITY },
@@ -317,8 +331,8 @@ minetest.register_tool("adamantine:sword", {
 local pick_s = derive_stats(NETHERITE.pick, "pickaxey", 8, 0.83333333)
 log_stats("pickaxe", pick_s)
 minetest.register_tool("adamantine:pick", {
-	description = "Adamantine Pickaxe",
-	_doc_items_longdesc = "An adamantine pickaxe. It mines faster than any other pickaxe and can break every block that needs a pickaxe.",
+	description = S("Adamantine Pickaxe"),
+	_doc_items_longdesc = S("An adamantine pickaxe. It mines faster than any other pickaxe and can break every block that needs a pickaxe."),
 	inventory_image = TEX.pick,
 	wield_scale = wield_scale,
 	groups = { tool = 1, pickaxe = 1, dig_speed_class = 6, enchantability = ENCHANTABILITY },
@@ -340,8 +354,8 @@ minetest.register_tool("adamantine:pick", {
 local axe_s = derive_stats(NETHERITE.axe, "axey", 12, 1.0)
 log_stats("axe", axe_s)
 minetest.register_tool("adamantine:axe", {
-	description = "Adamantine Axe",
-	_doc_items_longdesc = "An adamantine axe. It chops wood extremely fast and hits very hard.",
+	description = S("Adamantine Axe"),
+	_doc_items_longdesc = S("An adamantine axe. It chops wood extremely fast and hits very hard."),
 	inventory_image = TEX.axe,
 	wield_scale = wield_scale,
 	groups = { tool = 1, axe = 1, dig_speed_class = 6, enchantability = ENCHANTABILITY },
@@ -364,8 +378,8 @@ minetest.register_tool("adamantine:axe", {
 local shovel_s = derive_stats(NETHERITE.shovel, "shovely", 8, 1.0)
 log_stats("shovel", shovel_s)
 minetest.register_tool("adamantine:shovel", {
-	description = "Adamantine Shovel",
-	_doc_items_longdesc = "An adamantine shovel. It digs soft blocks extremely fast.",
+	description = S("Adamantine Shovel"),
+	_doc_items_longdesc = S("An adamantine shovel. It digs soft blocks extremely fast."),
 	inventory_image = TEX.shovel,
 	wield_scale = wield_scale,
 	groups = { tool = 1, shovel = 1, dig_speed_class = 6, enchantability = ENCHANTABILITY },
@@ -388,8 +402,8 @@ minetest.register_tool("adamantine:shovel", {
 local hoe_s = derive_stats(NETHERITE.hoe, "hoey", 1, 0.25)
 log_stats("hoe", hoe_s)
 minetest.register_tool("adamantine:hoe", {
-	description = "Adamantine Hoe",
-	_doc_items_longdesc = "An adamantine hoe. It tills soil and almost never wears out.",
+	description = S("Adamantine Hoe"),
+	_doc_items_longdesc = S("An adamantine hoe. It tills soil and almost never wears out."),
 	inventory_image = TEX.hoe,
 	wield_scale = wield_scale,
 	groups = { tool = 1, hoe = 1, dig_speed_class = 6, enchantability = ENCHANTABILITY },
@@ -420,7 +434,7 @@ local ARMOR_PIECES = { "helmet", "chestplate", "leggings", "boots" }
 if minetest.global_exists("mcl_armor") and mcl_armor.register_set then
 	mcl_armor.register_set({
 		name = "adamantine",
-		description = "Adamantine",
+		description = S("Adamantine"),
 		durability = 800,
 		enchantability = ENCHANTABILITY,
 		points = { head = 3, torso = 8, legs = 6, feet = 3 },

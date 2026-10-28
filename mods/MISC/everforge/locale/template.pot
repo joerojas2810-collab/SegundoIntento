@@ -1,0 +1,431 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luanti textdomain everforge 1.0.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "@1 @2"
+msgstr ""
+
+msgid "@1 @2/@3 — @4"
+msgstr ""
+
+msgid "@1, Y @2 to @3; approximately @4 configured cluster placements per horizontal chunk."
+msgstr ""
+
+msgid "A modular Everforge tool. Its mining level is fixed by its head; binding, handle and tempering quality affect its other statistics."
+msgstr ""
+
+msgid "A reusable Everforge part made from @1. Material rarity and finished-tool craft quality are separate properties."
+msgstr ""
+
+msgid "A scholar of ancient dungeons."
+msgstr ""
+
+msgid "A specialist in alloys and crafted gear."
+msgstr ""
+
+msgid "Accepts: Tin, silver, mithril or adamantine lumps."
+msgstr ""
+
+msgid "Activate Everforge dungeon spawners"
+msgstr ""
+
+msgid "Adamantine"
+msgstr ""
+
+msgid "Alloy Melter"
+msgstr ""
+
+msgid "Alloy Modular @1"
+msgstr ""
+
+msgid "Also raw iron and raw gold; ingots are not accepted."
+msgstr ""
+
+msgid "Ancient Dungeon Spawner"
+msgstr ""
+
+msgid "Arcanist"
+msgstr ""
+
+msgid "Axe"
+msgstr ""
+
+msgid "Axe Head"
+msgstr ""
+
+msgid "Biomes: registered overworld biome entries for high, middle and deep features (@1, @2 and @3)."
+msgstr ""
+
+msgid "Biomes: registered overworld biomes; @1 stone and @2 deepslate feature entries are active."
+msgstr ""
+
+msgid "Block information overlay disabled."
+msgstr ""
+
+msgid "Block information overlay enabled."
+msgstr ""
+
+msgid "Block: @1"
+msgstr ""
+
+msgid "Choose your class (selection is permanent):"
+msgstr ""
+
+msgid "Class: @1    Level: @2    Skill points: @3"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Common"
+msgstr ""
+
+msgid "Common material"
+msgstr ""
+
+msgid "Container"
+msgstr ""
+
+msgid "Copper"
+msgstr ""
+
+msgid "Craft quality: @1"
+msgstr ""
+
+msgid "Crop"
+msgstr ""
+
+msgid "Crop stage: @1"
+msgstr ""
+
+msgid "Damage: @1; attack interval: @2 s"
+msgstr ""
+
+msgid "Deep Miner"
+msgstr ""
+
+msgid "Deep band"
+msgstr ""
+
+msgid "Depth: Y @1 to @2, taken from the active Adamantine generation bounds."
+msgstr ""
+
+msgid "Dimension: Overworld"
+msgstr ""
+
+msgid "Dungeon Relic"
+msgstr ""
+
+msgid "Dungeon Reward Cache"
+msgstr ""
+
+msgid "Dungeoneer"
+msgstr ""
+
+msgid "Durability: @1 uses"
+msgstr ""
+
+msgid "Enable or disable the contextual block information overlay."
+msgstr ""
+
+msgid "Epic"
+msgstr ""
+
+msgid "Epic material"
+msgstr ""
+
+msgid "Everforge Alloy Melter"
+msgstr ""
+
+msgid "Everforge RPG"
+msgstr ""
+
+msgid "Everforge dungeon spawn pulse"
+msgstr ""
+
+msgid "Everforge heads, bindings and reinforced handles."
+msgstr ""
+
+msgid "Forged Tool Binding"
+msgstr ""
+
+msgid "Forged Tool Head"
+msgstr ""
+
+msgid "Forgemaster"
+msgstr ""
+
+msgid "Frequency: one placed-feature attempt per @1 chunks (configured rarity filter), cluster size @2."
+msgstr ""
+
+msgid "Fuel"
+msgstr ""
+
+msgid "Gain a small XP bonus near dungeon guardians."
+msgstr ""
+
+msgid "Generation, mining, processing and uses for Everforge metals."
+msgstr ""
+
+msgid "Gold"
+msgstr ""
+
+msgid "Head: @1 (@2); binding: @3 (@4); handle: @5 (@6)"
+msgstr ""
+
+msgid "High band"
+msgstr ""
+
+msgid "Hoe"
+msgstr ""
+
+msgid "Initialize Everforge dungeon caches"
+msgstr ""
+
+msgid "Input"
+msgstr ""
+
+msgid "Inventory"
+msgstr ""
+
+msgid "Iron"
+msgstr ""
+
+msgid "Iron Tool Binding (legacy component)"
+msgstr ""
+
+msgid "Iron Tool Head (legacy component)"
+msgstr ""
+
+msgid "Iron-Reinforced Handle (legacy component)"
+msgstr ""
+
+msgid "Learn"
+msgstr ""
+
+msgid "Legendary"
+msgstr ""
+
+msgid "Legendary material"
+msgstr ""
+
+msgid "Machine"
+msgstr ""
+
+msgid "Machine is burning fuel."
+msgstr ""
+
+msgid "Main uses: @1"
+msgstr ""
+
+msgid "Metal"
+msgstr ""
+
+msgid "Middle band"
+msgstr ""
+
+msgid "Mined resource: @1."
+msgstr ""
+
+msgid "Mineral: @1"
+msgstr ""
+
+msgid "Minerals"
+msgstr ""
+
+msgid "Minimum mining level: @1"
+msgstr ""
+
+msgid "Mining speed: @1; mining level: @2"
+msgstr ""
+
+msgid "Mithril"
+msgstr ""
+
+msgid "Mobile explorer and ranged specialist."
+msgstr ""
+
+msgid "Modular @1"
+msgstr ""
+
+msgid "No additional Everforge recipes use this metal."
+msgstr ""
+
+msgid "No mineral entries are available."
+msgstr ""
+
+msgid "Only newly generated terrain can contain new deposits; existing map blocks are unchanged."
+msgstr ""
+
+msgid "Open Everforge class and skill progression."
+msgstr ""
+
+msgid "Open the in-game mineral generation and mining guide."
+msgstr ""
+
+msgid "Ore"
+msgstr ""
+
+msgid "Pickaxe"
+msgstr ""
+
+msgid "Pickaxe Head"
+msgstr ""
+
+msgid "Plant"
+msgstr ""
+
+msgid "Processing: @1 → @2"
+msgstr ""
+
+msgid "Processing: @1 → @2 in a Mineclonia furnace or Alloy Melter."
+msgstr ""
+
+msgid "Processing: @1 → @2 in a Mineclonia furnace."
+msgstr ""
+
+msgid "Products"
+msgstr ""
+
+msgid "Quality bonuses: +@1% damage, +@2% mining speed, +@3% durability, +@4% attack speed"
+msgstr ""
+
+msgid "Ranger"
+msgstr ""
+
+msgid "Rare"
+msgstr ""
+
+msgid "Rare material"
+msgstr ""
+
+msgid "Recommended tool: @1"
+msgstr ""
+
+msgid "Recommended tool: Hand or any tool"
+msgstr ""
+
+msgid "Recommended tool: Hoe"
+msgstr ""
+
+msgid "Recommended tool: Pickaxe; Mineclonia pickaxey group level: @1"
+msgstr ""
+
+msgid "Recommended tool: Shovel"
+msgstr ""
+
+msgid "Reduces wear on Everforge tools."
+msgstr ""
+
+msgid "Reinforced Handle"
+msgstr ""
+
+msgid "Run faster."
+msgstr ""
+
+msgid "Sealed Dungeon Cache"
+msgstr ""
+
+msgid "Shears"
+msgstr ""
+
+msgid "Shovel"
+msgstr ""
+
+msgid "Shovel Head"
+msgstr ""
+
+msgid "Silver"
+msgstr ""
+
+msgid "Skills: each rank costs one point (earned every 5 XP levels)."
+msgstr ""
+
+msgid "Smelt alloys faster at Everforge melters."
+msgstr ""
+
+msgid "Smith"
+msgstr ""
+
+msgid "Status: @1"
+msgstr ""
+
+msgid "Stone"
+msgstr ""
+
+msgid "Sword"
+msgstr ""
+
+msgid "Sword Blade"
+msgstr ""
+
+msgid "Takes 10% less mob and player melee damage."
+msgstr ""
+
+msgid "That skill is already at its maximum rank."
+msgstr ""
+
+msgid "Tin"
+msgstr ""
+
+msgid "Tool Binding"
+msgstr ""
+
+msgid "Tools or equipment registered for this ingot."
+msgstr ""
+
+msgid "Trailblazer"
+msgstr ""
+
+msgid "Type: @1"
+msgstr ""
+
+msgid "Unassigned"
+msgstr ""
+
+msgid "Uncommon"
+msgstr ""
+
+msgid "Uncommon material"
+msgstr ""
+
+msgid "Unknown registered drop"
+msgstr ""
+
+msgid "Update Everforge alloy melter inventory and interface"
+msgstr ""
+
+msgid "Vanguard"
+msgstr ""
+
+msgid "Wood"
+msgstr ""
+
+msgid "You must be online to change this setting."
+msgstr ""
+
+msgid "You must be online to use this command."
+msgstr ""
+
+msgid "You need another skill point. Earn XP and level up."
+msgstr ""
+
+msgid "Your class is already set; it cannot be changed."
+msgstr ""
+
+msgid "[on|off]"
+msgstr ""
+
+msgid "The server has disabled the contextual block information overlay."
+msgstr ""
+
+msgid "Storage and construction blocks."
+msgstr ""
+
+msgid "Generation path: Mineclonia levelgen placed features."
+msgstr ""
+
+msgid "Generation path: engine ore fallback; Mineclonia levelgen is disabled."
+msgstr ""

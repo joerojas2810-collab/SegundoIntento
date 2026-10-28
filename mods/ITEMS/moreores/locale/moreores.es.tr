@@ -3,6 +3,7 @@
 # Translation by kaeza
 
 @1 Ore=Mineral de @1
+Deepslate @1 Ore=Mineral de @1 de pizarra profunda
 @1 Lump=Pepita de @1
 @1 Ingot=Lingote de @1
 @1 Block=Bloque de @1
@@ -10,6 +11,7 @@
 @1 Shovel=Pala de @1
 @1 Axe=Hacha de @1
 @1 Sword=Espada de @1
+@1 Hoe=Azada de @1
 
 Copper=Cobre
 Tin=Estaño

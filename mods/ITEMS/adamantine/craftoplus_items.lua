@@ -2,6 +2,7 @@
 -- (items/gold/*.lua by Mish7913, GPL-3.0-or-later), with the textures
 -- recolored to adamantine in code. Optional: does nothing without CraftoPlus.
 -- Items: ladder, chain, door (+ double door), bars, trapdoor, carved block.
+local S = minetest.get_translator("adamantine")
 
 if not minetest.get_modpath("craftoplus") then
 	return
@@ -42,10 +43,8 @@ end
 if craftoplus.register_ladder then
 	local tex = tint(img("cfp_gold_ladder.png"))
 	local ladder = craftoplus.register_ladder("adamantine:ladder", {
-		description = "Adamantine Ladder",
-		_doc_items_longdesc = "A piece of ladder which allows you to climb vertically. "
-			.. "Ladders can only be placed on the side of solid blocks "
-			.. "and not on glass, leaves, ice, slabs, glowstone, nor sea lanterns.",
+		description = S("Adamantine Ladder"),
+		_doc_items_longdesc = S("A piece of ladder which allows you to climb vertically. Ladders can only be placed on the side of solid blocks and not on glass, leaves, ice, slabs, glowstone, nor sea lanterns."),
 		tiles = { tex, "" },
 		inventory_image = tex,
 		wield_image = tex,
@@ -76,8 +75,8 @@ do
 	local chain_box = { type = "fixed", fixed = { { -0.0625, -0.5, -0.0625, 0.0625, 0.5, 0.0625 } } }
 
 	minetest.register_node("adamantine:chain", {
-		description = "Adamantine Chain",
-		_doc_items_longdesc = "Chains are adamantine metallic decoration blocks.",
+		description = S("Adamantine Chain"),
+		_doc_items_longdesc = S("Chains are adamantine metallic decoration blocks."),
 		inventory_image = tint(img("cfp_gold_chain.png")),
 		tiles = { tint(img("cfp_gold_chain_texture.png")), "" },
 		drawtype = "mesh",
@@ -135,8 +134,8 @@ end
 -- ---------------------------------------------------------------------------
 if type(mcl_panes) == "table" and mcl_panes.register_pane then
 	mcl_panes.register_pane("adamantine:bars", {
-		description = "Adamantine Bars",
-		_doc_items_longdesc = "Adamantine bars neatly connect to their neighbors as you build them.",
+		description = S("Adamantine Bars"),
+		_doc_items_longdesc = S("Adamantine bars neatly connect to their neighbors as you build them."),
 		textures = {
 			tint("mcl_gold_bars.png"), "", tint("mcl_gold_bars_top.png"),
 		},
@@ -159,11 +158,10 @@ end
 if type(mcl_doors) == "table" and mcl_doors.register_door then
 	local door_inv = tint(img("cfp_gold_door_inv.png"))
 	local door_tex = tint(img("cfp_door_gold.png"))
-	local door_longdesc = "Adamantine doors are 2-block high barriers which can only be "
-		.. "opened or closed by a redstone signal, and by hand."
+	local door_longdesc = S("Adamantine doors are 2-block high barriers which can only be opened or closed by a redstone signal, and by hand.")
 
 	mcl_doors:register_door("adamantine:door", {
-		description = "Adamantine Door",
+		description = S("Adamantine Door"),
 		_doc_items_longdesc = door_longdesc,
 		inventory_image = door_inv,
 		tiles = { { name = door_tex, backface_culling = true } },
@@ -193,9 +191,9 @@ if type(mcl_doors) == "table" and mcl_doors.register_door then
 
 	if m7a.register_door then
 		m7a.register_door("adamantine:door", {
-			single_description = "Adamantine Door",
-			double_description = "Adamantine Double Door",
-			reverse_description = "Adamantine Reverse Door",
+			single_description = S("Adamantine Door"),
+			double_description = S("Adamantine Double Door"),
+			reverse_description = S("Adamantine Reverse Door"),
 
 			single_inv_image = door_inv,
 			double_inv_image = tint(img("cfp_gold_double_door_inv.png")),
@@ -228,7 +226,7 @@ if m7a.register_multinode then
 
 	m7a.register_multinode("adamantine:trapdoor", {
 		shared = {
-			description = "Adamantine Trapdoor",
+			description = S("Adamantine Trapdoor"),
 			tiles = { trap_tex, "" },
 			inventory_image = trap_inv,
 			wield_image = trap_inv,
@@ -293,7 +291,7 @@ do
 	end
 
 	minetest.register_node(carved, {
-		description = "Carved Adamantine Block",
+		description = S("Carved Adamantine Block"),
 		tiles = { carved_tex, carved_tex, carved_tex, carved_tex, carved_tex, carved_tex },
 		is_ground_content = false,
 		groups = carved_groups,

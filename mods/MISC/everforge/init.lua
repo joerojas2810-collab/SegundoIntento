@@ -90,27 +90,26 @@ local function show_rpg(player)
 	local class = everforge.classes[class_key]
 	local class_name = class and class.label or S("Unassigned")
 	local lv = mcl_experience.get_level(player) or 0
-	local fs = {"formspec_version[7]size[9,8]", "label[0.5,0.45;Everforge RPG]",
-		"label[0.5,0.95;Class: ", core.formspec_escape(class_name), "    Level: ", tostring(lv),
-		"    Skill points: ", tostring(get_points(player)), "]",
-		"label[0.5,1.55;Choose your class (selection is permanent):]"}
+	local fs = {"formspec_version[7]size[9,8]", "label[0.5,0.45;" .. core.formspec_escape(S("Everforge RPG")) .. "]",
+		"label[0.5,0.95;" .. core.formspec_escape(S("Class: @1    Level: @2    Skill points: @3", class_name, tostring(lv), tostring(get_points(player)))) .. "]",
+		"label[0.5,1.55;" .. core.formspec_escape(S("Choose your class (selection is permanent):")) .. "]"}
 	local buttons = {{"vanguard", "Vanguard"}, {"ranger", "Ranger"}, {"arcanist", "Arcanist"}, {"smith", "Smith"}}
 	for i, b in ipairs(buttons) do
 		local x = 0.5 + ((i - 1) % 2) * 4.1
 		local y = 1.9 + math.floor((i - 1) / 2) * 0.65
-		fs[#fs + 1] = ("button[%s,%s;3.8,0.55;class_%s;%s]"):format(x, y, b[1], b[2])
+		fs[#fs + 1] = ("button[%s,%s;3.8,0.55;class_%s;%s]"):format(x, y, b[1], core.formspec_escape(S(b[2])))
 		fs[#fs + 1] = ("tooltip[class_%s;%s]"):format(b[1], core.formspec_escape(everforge.classes[b[1]].description))
 	end
-	fs[#fs + 1] = "label[0.5,3.35;Skills: each rank costs one point (earned every 5 XP levels).]"
+	fs[#fs + 1] = "label[0.5,3.35;" .. core.formspec_escape(S("Skills: each rank costs one point (earned every 5 XP levels).")) .. "]"
 	local skills = {"trailblazer", "deep_miner", "dungeoneer", "forgemaster"}
 	for i, key in ipairs(skills) do
 		local skill = everforge.skills[key]
 		local rank = skill_rank(player, key)
 		local y = 3.7 + (i - 1) * 0.65
-		fs[#fs + 1] = ("label[0.55,%s;%s %s/%s — %s]"):format(y, skill.label, rank, skill.max, skill.description)
-		fs[#fs + 1] = ("button[7.1,%s;1.35,0.5;skill_%s;Learn]"):format(y - 0.1, key)
+		fs[#fs + 1] = ("label[0.55,%s;%s]"):format(y, core.formspec_escape(S("@1 @2/@3 — @4", skill.label, tostring(rank), tostring(skill.max), skill.description)))
+		fs[#fs + 1] = ("button[7.1,%s;1.35,0.5;skill_%s;%s]"):format(y - 0.1, key, core.formspec_escape(S("Learn")))
 	end
-	fs[#fs + 1] = "button_exit[7.0,7.25;1.5,0.55;close;Close]"
+	fs[#fs + 1] = "button_exit[7.0,7.25;1.5,0.55;close;" .. core.formspec_escape(S("Close")) .. "]"
 	core.show_formspec(player:get_player_name(), FORM, table.concat(fs))
 end
 
@@ -381,15 +380,16 @@ core.register_node("everforge:alloy_melter", {
 		end
 
 		meta:set_int("burn", meta:get_int("burn") - 1)
-		local effective_time = recipe.time
+		local forge_bonus = 0
 		for _, player in ipairs(core.get_connected_players()) do
 			if vector.distance(player:get_pos(), pos) <= 8 then
 				local player_meta = player:get_meta()
-				if player_meta:get_string("everforge:class") == "smith" then effective_time = effective_time - 2 end
-				effective_time = effective_time - skill_rank(player, "forgemaster")
+				local personal_bonus = skill_rank(player, "forgemaster")
+				if player_meta:get_string("everforge:class") == "smith" then personal_bonus = personal_bonus + 2 end
+				forge_bonus = math.max(forge_bonus, personal_bonus)
 			end
 		end
-		effective_time = math.max(3, effective_time)
+		local effective_time = math.max(3, recipe.time - forge_bonus)
 		local progress = meta:get_int("progress") + 1
 		if progress >= effective_time then
 			-- Add the output before consuming the ingredient, and verify the
@@ -408,7 +408,7 @@ core.register_node("everforge:alloy_melter", {
 -- Refresh already-placed melters after updates, without clearing their saved
 -- inventories or smelting state. This also repairs old list sizes/formspecs.
 core.register_lbm({
-	label = "Update Everforge alloy melter inventory and interface",
+	label = S("Update Everforge alloy melter inventory and interface"),
 	name = "everforge:update_alloy_melter_interface",
 	nodenames = {"everforge:alloy_melter"},
 	run_at_every_load = true,
@@ -797,6 +797,281 @@ end)
 core.register_craft({output = "everforge:alloy_melter", recipe = {{"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"}, {"mcl_core:iron_ingot", "mcl_furnaces:furnace", "mcl_core:iron_ingot"}, {"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"}}})
 
 -- ---------------------------------------------------------------------------
+-- Contextual block identification (WAILA-style) and mineral field guide.
+-- Mineclonia's doc system remains the source of rich item descriptions; this
+-- small HUD only adds the live target, native mining groups and available state.
+-- ---------------------------------------------------------------------------
+local waila_huds = {}
+local waila_timer = 0
+local waila_interval = math.max(0.15, math.min(1.5, core.settings:get("everforge_waila_interval") and tonumber(core.settings:get("everforge_waila_interval")) or 0.35))
+local waila_default_enabled = core.settings:get_bool("everforge_waila_enabled", true)
+local mining_group_labels = {
+	{"pickaxey", S("Pickaxe")}, {"axey", S("Axe")}, {"shovely", S("Shovel")}, {"hoey", S("Hoe")},
+	{"swordy", S("Sword")}, {"shearsy", S("Shears")},
+}
+
+local function get_mining_requirement(groups)
+	for _, entry in ipairs(mining_group_labels) do
+		local value = tonumber(groups[entry[1]])
+		if value and value > 0 then
+			local tool = S("Recommended tool: @1", entry[2])
+			-- Mineclonia defines material tiers only for pickaxey. Other diggroup
+			-- values identify tool suitability; they are not mining levels.
+			if entry[1] == "pickaxey" then return tool, S("Minimum mining level: @1", tostring(value)) end
+			return tool, nil
+		end
+	end
+	if (groups.cultivatable or 0) > 0 then return S("Recommended tool: Hoe"), nil end
+	if (groups.path_creation_possible or 0) > 0 then return S("Recommended tool: Shovel"), nil end
+	return S("Recommended tool: Hand or any tool"), nil
+end
+
+local function get_node_kind(node_name, def, meta)
+	local groups = def.groups or {}
+	if node_name:find("ore", 1, true) or node_name:find("mineral", 1, true) or node_name:find("stone_with_", 1, true) or node_name:find("deepslate_with_", 1, true) or groups.ore then return S("Ore") end
+	if node_name:find("mcl_farming:", 1, true) or groups.crop then return S("Crop") end
+	local inv = meta and meta:get_inventory()
+	local has_inventory = inv and inv:get_size("main") > 0
+	if def.on_timer or ((def.allow_metadata_inventory_put or def.allow_metadata_inventory_take) and has_inventory) then return S("Machine") end
+	if groups.container and groups.container > 0 then return S("Container") end
+	if groups.plant or groups.flower or groups.sapling then return S("Plant") end
+	if groups.material_stone or groups.stone then return S("Stone") end
+	if groups.wood or groups.tree or groups.material_wood then return S("Wood") end
+	if groups.metal or groups.iron then return S("Metal") end
+	return nil
+end
+
+local localized_item_name
+
+local function get_node_extra(node_name, def, pos, meta)
+	local extra = {}
+	local info = meta and meta:get_string("infotext") or ""
+	if def.on_timer or node_name == "everforge:alloy_melter" then
+		local active = meta and meta:get_string("active_input") or ""
+		local recipe = smelt_recipes[active]
+		if recipe then
+			local input_def = core.registered_items[active]
+			extra[#extra + 1] = S("Processing: @1 → @2", input_def and input_def.description or active, localized_item_name and localized_item_name(recipe.output) or recipe.output)
+		elseif meta and meta:get_int("burn") > 0 then
+			extra[#extra + 1] = S("Machine is burning fuel.")
+		elseif info ~= "" then
+			extra[#extra + 1] = S("Status: @1", info)
+		end
+	elseif info ~= "" then
+		extra[#extra + 1] = S("Status: @1", info)
+	end
+	if core.get_item_group(node_name, "plant") > 0 then
+		local stage = node_name:match("_(%d+)$")
+		if stage then extra[#extra + 1] = S("Crop stage: @1", stage) end
+	end
+	return extra
+end
+
+local function waila_text(player)
+	local pointed = mcl_util.get_pointed_thing(player, false, false)
+	if not pointed or pointed.type ~= "node" or not pointed.under then return "" end
+	local node = core.get_node_or_nil(pointed.under)
+	local def = node and core.registered_nodes[node.name]
+	if not def or node.name == "air" or node.name == "ignore" then return "" end
+	local name = (def.description or node.name):match("^[^\n]+") or node.name
+	local meta = core.get_meta(pointed.under)
+	local kind = get_node_kind(node.name, def, meta)
+	local recommended, level = get_mining_requirement(def.groups or {})
+	local lines = {name}
+	if kind then lines[#lines + 1] = S("Type: @1", kind) end
+	lines[#lines + 1] = recommended
+	if level then lines[#lines + 1] = level end
+	for _, line in ipairs(get_node_extra(node.name, def, pointed.under, meta)) do lines[#lines + 1] = line end
+	return table.concat(lines, "\n")
+end
+
+local function waila_enabled(player)
+	if not waila_default_enabled then return false end
+	local saved = player:get_meta():get_string("everforge:waila_enabled")
+	return saved == "" or saved == "1"
+end
+
+local function update_waila(player)
+	local name = player:get_player_name()
+	local enabled = waila_enabled(player)
+	local text = enabled and waila_text(player) or ""
+	local hud = waila_huds[name]
+	if not hud then
+		local def = {type = "text", position = {x = 0.015, y = 0.12}, alignment = {x = -1, y = 0},
+			offset = {x = 2, y = 2}, scale = {x = 100, y = 100}, text = text, number = 0xFFFFFF, z_index = 5}
+		local shadow = table.copy(def); shadow.offset = {x = 3, y = 3}; shadow.number = 0x101010; shadow.z_index = 4
+		waila_huds[name] = {player:hud_add(def), player:hud_add(shadow), text}
+	elseif hud[3] ~= text then
+		hud[3] = text
+		player:hud_change(hud[1], "text", text)
+		player:hud_change(hud[2], "text", text)
+	end
+end
+
+core.register_globalstep(function(dtime)
+	waila_timer = waila_timer + dtime
+	if waila_timer < waila_interval then return end
+	waila_timer = 0
+	for _, player in ipairs(core.get_connected_players()) do update_waila(player) end
+end)
+
+core.register_on_leaveplayer(function(player) waila_huds[player:get_player_name()] = nil end)
+
+core.register_chatcommand("everforge_waila", {
+	params = S("[on|off]"), description = S("Enable or disable the contextual block information overlay."),
+	func = function(name, param)
+		local player = core.get_player_by_name(name)
+		if not player then return false, S("You must be online to change this setting.") end
+		local option = param:lower():match("^%s*(.-)%s*$")
+		if option ~= "on" and option ~= "off" then
+			option = player:get_meta():get_string("everforge:waila_enabled") == "1" and "off" or "on"
+		end
+		if option == "on" and not waila_default_enabled then
+			return false, S("The server has disabled the contextual block information overlay.")
+		end
+		player:get_meta():set_string("everforge:waila_enabled", option == "on" and "1" or "0")
+		return true, option == "on" and S("Block information overlay enabled.") or S("Block information overlay disabled.")
+	end,
+})
+
+localized_item_name = function(itemname)
+	local def = core.registered_items[itemname]
+	return def and ((def.description or ""):match("^[^\n]+")) or itemname
+end
+
+local function mineral_drop_item(node_def)
+	local drop = node_def and node_def.drop
+	if type(drop) == "string" then return drop:match("^([^%s]+)") end
+	if type(drop) == "table" and drop.items and drop.items[1] and drop.items[1].items then return drop.items[1].items[1] end
+	return nil
+end
+
+local function mining_guide_line(node_name)
+	local def = core.registered_nodes[node_name]
+	local groups = def and def.groups or {}
+	local tool, level = get_mining_requirement(groups)
+	local pick_level = tonumber(groups.pickaxey)
+	if pick_level and pick_level > 0 then
+		return S("Recommended tool: Pickaxe; Mineclonia pickaxey group level: @1", tostring(pick_level))
+	end
+	return level and (tool .. "\n" .. level) or tool
+end
+
+local function active_overworld_biome_count(placed_name)
+	local count = 0
+	for _, biome in pairs(mcl_levelgen.registered_biomes or {}) do
+		if biome.groups and biome.groups.is_overworld and biome.features and biome.features[7]
+			and table.indexof(biome.features[7], placed_name) ~= -1 then count = count + 1 end
+	end
+	return count
+end
+
+local function get_material_uses(material, ingot)
+	local has_components, equipment = false, false
+	for name, def in pairs(core.registered_items) do
+		if def._everforge_component and def._everforge_component.material == material then has_components = true end
+		if def._repair_material == ingot then equipment = true end
+	end
+	local uses = {}
+	local modname = ingot:match("^([^:]+):")
+	if modname and (core.registered_items[modname .. ":block"] or core.registered_items[modname .. ":" .. material .. "_block"]) then
+		uses[#uses + 1] = S("Storage and construction blocks.")
+	end
+	if has_components then uses[#uses + 1] = S("Everforge heads, bindings and reinforced handles.") end
+	if equipment then uses[#uses + 1] = S("Tools or equipment registered for this ingot.") end
+	if #uses == 0 then uses[1] = S("No additional Everforge recipes use this metal.") end
+	return table.concat(uses, "\n")
+end
+
+local function moreores_band_lines(mineral)
+	local cfg_prefix = "moreores." .. mineral .. "_"
+	local labels = {{"high", S("High band")}, {"", S("Middle band")}, {"deep", S("Deep band")}}
+	local lines = {}
+	for _, band in ipairs(labels) do
+		local suffix = band[1] == "" and "" or "_" .. band[1]
+		local y_min = tonumber(moreores[cfg_prefix .. "min_depth" .. suffix])
+		local y_max = tonumber(moreores[cfg_prefix .. "max_depth" .. suffix])
+		local chunk_size = tonumber(moreores[cfg_prefix .. "chunk_size" .. suffix])
+		local ore_count = tonumber(moreores[cfg_prefix .. "ore_per_chunk" .. suffix])
+		local cluster_size = tonumber(moreores[cfg_prefix .. "clust_size" .. suffix])
+		if y_min and y_max and chunk_size and ore_count and cluster_size then
+			local low, high = math.min(y_min, y_max), math.max(y_min, y_max)
+			local expected = ((high - low + 1) * 256 / (chunk_size ^ 3)) * ore_count / 8
+			lines[#lines + 1] = S("@1, Y @2 to @3; approximately @4 configured cluster placements per horizontal chunk.", band[2], tostring(low), tostring(high), string.format("%.2f", expected))
+		end
+	end
+	return lines
+end
+
+local function mineral_entry_text(mineral, title, node_name, ingot, moreores_key)
+	local def = core.registered_nodes[node_name]
+	if not def then return nil end
+	local lines = {S("Mineral: @1", title), S("Block: @1", (def.description or node_name):match("^[^\n]+") or node_name),
+		S("Dimension: Overworld"), S("Biomes: registered overworld biome entries for high, middle and deep features (@1, @2 and @3).",
+			tostring(active_overworld_biome_count("moreores:" .. mineral .. "_high_placed")),
+			tostring(active_overworld_biome_count("moreores:" .. mineral .. "_placed")),
+			tostring(active_overworld_biome_count("moreores:" .. mineral .. "_deep_placed"))),
+		mining_guide_line(node_name)}
+	if moreores_key then
+		lines[#lines + 1] = mcl_vars.enable_mcl_levelgen and S("Generation path: Mineclonia levelgen placed features.")
+			or S("Generation path: engine ore fallback; Mineclonia levelgen is disabled.")
+		for _, band_line in ipairs(moreores_band_lines(moreores_key)) do lines[#lines + 1] = band_line end
+	else
+		local generation = adamantine and adamantine.generation or {}
+		lines[#lines + 1] = generation.levelgen_enabled and S("Generation path: Mineclonia levelgen placed features.")
+			or S("Generation path: engine ore fallback; Mineclonia levelgen is disabled.")
+		local y_min = tonumber(generation.y_min or mcl_vars.mg_overworld_min or -128)
+		local y_max = tonumber(generation.y_max) or -64
+		lines[#lines + 1] = S("Depth: Y @1 to @2, taken from the active Adamantine generation bounds.", tostring(math.min(y_min, y_max)), tostring(math.max(y_min, y_max)))
+		lines[#lines + 1] = S("Frequency: one placed-feature attempt per @1 chunks (configured rarity filter), cluster size @2.", tostring(generation.rarity_filter or 4), tostring(generation.cluster_size or 2))
+		local stone_count = active_overworld_biome_count("adamantine:ore_stone_placed")
+		local deep_count = active_overworld_biome_count("adamantine:ore_deepslate_placed")
+		lines[#lines + 1] = S("Biomes: registered overworld biomes; @1 stone and @2 deepslate feature entries are active.", tostring(stone_count), tostring(deep_count))
+	end
+	local drop = mineral_drop_item(def)
+	local drop_name = drop and localized_item_name(drop) or S("Unknown registered drop")
+	lines[#lines + 1] = S("Mined resource: @1.", drop_name)
+	local recipe = drop and smelt_recipes[drop]
+	if recipe then
+		lines[#lines + 1] = S("Processing: @1 → @2 in a Mineclonia furnace or Alloy Melter.", drop_name, localized_item_name(recipe.output))
+	elseif drop and core.get_craft_result then
+		local result = core.get_craft_result({method = "cooking", width = 1, items = {ItemStack(drop)}})
+		if result and result.item and not result.item:is_empty() then lines[#lines + 1] = S("Processing: @1 → @2 in a Mineclonia furnace.", drop_name, localized_item_name(result.item:get_name())) end
+	end
+	lines[#lines + 1] = S("Main uses: @1", get_material_uses(mineral, ingot))
+	lines[#lines + 1] = S("Only newly generated terrain can contain new deposits; existing map blocks are unchanged.")
+	return table.concat(lines, "\n")
+end
+
+if doc and doc.add_category and doc.add_entry then
+	local category_id = "everforge_minerals"
+	doc.add_category(category_id, {
+		name = S("Minerals"), description = S("Generation, mining, processing and uses for Everforge metals."),
+		build_formspec = function(data, playername)
+			return doc.entry_builders.text_and_gallery({text = data.text, images = {{imagetype = "item", image = data.item}}}, playername)
+		end,
+	})
+	local entries = {
+		{key = "tin", mineral = "tin", label = S("Tin"), node = "moreores:mineral_tin", ingot = "moreores:tin_ingot", config = "tin"},
+		{key = "silver", mineral = "silver", label = S("Silver"), node = "moreores:mineral_silver", ingot = "moreores:silver_ingot", config = "silver"},
+		{key = "mithril", mineral = "mithril", label = S("Mithril"), node = "moreores:mineral_mithril", ingot = "moreores:mithril_ingot", config = "mithril"},
+		{key = "adamantine", mineral = "adamantine", label = S("Adamantine"), node = "adamantine:ore", ingot = "adamantine:ingot"},
+	}
+	for _, entry in ipairs(entries) do
+		local text = mineral_entry_text(entry.mineral, entry.label, entry.node, entry.ingot, entry.config)
+		if text then doc.add_entry(category_id, entry.key, {name = entry.label, data = {text = text, item = entry.node}}) end
+	end
+	core.register_chatcommand("everforge_minerals", {
+		params = "", description = S("Open the in-game mineral generation and mining guide."),
+		func = function(name)
+			if doc.get_entry_count(category_id) == 0 then return false, S("No mineral entries are available.") end
+			doc.show_category(name, category_id)
+			return true
+		end,
+	})
+end
+
+-- ---------------------------------------------------------------------------
 -- Persistent dungeon markers, procedural structures, loot and enemy spawns.
 -- The generator uses mcl_levelgen's feature API, not legacy register_ore.
 -- ---------------------------------------------------------------------------
@@ -868,10 +1143,32 @@ local function register_structure_feature(id, kind)
 end
 
 core.register_craftitem("everforge:relic", {description = S("Dungeon Relic"), inventory_image = "default_gold_ingot.png^[colorize:#6d45ba:110", stack_max = 16})
+local function cache_is_protected(pos, player)
+	if player and player:is_player() and core.is_protected(pos, player:get_player_name()) then
+		core.record_protection_violation(pos, player:get_player_name())
+		return true
+	end
+	return false
+end
+
 core.register_node("everforge:reward_cache", {
 	description = S("Sealed Dungeon Cache"), tiles = {"mcl_chests_normal.png^default_gold_ingot.png"},
 	groups = {choppy = 2, material_wood = 1}, is_ground_content = false, paramtype2 = "facedir",
 	_on_ignite = false,
+	on_rightclick = function(pos, _, clicker)
+		if not clicker or not clicker:is_player() or cache_is_protected(pos, clicker) then return end
+		local meta = core.get_meta(pos)
+		core.show_formspec(clicker:get_player_name(), "everforge:reward_cache", meta:get_string("formspec"))
+	end,
+	allow_metadata_inventory_put = function() return 0 end,
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+		if listname ~= "main" or cache_is_protected(pos, player) then return 0 end
+		return stack:get_count()
+	end,
+	allow_metadata_inventory_move = function() return 0 end,
+	can_dig = function(pos, player)
+		return not cache_is_protected(pos, player) and core.get_meta(pos):get_inventory():is_empty("main")
+	end,
 })
 core.register_node("everforge:dungeon_spawner", {
 	description = S("Ancient Dungeon Spawner"), tiles = {"default_stone_brick.png^[colorize:#332849:120"},
@@ -880,7 +1177,7 @@ core.register_node("everforge:dungeon_spawner", {
 
 local spawner_lbm = "everforge:activate_dungeon_spawners"
 core.register_lbm({
-	label = "Activate Everforge dungeon spawners", name = spawner_lbm,
+	label = S("Activate Everforge dungeon spawners"), name = spawner_lbm,
 	nodenames = {"everforge:dungeon_spawner"}, run_at_every_load = true,
 	action = function(pos)
 		local meta = core.get_meta(pos)
@@ -892,17 +1189,18 @@ core.register_lbm({
 })
 
 core.register_lbm({
-	label = "Initialize Everforge dungeon caches", name = "everforge:initialize_dungeon_caches",
+	label = S("Initialize Everforge dungeon caches"), name = "everforge:initialize_dungeon_caches",
 	nodenames = {"everforge:reward_cache"}, run_at_every_load = true,
 	action = function(pos)
 		local meta = core.get_meta(pos)
+		meta:set_string("infotext", S("Sealed Dungeon Cache"))
+		meta:set_string("formspec", "formspec_version[7]size[8,7]label[0.5,0.4;" .. core.formspec_escape(S("Dungeon Reward Cache")) .. "]list[context;main;1,1;4,4;]list[current_player;main;0,4.7;8,3;]listring[context;main]listring[current_player;main]")
 		if meta:get_int("everforge:initialized") == 1 then return end
 		local inv = meta:get_inventory(); inv:set_size("main", 16)
 		inv:add_item("main", ItemStack("everforge:relic 1"))
 		if core.registered_items["moreores:mithril_ingot"] then inv:add_item("main", ItemStack("moreores:mithril_ingot 2")) end
 		if core.registered_items["adamantine:ingot"] then inv:add_item("main", ItemStack("adamantine:ingot")) end
 		inv:add_item("main", ItemStack("mcl_core:gold_ingot 3"))
-		meta:set_string("formspec", "formspec_version[7]size[8,7]label[0.5,0.4;Dungeon Reward Cache]list[context;main;1,1;4,4;]list[current_player;main;0,4.7;8,3;]listring[context;main]listring[current_player;main]")
 		meta:set_int("everforge:initialized", 1)
 	end,
 })
@@ -920,7 +1218,8 @@ core.register_globalstep(function(dtime)
 		for _, obj in ipairs(core.get_objects_inside_radius(ppos, 34)) do
 			local ent = obj:get_luaentity()
 			local pos = obj:get_pos()
-			if ent and pos and ent.name and ent.name:match("^mobs_mc:") and ent.type == "monster" and not ent.everforge_scaled then
+			if ent and pos and ent.name and ent.name:match("^mobs_mc:") and ent.type == "monster" and not ent.everforge_scaled
+				and mcl_worlds.pos_to_dimension(pos) == "overworld" then
 				local depth = math.max(0, -pos.y - 32)
 				local zone = math.floor(depth / 48)
 				local in_dungeon = ent.everforge_dungeon == true
@@ -938,7 +1237,7 @@ core.register_globalstep(function(dtime)
 end)
 
 core.register_abm({
-	label = "Everforge dungeon spawn pulse", nodenames = {"everforge:dungeon_spawner"},
+	label = S("Everforge dungeon spawn pulse"), nodenames = {"everforge:dungeon_spawner"},
 	interval = 18, chance = 1, catch_up = false,
 	action = function(pos, node)
 		local meta = core.get_meta(pos)

@@ -1,0 +1,434 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luanti textdomain everforge 1.0.0\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "@1 @2"
+msgstr "@1 @2"
+
+msgid "@1 @2/@3 — @4"
+msgstr "@1 @2/@3 — @4"
+
+msgid "@1, Y @2 to @3; approximately @4 configured cluster placements per horizontal chunk."
+msgstr "@1, Y @2 a @3; aproximadamente @4 intentos de grupo configurados por sección horizontal."
+
+msgid "A modular Everforge tool. Its mining level is fixed by its head; binding, handle and tempering quality affect its other statistics."
+msgstr "Herramienta modular de Everforge. El cabezal fija su nivel de minería; la unión, el mango y la calidad de fabricación modifican las demás estadísticas."
+
+msgid "A reusable Everforge part made from @1. Material rarity and finished-tool craft quality are separate properties."
+msgstr "Pieza reutilizable de Everforge hecha de @1. La rareza del material y la calidad de fabricación de la herramienta son propiedades distintas."
+
+msgid "A scholar of ancient dungeons."
+msgstr "Estudioso de mazmorras antiguas."
+
+msgid "A specialist in alloys and crafted gear."
+msgstr "Especialista en aleaciones y equipo forjado."
+
+msgid "Accepts: Tin, silver, mithril or adamantine lumps."
+msgstr "Acepta pepitas de estaño, plata, mitrilo o adamantina."
+
+msgid "Activate Everforge dungeon spawners"
+msgstr "Activar generadores de mazmorra de Everforge"
+
+msgid "Adamantine"
+msgstr "Adamantina"
+
+msgid "Alloy Melter"
+msgstr "Fundidor de aleaciones"
+
+msgid "Alloy Modular @1"
+msgstr "@1 modular de aleación"
+
+msgid "Also raw iron and raw gold; ingots are not accepted."
+msgstr "También acepta hierro y oro en bruto; no acepta lingotes."
+
+msgid "Ancient Dungeon Spawner"
+msgstr "Generador de mazmorra antigua"
+
+msgid "Arcanist"
+msgstr "Arcanista"
+
+msgid "Axe"
+msgstr "Hacha"
+
+msgid "Axe Head"
+msgstr "Cabezal de hacha"
+
+msgid "Biomes: registered overworld biome entries for high, middle and deep features (@1, @2 and @3)."
+msgstr "Biomas: entradas de biomas registrados del supramundo para las capas superior, intermedia y profunda (@1, @2 y @3)."
+
+msgid "Biomes: registered overworld biomes; @1 stone and @2 deepslate feature entries are active."
+msgstr "Biomas: biomas registrados del supramundo; @1 entradas activas de piedra y @2 de pizarra profunda."
+
+msgid "Block information overlay disabled."
+msgstr "Interfaz de identificación de bloques desactivada."
+
+msgid "Block information overlay enabled."
+msgstr "Interfaz de identificación de bloques activada."
+
+msgid "Block: @1"
+msgstr "Bloque: @1"
+
+msgid "Choose your class (selection is permanent):"
+msgstr "Elige tu clase (la selección es permanente):"
+
+msgid "Class: @1    Level: @2    Skill points: @3"
+msgstr "Clase: @1    Nivel: @2    Puntos de habilidad: @3"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Common"
+msgstr "Común"
+
+msgid "Common material"
+msgstr "Material común"
+
+msgid "Container"
+msgstr "Contenedor"
+
+msgid "Copper"
+msgstr "Cobre"
+
+msgid "Craft quality: @1"
+msgstr "Calidad de fabricación: @1"
+
+msgid "Crop"
+msgstr "Cultivo"
+
+msgid "Crop stage: @1"
+msgstr "Etapa del cultivo: @1"
+
+msgid "Damage: @1; attack interval: @2 s"
+msgstr "Daño: @1; intervalo de ataque: @2 s"
+
+msgid "Deep Miner"
+msgstr "Minero profundo"
+
+msgid "Deep band"
+msgstr "Capa profunda"
+
+msgid "Depth: Y @1 to @2, taken from the active Adamantine generation bounds."
+msgstr "Profundidad: Y @1 a @2, según los límites activos de generación de Adamantina."
+
+msgid "Dimension: Overworld"
+msgstr "Dimensión: supramundo"
+
+msgid "Dungeon Relic"
+msgstr "Reliquia de mazmorra"
+
+msgid "Dungeon Reward Cache"
+msgstr "Alijo de recompensas de mazmorra"
+
+msgid "Dungeoneer"
+msgstr "Explorador de mazmorras"
+
+msgid "Durability: @1 uses"
+msgstr "Durabilidad: @1 usos"
+
+msgid "Enable or disable the contextual block information overlay."
+msgstr "Activa o desactiva la interfaz contextual de información de bloques."
+
+msgid "Epic"
+msgstr "Épica"
+
+msgid "Epic material"
+msgstr "Material épico"
+
+msgid "Everforge Alloy Melter"
+msgstr "Fundidor de aleaciones de Everforge"
+
+msgid "Everforge RPG"
+msgstr "Everforge RPG"
+
+msgid "Everforge dungeon spawn pulse"
+msgstr "Pulso de aparición de criaturas de mazmorra de Everforge"
+
+msgid "Everforge heads, bindings and reinforced handles."
+msgstr "Cabezales, uniones y mangos reforzados de Everforge."
+
+msgid "Forged Tool Binding"
+msgstr "Unión de herramienta forjada"
+
+msgid "Forged Tool Head"
+msgstr "Cabezal de herramienta forjado"
+
+msgid "Forgemaster"
+msgstr "Maestro forjador"
+
+msgid "Frequency: one placed-feature attempt per @1 chunks (configured rarity filter), cluster size @2."
+msgstr "Frecuencia: un intento de colocación cada @1 chunks (filtro de rareza configurado), tamaño del grupo @2."
+
+msgid "Fuel"
+msgstr "Combustible"
+
+msgid "Gain a small XP bonus near dungeon guardians."
+msgstr "Obtén una pequeña bonificación de experiencia cerca de los guardianes de mazmorra."
+
+msgid "Generation, mining, processing and uses for Everforge metals."
+msgstr "Generación, extracción, procesamiento y usos de los metales de Everforge."
+
+msgid "Gold"
+msgstr "Oro"
+
+msgid "Head: @1 (@2); binding: @3 (@4); handle: @5 (@6)"
+msgstr "Cabezal: @1 (@2); unión: @3 (@4); mango: @5 (@6)"
+
+msgid "High band"
+msgstr "Capa superior"
+
+msgid "Hoe"
+msgstr "Azada"
+
+msgid "Initialize Everforge dungeon caches"
+msgstr "Inicializar alijos de mazmorra de Everforge"
+
+msgid "Input"
+msgstr "Entrada"
+
+msgid "Inventory"
+msgstr "Inventario"
+
+msgid "Iron"
+msgstr "Hierro"
+
+msgid "Iron Tool Binding (legacy component)"
+msgstr "Unión de hierro para herramienta (componente antiguo)"
+
+msgid "Iron Tool Head (legacy component)"
+msgstr "Cabezal de hierro para herramienta (componente antiguo)"
+
+msgid "Iron-Reinforced Handle (legacy component)"
+msgstr "Mango reforzado con hierro (componente antiguo)"
+
+msgid "Learn"
+msgstr "Aprender"
+
+msgid "Legendary"
+msgstr "Legendaria"
+
+msgid "Legendary material"
+msgstr "Material legendario"
+
+msgid "Machine"
+msgstr "Máquina"
+
+msgid "Machine is burning fuel."
+msgstr "La máquina está consumiendo combustible."
+
+msgid "Main uses: @1"
+msgstr "Usos principales: @1"
+
+msgid "Metal"
+msgstr "Metal"
+
+msgid "Middle band"
+msgstr "Capa intermedia"
+
+msgid "Mined resource: @1."
+msgstr "Recurso extraído: @1."
+
+msgid "Mineral: @1"
+msgstr "Mineral: @1"
+
+msgid "Minerals"
+msgstr "Minerales"
+
+msgid "Minimum mining level: @1"
+msgstr "Nivel mínimo de minería: @1"
+
+msgid "Mining speed: @1; mining level: @2"
+msgstr "Velocidad de minería: @1; nivel de minería: @2"
+
+msgid "Mithril"
+msgstr "Mitrilo"
+
+msgid "Mobile explorer and ranged specialist."
+msgstr "Explorador ágil y especialista en combate a distancia."
+
+msgid "Modular @1"
+msgstr "@1 modular"
+
+msgid "No additional Everforge recipes use this metal."
+msgstr "No hay otras recetas de Everforge que usen este metal."
+
+msgid "No mineral entries are available."
+msgstr "No hay entradas de minerales disponibles."
+
+msgid "Only newly generated terrain can contain new deposits; existing map blocks are unchanged."
+msgstr "Los depósitos nuevos solo aparecen en terreno recién generado; los bloques existentes del mapa no cambian."
+
+msgid "Open Everforge class and skill progression."
+msgstr "Abre la progresión de clases y habilidades de Everforge."
+
+msgid "Open the in-game mineral generation and mining guide."
+msgstr "Abre la guía de generación y extracción de minerales."
+
+msgid "Ore"
+msgstr "Mineral"
+
+msgid "Pickaxe"
+msgstr "Pico"
+
+msgid "Pickaxe Head"
+msgstr "Cabezal de pico"
+
+msgid "Plant"
+msgstr "Planta"
+
+msgid "Processing: @1 → @2"
+msgstr "Procesamiento: @1 → @2"
+
+msgid "Processing: @1 → @2 in a Mineclonia furnace or Alloy Melter."
+msgstr "Procesamiento: @1 → @2 en un horno de Mineclonia o en el Fundidor de aleaciones."
+
+msgid "Processing: @1 → @2 in a Mineclonia furnace."
+msgstr "Procesamiento: @1 → @2 en un horno de Mineclonia."
+
+msgid "Products"
+msgstr "Productos"
+
+msgid "Quality bonuses: +@1% damage, +@2% mining speed, +@3% durability, +@4% attack speed"
+msgstr "Bonificaciones de calidad: +@1% de daño, +@2% de velocidad de minería, +@3% de durabilidad y +@4% de velocidad de ataque"
+
+msgid "Ranger"
+msgstr "Explorador"
+
+msgid "Rare"
+msgstr "Rara"
+
+msgid "Rare material"
+msgstr "Material raro"
+
+msgid "Recommended tool: @1"
+msgstr "Herramienta recomendada: @1"
+
+msgid "Recommended tool: Hand or any tool"
+msgstr "Herramienta recomendada: mano o cualquier herramienta"
+
+msgid "Recommended tool: Hoe"
+msgstr "Herramienta recomendada: azada"
+
+msgid "Recommended tool: Pickaxe; Mineclonia pickaxey group level: @1"
+msgstr "Herramienta recomendada: pico; nivel del grupo pickaxey de Mineclonia: @1"
+
+msgid "Recommended tool: Shovel"
+msgstr "Herramienta recomendada: pala"
+
+msgid "Reduces wear on Everforge tools."
+msgstr "Reduce el desgaste de las herramientas de Everforge."
+
+msgid "Reinforced Handle"
+msgstr "Mango reforzado"
+
+msgid "Run faster."
+msgstr "Corre más rápido."
+
+msgid "Sealed Dungeon Cache"
+msgstr "Alijo sellado de mazmorra"
+
+msgid "Shears"
+msgstr "Tijeras"
+
+msgid "Shovel"
+msgstr "Pala"
+
+msgid "Shovel Head"
+msgstr "Cabezal de pala"
+
+msgid "Silver"
+msgstr "Plata"
+
+msgid "Skills: each rank costs one point (earned every 5 XP levels)."
+msgstr "Habilidades: cada rango cuesta un punto (se obtiene cada 5 niveles de experiencia)."
+
+msgid "Smelt alloys faster at Everforge melters."
+msgstr "Funde aleaciones más rápido en los fundidores de Everforge."
+
+msgid "Smith"
+msgstr "Herrero"
+
+msgid "Status: @1"
+msgstr "Estado: @1"
+
+msgid "Stone"
+msgstr "Piedra"
+
+msgid "Sword"
+msgstr "Espada"
+
+msgid "Sword Blade"
+msgstr "Hoja de espada"
+
+msgid "Takes 10% less mob and player melee damage."
+msgstr "Recibe un 10% menos de daño cuerpo a cuerpo de criaturas y jugadores."
+
+msgid "That skill is already at its maximum rank."
+msgstr "Esa habilidad ya alcanzó su rango máximo."
+
+msgid "Tin"
+msgstr "Estaño"
+
+msgid "Tool Binding"
+msgstr "Unión de herramienta"
+
+msgid "Tools or equipment registered for this ingot."
+msgstr "Herramientas o equipo registrados para este lingote."
+
+msgid "Trailblazer"
+msgstr "Pionero"
+
+msgid "Type: @1"
+msgstr "Tipo: @1"
+
+msgid "Unassigned"
+msgstr "Sin asignar"
+
+msgid "Uncommon"
+msgstr "Poco común"
+
+msgid "Uncommon material"
+msgstr "Material poco común"
+
+msgid "Unknown registered drop"
+msgstr "Recurso registrado desconocido"
+
+msgid "Update Everforge alloy melter inventory and interface"
+msgstr "Actualizar inventario e interfaz del fundidor de aleaciones de Everforge"
+
+msgid "Vanguard"
+msgstr "Vanguardia"
+
+msgid "Wood"
+msgstr "Madera"
+
+msgid "You must be online to change this setting."
+msgstr "Debes estar en línea para cambiar este ajuste."
+
+msgid "You must be online to use this command."
+msgstr "Debes estar en línea para usar este comando."
+
+msgid "You need another skill point. Earn XP and level up."
+msgstr "Necesitas otro punto de habilidad. Gana experiencia y sube de nivel."
+
+msgid "Your class is already set; it cannot be changed."
+msgstr "Tu clase ya está elegida y no se puede cambiar."
+
+msgid "[on|off]"
+msgstr "[on|off]"
+
+msgid "The server has disabled the contextual block information overlay."
+msgstr "El servidor ha desactivado la interfaz contextual de información de bloques."
+
+msgid "Storage and construction blocks."
+msgstr "Bloques de almacenamiento y construcción."
+
+msgid "Generation path: Mineclonia levelgen placed features."
+msgstr "Generación mediante funciones de colocación de Mineclonia levelgen."
+
+msgid "Generation path: engine ore fallback; Mineclonia levelgen is disabled."
+msgstr "Generación alternativa del motor; Mineclonia levelgen está desactivado."

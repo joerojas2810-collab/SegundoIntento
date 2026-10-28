@@ -1,4 +1,5 @@
 -- Adamantine: placeable ingots (optional integration with CraftoPlus).
+local S = minetest.get_translator("adamantine")
 -- Modeled on the gold ingot code in CraftoPlus (items/gold/gold_material.lua).
 -- Does nothing unless CraftoPlus is installed and its "Make Ingots Placeble"
 -- setting (cfp_placeble_ingots) is enabled.
@@ -36,7 +37,7 @@ local piles = {
 
 for _, p in ipairs(piles) do
 	minetest.register_node("adamantine:ingot_on_ground" .. p.suffix, {
-		description = "Adamantine Ingot",
+		description = S("Adamantine Ingot"),
 		drawtype = "mesh",
 		mesh = p.mesh,
 		tiles = { pile_tile },
