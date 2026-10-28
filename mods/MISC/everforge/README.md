@@ -4,7 +4,8 @@ This bundled Mineclonia integration is enabled automatically as part of the `MIS
 
 ## In-game systems
 
-- **Progression:** use `/everforge` to choose one permanent class and spend persistent skill points. One skill point is earned per five Mineclonia XP levels. Vanguard reduces mob/player melee damage by 10%; Ranger gains movement bonuses; Arcanist gains bonus dungeon XP; Smith improves nearby alloy smelting. Player physics bonuses are registered through `playerphysics`; player meta stores class, earned/spent points and ranks.
+- **Progression:** `/everforge` or the Everforge inventory tab shows persistent Mastery (Dominio), five disciplines, general specialization points and four buyable skills. No permanent classes, vanilla XP multiplier, vanilla-level point generator or character migration. See `docs/everforge-playable.md` for provisional curves, rates and the isolated launcher.
+- **Shared starting region:** a small terrain-following camp is built once per fresh world, then persists as ordinary editable map nodes. Native beds and respawn anchors keep priority. An interrupted build requires review or a new development world; a completed camp is never automatically rebuilt.
 - **Alloy Melter:** smelts More Ores tin/silver/mithril lumps, Adamantine lumps, and Mineclonia raw iron/raw gold into their registered ingots. Use normal Mineclonia fuel. Ingots are not inputs. The updated interface displays all eight output slots; existing melters are refreshed on mapblock load without clearing their inventories.
 - **Modular forging:** fabricate material-specific heads, bindings, and reinforced handles from existing tin, copper, iron, gold, silver, mithril, or adamantine ingots. Assemble one head, one binding, and one handle into a pickaxe, axe, shovel, or sword. The chosen materials are stored on the individual ItemStack and listed in its tooltip.
 - **Manufacturing quality:** a catalyst in the tool assembly recipe chooses Common, Uncommon, Rare, Epic, or Legendary quality. Quality is independent from each material's rarity. It changes stack-specific damage, attack interval, mining speed, and durability; it never raises the head's Mineclonia mining level. Item metadata and per-stack tool capabilities persist when saved, dropped, traded, or moved between inventories. Finished tools are unstackable.
@@ -55,7 +56,7 @@ The tooltip shows the material and its rarity for each part separately from the 
 
 ## Persistence and compatibility
 
-Class/skill data and individual tool-rank counts are stored in player/item metadata. Existing players receive an unassigned class and can choose once. Existing Alloy Melters are migrated by an LBM that resizes their existing inventory lists and updates the formspec without emptying them. Existing base Everforge tools and legacy iron parts remain registered; newly crafted tools use material-tier variants.
+Progression v1 is a single serialized player-metadata record, independent of vanilla XP and retained on death. Individual tool-rank counts remain in item metadata. There are no character migrations in this initial-development release. Existing Alloy Melter inventory LBMs remain unchanged. For iteration, create a new isolated world with the supplied launcher instead of deleting any normal Luanti world.
 
 The module uses `mcl_experience.get_level`, `playerphysics.add_physics_factor`, Mineclonia's `_mcl_diggroups`/`mcl_autogroup`, `mcl_enchanting` and `mcl_levelgen` APIs; it does not replace those APIs. Enchanted modular tools retain component modifiers as well as Efficiency/Unbreaking behavior.
 

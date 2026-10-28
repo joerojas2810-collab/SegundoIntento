@@ -67,6 +67,8 @@ end
 
 
 function mcl_spawn.get_world_spawn_pos (obj)
+	local shared = mcl_biome_dispatch.resolve_world_spawn(obj)
+	if shared then return shared, true end
 	if mcl_biome_dispatch.use_detailed_spawning_mechanics () then
 		return mcl_biome_dispatch.next_respawn_position (obj), 0
 	end
@@ -238,3 +240,11 @@ end
 
 -- Respawn player at specified respawn position
 core.register_on_respawnplayer(function(player) return mcl_spawn.spawn(player) end)
+
+-- The detailed generator already routes first entry through next_respawn_position.
+if not mcl_biome_dispatch.use_detailed_spawning_mechanics() then
+ core.register_on_newplayer(function(player)
+  local shared = mcl_biome_dispatch.resolve_world_spawn(player)
+  if shared then player:set_pos(shared) end
+ end)
+end

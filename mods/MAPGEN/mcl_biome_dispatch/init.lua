@@ -3,6 +3,15 @@ local pairs = pairs
 local S, PS = core.get_translator (core.get_current_modname ())
 
 mcl_biome_dispatch = {}
+-- Optional world-owned spawn provider. Bed/anchor selection stays in mcl_spawn.
+local spawn_provider
+function mcl_biome_dispatch.register_world_spawn_provider(fn)
+ assert(not spawn_provider, "Only one world spawn provider may be registered")
+ spawn_provider = fn
+end
+function mcl_biome_dispatch.resolve_world_spawn(player)
+ if spawn_provider then return spawn_provider(player) end
+end
 
 ------------------------------------------------------------------------
 -- Biome system abstraction layer.
@@ -557,6 +566,8 @@ local function respawn_set_pos (player, _)
 end
 
 function mcl_biome_dispatch.next_respawn_position (obj)
+	local shared = mcl_biome_dispatch.resolve_world_spawn(obj)
+	if shared then return shared end
 	local spawn_pos = mcl_biome_dispatch.get_spawn_point_2d ()
 	local spawn_radius = tonumber (core.settings:get ("mcl_spawn_radius")) or 24
 	local dim = get_dimension ("mcl_levelgen:overworld")

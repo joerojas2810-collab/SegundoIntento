@@ -91,14 +91,11 @@ class EverforgeInterfaceRegressions(unittest.TestCase):
         self.assertIn('("list[%s;main;3.5,1;4,4;]"):format(node_inv)', form)
         self.assertIn('("listring[%s;main]"):format(node_inv)', form)
 
-    def test_rpg_layout_fits_its_declared_window_without_rule_changes(self) -> None:
-        self.assertIn('"formspec_version[7]size[11.75,6.2]"', SOURCE)
-        self.assertIn('button[%s,1.58;2.55,0.5;', SOURCE)
-        self.assertIn('local y = 2.75 + (i - 1) * 0.58', SOURCE)
-        # Four skill rows end at y=4.89; the modal is 6.2 units tall.
-        last_skill_button_bottom = 2.75 + 3 * 0.58 - 0.08 + 0.48
-        self.assertLess(last_skill_button_bottom, 6.2)
-        # The guide uses doc's own formspec builders; do not override their layout.
+    def test_progression_ui_replaces_permanent_class_selector(self) -> None:
+        ui = (ROOT / "mods/MISC/everforge/progression/ui.lua").read_text()
+        self.assertIn('formspec_version[7]size[11.5,8]', ui)
+        self.assertNotIn('class_', ui)
+        self.assertNotIn('register_on_add_xp', SOURCE)
         self.assertIn('doc.entry_builders.text_and_gallery', SOURCE)
 
 

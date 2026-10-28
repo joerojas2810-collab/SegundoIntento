@@ -1,10 +1,9 @@
 -- SPDX-License-Identifier: GPL-3.0-or-later
 local modname = core.get_current_modname()
 local S = core.get_translator(modname)
-local FORM = "everforge:rpg"
 local random = PcgRandom(249955)
 
-everforge = { version = "1.0.0", classes = {}, skills = {} }
+everforge = { version = "1.1.0-dev" }
 
 local waila_huds = {}
 local waila_suppressed = {}
@@ -39,83 +38,8 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	end
 end)
 
--- Class and skill definitions are deliberately small stat modifiers. Physics
--- changes go through playerphysics so they compose with Mineclonia and other mods.
-everforge.classes = {
-	vanguard = {label = S("Vanguard"), description = S("Takes 10% less mob and player melee damage."), speed = 0.98, jump = 1.02, gravity = 1.0},
-	ranger = {label = S("Ranger"), description = S("Mobile explorer and ranged specialist."), speed = 1.08, jump = 1.08, gravity = 1.0},
-	arcanist = {label = S("Arcanist"), description = S("A scholar of ancient dungeons."), speed = 1.0, jump = 1.0, gravity = 0.96},
-	smith = {label = S("Smith"), description = S("A specialist in alloys and crafted gear."), speed = 1.0, jump = 1.0, gravity = 1.0},
-}
-
-mcl_damage.register_modifier(function(object, damage, reason)
-	if object and object:is_player() and damage > 0 then
-		local class = object:get_meta():get_string("everforge:class")
-		local dtype = reason and reason.type
-		if class == "vanguard" and (dtype == "mob" or dtype == "player") then
-			return damage * 0.9
-		end
-	end
-end, 0)
-
-everforge.skills = {
-	trailblazer = {label = S("Trailblazer"), description = S("Run faster."), attribute = "speed", factor = 1.04, max = 3},
-	deep_miner = {label = S("Deep Miner"), description = S("Reduces wear on Everforge tools."), max = 3},
-	dungeoneer = {label = S("Dungeoneer"), description = S("Gain a small XP bonus near dungeon guardians."), max = 3},
-	forgemaster = {label = S("Forgemaster"), description = S("Smelt alloys faster at Everforge melters."), max = 3},
-}
-
-local function get_meta(player)
-	return player:get_meta()
-end
-
-local function earned_points(player)
-	local m = get_meta(player)
-	local earned = math.floor((mcl_experience.get_level(player) or 0) / 5)
-	local saved = m:get_int("everforge:earned")
-	if earned > saved then
-		saved = earned
-		m:set_int("everforge:earned", saved)
-	end
-	return math.max(earned, saved)
-end
-
-local function get_points(player)
-	return math.max(0, earned_points(player) - get_meta(player):get_int("everforge:spent"))
-end
-
-local function apply_class(player)
-	local m = get_meta(player)
-	local class = everforge.classes[m:get_string("everforge:class")]
-	for _, attr in ipairs({"speed", "jump", "gravity"}) do
-		playerphysics.remove_physics_factor(player, attr, "everforge:class")
-		playerphysics.remove_physics_factor(player, attr, "everforge:skill")
-	end
-	if class then
-		for attr, value in pairs({speed = class.speed, jump = class.jump, gravity = class.gravity}) do
-			if value ~= 1 then playerphysics.add_physics_factor(player, attr, "everforge:class", value) end
-		end
-	end
-	local rank = m:get_int("everforge:skill:trailblazer")
-	if rank > 0 then playerphysics.add_physics_factor(player, "speed", "everforge:skill", 1 + 0.04 * rank) end
-end
-
-local function skill_rank(player, key)
-	return get_meta(player):get_int("everforge:skill:" .. key)
-end
-
-mcl_experience.register_on_add_xp(function(player, xp)
-	if not player or not player:is_player() or xp <= 0 then return xp end
-	local rank = skill_rank(player, "dungeoneer")
-	local class_bonus = get_meta(player):get_string("everforge:class") == "arcanist" and 1 or 0
-	if rank + class_bonus == 0 then return xp end
-	local pos = player:get_pos()
-	local minp = {x = pos.x - 18, y = pos.y - 18, z = pos.z - 18}
-	local maxp = {x = pos.x + 18, y = pos.y + 18, z = pos.z + 18}
-	local nearby = core.find_nodes_in_area(minp, maxp, {"everforge:dungeon_spawner"})
-	if #nearby > 0 then return math.floor(xp * (1 + 0.05 * (rank + class_bonus))) end
-	return xp
-end)
+local progression = dofile(core.get_modpath(modname) .. "/progression/init.lua")
+local function skill_rank(player, key) return progression.rank(player, key) end
 
 -- Presentation is local to Everforge forms; never change mcl_vars or defaults.
 local function forge_theme(width, height)
@@ -134,138 +58,7 @@ local function forge_slots(x, y, w, h)
 	return mcl_formspec.get_itemslot_bg_v4(x, y, w, h, nil, "everforge_ui_slot.png")
 end
 
-local function rpg_content(player, in_inventory)
-	local m = get_meta(player)
-	local class_key = m:get_string("everforge:class")
-	local class = everforge.classes[class_key]
-	local class_name = class and class.label or S("Unassigned")
-	local lv = mcl_experience.get_level(player) or 0
-	local fs = {
-		forge_theme(11.75, in_inventory and 10.9 or 6.2),
-		"box[0.3,0.18;11.1,0.5;#242325]",
-		"box[0.3,0.18;0.055,0.5;#c27a4a]",
-		"label[0.6,0.43;" .. core.formspec_escape(core.colorize("#e8b17d", S("Everforge RPG"))) .. "]",
-		"label[0.6,0.96;" .. core.formspec_escape(S("Class: @1 | Level: @2 | Skill points: @3", class_name, tostring(lv), tostring(get_points(player)))) .. "]",
-		"label[0.6,1.34;" .. core.formspec_escape(S("Choose a class (selection is permanent):")) .. "]",
-	}
-	local buttons = {{"vanguard", "Vanguard"}, {"ranger", "Ranger"}, {"arcanist", "Arcanist"}, {"smith", "Smith"}}
-	for i, b in ipairs(buttons) do
-		local x = 0.5 + (i - 1) * 2.8
-		local field = "class_" .. b[1]
-		if class_key == b[1] then
-			fs[#fs + 1] = "style[" .. field .. ";bgimg=everforge_ui_button_hover.png]"
-		end
-		fs[#fs + 1] = ("button[%s,1.58;2.55,0.5;%s;%s]"):format(
-			x, field, core.formspec_escape(everforge.classes[b[1]].label))
-		fs[#fs + 1] = ("tooltip[%s;%s;#151619;#F2E8D9]"):format(field, core.formspec_escape(everforge.classes[b[1]].description))
-	end
-	fs[#fs + 1] = "label[0.6,2.28;" .. core.formspec_escape(core.colorize("#d79767", S("Skills — ranks, points and actions"))) .. "]"
-	fs[#fs + 1] = "box[0.42,2.55;11.0,2.52;#111214EE]"
-	local skills = {"trailblazer", "deep_miner", "dungeoneer", "forgemaster"}
-	for i, key in ipairs(skills) do
-		local skill = everforge.skills[key]
-		local rank = skill_rank(player, key)
-		local y = 2.75 + (i - 1) * 0.58
-		local field = "skill_" .. key
-		fs[#fs + 1] = ("label[0.72,%s;%s]"):format(y, core.formspec_escape(
-			S("@1 — Rank @2 / @3", skill.label, tostring(rank), tostring(skill.max))))
-		fs[#fs + 1] = ("tooltip[%s;%s;#151619;#F2E8D9]"):format(field, core.formspec_escape(
-			S("@1@nEach skill rank costs one point; earn 1 point every 5 XP levels.", skill.description)))
-		fs[#fs + 1] = ("button[9.05,%s;2.1,0.48;%s;%s]"):format(
-			y - 0.08, field, core.formspec_escape(S("Learn")))
-	end
-	if not in_inventory then
-		fs[#fs + 1] = "button_exit[9.85,5.34;1.45,0.52;close;" .. core.formspec_escape(S("Close")) .. "]"
-	end
-	return table.concat(fs)
-end
-
-local function show_rpg(player)
-	suppress_waila_for_player(player, FORM)
-	core.show_formspec(player:get_player_name(), FORM,
-		"formspec_version[7]size[11.75,6.2]" .. rpg_content(player, false))
-end
-
-local function rpg_has_action(fields)
-	for key in pairs(everforge.classes) do
-		if fields["class_" .. key] then return true end
-	end
-	for key in pairs(everforge.skills) do
-		if fields["skill_" .. key] then return true end
-	end
-	return false
-end
-
-local function handle_rpg_fields(player, fields, in_inventory)
-	local m = get_meta(player)
-	for key in pairs(everforge.classes) do
-		if fields["class_" .. key] then
-			local current = m:get_string("everforge:class")
-			if current == "" then
-				m:set_string("everforge:class", key)
-				apply_class(player)
-			else
-				core.chat_send_player(player:get_player_name(), S("Your class is already set; it cannot be changed."))
-			end
-		end
-	end
-	for key, skill in pairs(everforge.skills) do
-		if fields["skill_" .. key] then
-			local rank = skill_rank(player, key)
-			if get_points(player) > 0 and rank < skill.max then
-				m:set_int("everforge:spent", m:get_int("everforge:spent") + 1)
-				m:set_int("everforge:skill:" .. key, rank + 1)
-				apply_class(player)
-			elseif rank >= skill.max then
-				core.chat_send_player(player:get_player_name(), S("That skill is already at its maximum rank."))
-			else
-				core.chat_send_player(player:get_player_name(), S("You need another skill point. Earn XP and level up."))
-			end
-		end
-	end
-	if not fields.quit then
-		if in_inventory then
-			if rpg_has_action(fields) and mcl_inventory and mcl_inventory.update_inventory then
-				mcl_inventory.update_inventory(player)
-			end
-		else
-			show_rpg(player)
-		end
-	end
-end
-
-core.register_chatcommand("everforge", {
-	params = "",
-	description = S("Open Everforge class and skill progression."),
-	func = function(name)
-		local player = core.get_player_by_name(name)
-		if player then show_rpg(player); return true end
-		return false, S("You must be online to use this command.")
-	end,
-})
-
-core.register_on_player_receive_fields(function(player, formname, fields)
-	if formname ~= FORM then return false end
-	handle_rpg_fields(player, fields, false)
-	return true
-end)
-
-mcl_inventory.register_survival_inventory_tab({
-	id = "everforge_rpg",
-	description = S("Everforge RPG"),
-	item_icon = "adamantine:ingot",
-	show_inventory = true,
-	build = function(player) return rpg_content(player, true) end,
-	handle = function(player, fields)
-		if rpg_has_action(fields) then handle_rpg_fields(player, fields, true) end
-	end,
-})
-
-core.register_on_joinplayer(function(player)
-	core.after(1, function()
-		if player and player:is_player() then apply_class(player) end
-	end)
-end)
+dofile(core.get_modpath(modname) .. "/progression/ui.lua")
 
 -- Mineclonia diggroups are authoritative for block mining. The optional perk
 -- augments only Everforge-forged tools, retaining each tool's registered caps.
@@ -289,9 +82,7 @@ local function forge_bonus_at(pos)
 	local forge_bonus = 0
 	for _, player in ipairs(core.get_connected_players()) do
 		if vector.distance(player:get_pos(), pos) <= 8 then
-			local player_meta = player:get_meta()
 			local personal_bonus = skill_rank(player, "forgemaster")
-			if player_meta:get_string("everforge:class") == "smith" then personal_bonus = personal_bonus + 2 end
 			forge_bonus = math.max(forge_bonus, personal_bonus)
 		end
 	end
@@ -512,7 +303,10 @@ local function melter_hopper_in(hopper_pos, melter_pos)
 		end)
 	if not slot then return false end
 	local moved = mcl_util.move_item(source, "main", slot, destination, target_list)
-	if moved then restart_melter(melter_pos) end
+	if moved then
+		core.get_meta(melter_pos):set_string("everforge:forger", "")
+		restart_melter(melter_pos)
+	end
 	return moved
 end
 
@@ -560,9 +354,15 @@ core.register_node("everforge:alloy_melter", {
 	allow_metadata_inventory_move = melter_allow_move,
 	_on_hopper_in = melter_hopper_in,
 	_on_hopper_out = melter_hopper_out,
-	on_metadata_inventory_put = restart_melter,
+	on_metadata_inventory_put = function(pos, listname, index, stack, player)
+		if listname == "input" then core.get_meta(pos):set_string("everforge:forger", player and player:get_player_name() or "") end
+		restart_melter(pos)
+	end,
 	on_metadata_inventory_take = restart_melter,
-	on_metadata_inventory_move = restart_melter,
+	on_metadata_inventory_move = function(pos, from_list, from_index, to_list)
+		if to_list == "input" then core.get_meta(pos):set_string("everforge:forger", "") end
+		restart_melter(pos)
+	end,
 	on_timer = function(pos)
 		local meta = core.get_meta(pos)
 		local inv = meta:get_inventory()
@@ -604,6 +404,10 @@ core.register_node("everforge:alloy_melter", {
 			if not leftover:is_empty() then return false end
 			input:take_item(1)
 			inv:set_stack("input", 1, input)
+			local actor = core.get_player_by_name(meta:get_string("everforge:forger"))
+			if actor and vector.distance(actor:get_pos(), pos) <= 16 then
+				progression.record(actor, "forging", out:get_name())
+			end
 			progress = 0
 		end
 		meta:set_int("progress", progress)
@@ -1193,7 +997,7 @@ local function update_waila(player)
 		-- Text HUD sizing uses `size`, not the ignored `scale` field.
 		local label = {
 			type = "text", position = {x = 0.5, y = 0.04}, alignment = {x = 0, y = 1},
-			offset = {x = 0, y = offset_y}, size = {x = 1},
+			offset = {x = 0, y = offset_y}, size = {x = 1, y = 1},
 			text = text, number = 0xF2E8D9, style = 1, z_index = 5,
 		}
 		waila_huds[name] = {
@@ -1392,75 +1196,6 @@ end
 -- Persistent dungeon markers, procedural structures, loot and enemy spawns.
 -- The generator uses mcl_levelgen's feature API, not legacy register_ore.
 -- ---------------------------------------------------------------------------
-local function set_node(x, y, z, name)
-	local cid = core.get_content_id(name)
-	if cid then mcl_levelgen.set_block(x, y, z, cid, 0) end
-end
-
-local function register_structure_feature(id, kind)
-	mcl_levelgen.register_feature(id, {
-		place = function(x, y, z, cfg, rng)
-			local surface = y
-			local height = kind == "ice_tower" and 14 or 2
-			if surface < mcl_levelgen.level_min + 4
-				or surface + height >= mcl_levelgen.level_min + mcl_levelgen.level_height then return false end
-			local node = mcl_levelgen.get_block(x, surface - 1, z)
-			if not node then return false end
-			local dirt = core.get_content_id("mcl_core:dirt")
-			local grass = core.get_content_id("mcl_core:dirt_with_grass")
-			local snow = core.get_content_id("mcl_core:snow")
-			local snow_block = core.get_content_id("mcl_core:snowblock")
-			if node ~= dirt and node ~= grass and node ~= snow and node ~= snow_block then return false end
-			local stone = "mcl_core:stonebrick"
-			local cobble = "mcl_core:cobble"
-			local chest = "everforge:reward_cache"
-			local spawner = "everforge:dungeon_spawner"
-			if kind == "graveyard" then
-				-- Rectangular low wall, paired graves, central crypt and guardian.
-				for dx = -4, 4 do for dz = -4, 4 do
-					if math.abs(dx) == 4 or math.abs(dz) == 4 then set_node(x + dx, surface, z + dz, cobble) end
-				end end
-				for _, offset in ipairs({{-2,-2},{2,-2},{-2,2},{2,2}}) do
-					set_node(x + offset[1], surface, z + offset[2], stone)
-					set_node(x + offset[1], surface + 1, z + offset[2], "mcl_core:stonebrickmossy")
-				end
-				set_node(x, surface, z, "mcl_core:stonebrickcracked")
-				set_node(x, surface + 1, z, chest)
-				set_node(x, surface, z - 1, spawner)
-				set_node(x + 1, surface, z, "mcl_torches:torch_wall")
-			else
-				-- A tapered 15-block ice watchtower with a hollow core and loot.
-				for h = 0, 13 do
-					local radius = h < 3 and 4 or (h < 9 and 3 or 2)
-					for dx = -radius, radius do for dz = -radius, radius do
-						if math.max(math.abs(dx), math.abs(dz)) == radius then
-							local material = (h % 4 == 0) and "mcl_core:packed_ice" or "mcl_core:blue_ice"
-							set_node(x + dx, surface + h, z + dz, material)
-						end
-					end end
-				end
-				for h = 1, 10 do set_node(x, surface + h, z, "air") end
-				set_node(x, surface + 8, z, chest)
-				set_node(x, surface, z, spawner)
-			end
-			return true
-		end,
-	})
-	local configured = id .. "_configured"
-	local placed = id .. "_placed"
-	mcl_levelgen.register_configured_feature(configured, {feature = id, structure = kind})
-	mcl_levelgen.register_placed_feature(placed, {
-		configured_feature = configured,
-		placement_modifiers = {
-			mcl_levelgen.build_count(function(rng) return rng:next_within(256) == 0 and 1 or 0 end),
-			mcl_levelgen.build_in_square(),
-			mcl_levelgen.build_heightmap("motion_blocking"),
-			mcl_levelgen.build_in_biome(),
-		},
-	})
-	return placed
-end
-
 core.register_craftitem("everforge:relic", {description = S("Dungeon Relic"), inventory_image = "default_gold_ingot.png^[colorize:#6d45ba:110", stack_max = 16})
 local function cache_is_protected(pos, player)
 	if player and player:is_player() and core.is_protected(pos, player:get_player_name()) then
@@ -1616,7 +1351,6 @@ core.register_globalstep(function(dtime)
 	if now - (everforge._last_scale or 0) < 4 then return end
 	everforge._last_scale = now
 	for _, player in ipairs(core.get_connected_players()) do
-		earned_points(player)
 		local ppos = player:get_pos()
 		for _, obj in ipairs(core.get_objects_inside_radius(ppos, 34)) do
 			local ent = obj:get_luaentity()
@@ -1670,39 +1404,8 @@ core.register_abm({
 })
 
 -- Register native levelgen features for mineral deposits and both dungeon types.
-local function add_overworld_feature(placed_id, step, predicate)
-	for _, biome in pairs(mcl_levelgen.registered_biomes or {}) do
-		if biome.groups and biome.groups.is_overworld and biome.features[step]
-			and (not predicate or predicate(biome)) then
-			local list = biome.features[step]
-			if table.indexof(list, placed_id) == -1 then list[#list + 1] = placed_id end
-		end
-	end
-end
-
-
-if mcl_vars.enable_mcl_levelgen and mcl_levelgen.register_feature then
-	local graveyard_id = register_structure_feature("everforge:graveyard", "graveyard")
-	local ice_tower_id = register_structure_feature("everforge:ice_tower", "ice_tower")
-	add_overworld_feature(graveyard_id, 4)
-	add_overworld_feature(ice_tower_id, 4, function(biome)
-		return biome.temperature <= 0.15 or biome.groups.is_taiga
-	end)
-else
-	core.log("warning", "[Everforge] Graveyard and Ice Tower generation requires Mineclonia's singlenode levelgen. RPG, forging, minerals and difficulty remain available.")
-end
-
-local function biome_feature_count(placed_id, step, predicate)
-	local count = 0
-	for _, biome in pairs(mcl_levelgen.registered_biomes or {}) do
-		local features = biome.features and biome.features[step]
-		if biome.groups and biome.groups.is_overworld and features
-			and (not predicate or predicate(biome))
-			and table.indexof(features, placed_id) ~= -1 then
-			count = count + 1
-		end
-	end
-	return count
+if mcl_vars.enable_mcl_levelgen then
+ mcl_levelgen.register_levelgen_script(core.get_modpath(modname) .. "/world_features.lua")
 end
 
 local function count_group_nodes(group)
@@ -1739,11 +1442,8 @@ core.register_chatcommand("everforge_mapgen_status", {
 				.. " nodes, ores/cluster=" .. tostring(generation.legacy_ores_per_cluster or "?")
 				.. "; only new mapblocks generate ore.",
 			"[Everforge structures] levelgen=" .. tostring(levelgen_enabled)
-				.. "; graveyard biome entries=" .. tostring(biome_feature_count("everforge:graveyard_placed", 4))
-				.. "; ice tower entries=" .. tostring(biome_feature_count("everforge:ice_tower_placed", 4, function(biome)
-					return biome.temperature <= 0.15 or (biome.groups and biome.groups.is_taiga)
-				end))
-				.. "; placement=1/256 candidate per eligible chunk; surface floor must be dirt, grass, snow or a snow block.",
+				.. "; registration=world_features.lua in levelgen environments; server biome tables are not placement counters."
+				.. " Placement=1/256 candidate per eligible chunk; floor must be dirt, grass, snow or snow block.",
 			"[Everforge structures] no forced generation or world edits are performed by this diagnostic.",
 		}
 		for _, line in ipairs(lines) do core.chat_send_player(name, line) end
@@ -1755,3 +1455,5 @@ core.register_chatcommand("everforge_mapgen_status", {
 dofile(core.get_modpath(modname) .. "/ui_probe.lua")(function(player)
 	return waila_enabled(player), waila_suppressed[player:get_player_name()] ~= nil
 end)
+
+dofile(core.get_modpath(modname) .. "/start_region.lua")

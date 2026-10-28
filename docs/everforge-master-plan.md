@@ -1,6 +1,6 @@
 # EVERFORGE — Plan maestro de evolución, migración y dirección artística
 
-**Estado:** Fase 0 autorizada y documentada; validación estática realizada, validación en runtime pendiente. Fase 1 y cualquier implementación funcional siguen sin autorización.
+**Estado vigente:** desarrollo funcional inicial autorizado. No existen personajes ni mundos reales que migrar. Las fases siguientes quedan como referencia histórica, no como bloqueos. Se implementan Dominio, disciplinas, primeras habilidades y región compartida; resultados verificables y límites en `docs/everforge-playable.md`.
 
 **Fecha:** 28 de octubre de 2026.
 
@@ -8,7 +8,7 @@
 
 **Objetivo de compatibilidad:** Mineclonia 0.124.1 / Luanti 5.17.0.
 
-**Alcance de esta entrega:** Fase 0 de investigación y validación técnica; documento exclusivamente. Resultados y límites en §18–21. No se cambió código, balance, recursos, generación, configuración de una partida ni comportamiento de NPC; no se instalaron mods.
+**Actualización de estrategia:** el usuario autoriza código funcional, curvas provisionales configurables y mundos desechables, sin aprobaciones por subpaso. Se retiran clases permanentes, multiplicador Arcanist/Dungeoneer y puntos derivados de XP vanilla. No se implementan migraciones ni reembolsos de personajes inexistentes. El yunque y el logo siguen separados; PR #2 no se fusiona automáticamente. Las auditorías y decisiones de §1–21 describen estados anteriores cuando contradicen este párrafo.
 
 ## 1. Resumen ejecutivo
 
