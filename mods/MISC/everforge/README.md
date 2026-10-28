@@ -4,7 +4,7 @@ This bundled Mineclonia integration is enabled automatically as part of the `MIS
 
 ## In-game systems
 
-- **Progression:** `/everforge` or the Everforge inventory tab shows persistent Mastery (Dominio), five disciplines, general specialization points and four buyable skills. No permanent classes, vanilla XP multiplier, vanilla-level point generator or character migration. See `docs/everforge-playable.md` for provisional curves, rates and the isolated launcher.
+- **Progression:** `/everforge` opens the Everforge guide; choose **Progress** (or the Everforge inventory tab) to view persistent Mastery (Dominio), five disciplines, general specialization points and four buyable skills. No permanent classes, vanilla XP multiplier, vanilla-level point generator or character migration. See `docs/everforge-playable.md` for provisional curves, rates and the isolated launcher.
 - **Shared starting region:** a small terrain-following camp is built once per fresh world, then persists as ordinary editable map nodes. Native beds and respawn anchors keep priority. An interrupted build requires review or a new development world; a completed camp is never automatically rebuilt.
 - **Alloy Melter:** smelts More Ores tin/silver/mithril lumps, Adamantine lumps, and Mineclonia raw iron/raw gold into their registered ingots. Use normal Mineclonia fuel. Ingots are not inputs. The updated interface displays all eight output slots; existing melters are refreshed on mapblock load without clearing their inventories.
 - **Modular forging:** fabricate material-specific heads, bindings, and reinforced handles from existing tin, copper, iron, gold, silver, mithril, or adamantine ingots. Assemble one head, one binding, and one handle into a pickaxe, axe, shovel, or sword. The chosen materials are stored on the individual ItemStack and listed in its tooltip.
@@ -13,6 +13,12 @@ This bundled Mineclonia integration is enabled automatically as part of the `MIS
 - **Dungeons:** newly generated overworld chunks can contain a Graveyard or Ice Tower. Each has a sealed reward cache and a limited guardian spawner. Loot is initialized on mapblock load. The structures are generated through native `mcl_levelgen` features.
 - **Progressive danger:** Mineclonia's global difficulty and mob definitions are left intact. Everforge applies bounded HP/damage growth to supported `mobs_mc` monsters by underground depth and adds a local bonus at dungeon spawners.
 - **Tool ranks:** the Mineclonia port records persistent tool use and displays ranks. It deliberately does not change generic groupcaps or Mineclonia dig groups, preserving native drop levels, speeds and durability.
+
+## Welcome and permanent guide
+
+On a character's first entry, five short welcome cards appear once the new-world starting region is ready. Closing or skipping them returns directly to the world; it does not set objectives or modify progression. The optional first-steps cards are suggestions only and can be dismissed without tracking. Player metadata stores the one-time automatic welcome state, while both card sets remain manually available at any time.
+
+Use `/everforge` to open the guide hub. It links to **Introduction**, **First Steps**, **Controls and Commands**, the native Mineclonia **Recipe Book**, Mineclonia **Achievements**, and Everforge **Progress**. Direct shortcuts are `/everforge intro`, `/everforge first_steps`, `/everforge help`, `/everforge controls`, `/everforge commands`, `/everforge recipes`, `/everforge achievements`, and `/everforge progression`. Controls and command references open the existing Mineclonia documentation; recipes open `mcl_craftguide`; achievements use the native `awards` interface when `mcl_achievements` is enabled. No duplicate help, recipe, or achievement system is added.
 
 ## Survival forging recipe guide
 

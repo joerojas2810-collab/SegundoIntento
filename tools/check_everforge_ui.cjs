@@ -4,7 +4,7 @@ const fs=require('fs'), cp=require('child_process'), os=require('os'), path=requ
 const lua=require('luaparse');
 const src=fs.readFileSync('mods/MISC/everforge/init.lua','utf8');
 const ast=lua.parse(src,{ranges:true,luaVersion:'5.1',comments:false});
-const functions=['forge_theme','forge_slots','rpg_content','build_forge_formspec','build_reward_cache_formspec','waila_line_count','layout_waila_text'];
+const functions=['forge_theme','forge_slots','build_forge_formspec','build_reward_cache_formspec','waila_line_count','layout_waila_text'];
 let code=`local function S(t, ...) local a={...}; return (t:gsub('@(%d+)',function(i) return tostring(a[tonumber(i)]) end)) end
 core={formspec_escape=function(s) return s end,colorize=function(c,s) return s end}
 mcl_formspec={get_itemslot_bg_v4=function() return '' end}
@@ -29,9 +29,7 @@ local WAILA_CHAR_WIDTH=8
 local WAILA_LINE_HEIGHT=16
 `;
 for(const name of functions){const n=ast.body.find(n=>n.type==='FunctionDeclaration'&&n.identifier?.name===name);if(!n)throw Error(name);code+=src.slice(...n.range)+'\n';}
-code+=`print('RPG|'..rpg_content({},false))
-print('TAB|'..rpg_content({},true))
-for _,m in ipairs({'empty','unsupported','working','full'}) do mode=m; local f=build_forge_formspec({}); print('FORGE_'..m..'|'..f) end
+code+=`for _,m in ipairs({'empty','unsupported','working','full'}) do mode=m; local f=build_forge_formspec({}); print('FORGE_'..m..'|'..f) end
 local _,scale=layout_waila_text('Name\\nType: mineral\\nTool: pickaxe'); assert(scale.x*256==math.ceil(math.max(220,math.ceil(13*8*1.25+32))/16)*16)
 print('HUD|dimensions preserved')
 `;
@@ -44,7 +42,7 @@ let count=0;
 for(const line of out.split('\n')){
  if(!line.includes('|')||line.startsWith('HUD|'))continue;
  const [name,...parts]=line.split('|'), spec=parts.join('|');
- const size=name==='CACHE'?[11.75,11.75]:name==='TAB'?[11.75,10.9]:name==='RPG'?[11.75,6.2]:[11.75,10.95];
+ const size=name==='CACHE'?[11.75,11.75]:[11.75,10.95];
  for(const m of spec.matchAll(/(box|button|button_exit|list)\[([^\]]+)\]/g)){
    const fields=m[2].split(';');let pos,dim;
    if(m[1]==='list'){pos=fields[2];dim=fields[3]}else{pos=fields[0];dim=fields[1]}
@@ -55,7 +53,7 @@ for(const line of out.split('\n')){
  }
 }
 fs.writeFileSync(path.join(os.tmpdir(),'everforge-generated-forms.txt'),out);
-console.log('Lua 5.1 syntax passed; generated RPG, inventory tab cache and four melter states; '+count+' bounds passed; HUD visible dimensions preserved.');
+console.log('Lua 5.1 syntax passed; generated cache and four melter states; '+count+' bounds passed; HUD visible dimensions preserved.');
 // Guard the explicitly out-of-scope gameplay tables against the PR baseline.
 const before=cp.execFileSync('git',['show',(process.argv[2] || 'e442c9a69')+':mods/MISC/everforge/init.lua'],{encoding:'utf8'});
 function mechanicsTables(text){
@@ -63,12 +61,8 @@ function mechanicsTables(text){
  const result={};
  for(const n of tree.body){
   if(n.type==='LocalStatement') for(let i=0;i<n.variables.length;i++) if(['smelt_recipes','base_output_types'].includes(n.variables[i].name)) result[n.variables[i].name]=n.init[i];
-  if(n.type==='AssignmentStatement') for(let i=0;i<n.variables.length;i++){
-   const v=n.variables[i];
-   if(v.type==='MemberExpression'&&v.base?.name==='everforge'&&['classes','skills'].includes(v.identifier?.name)) result[v.identifier.name]=n.init[i];
-  }
  }
  return JSON.stringify(result);
 }
-if(mechanicsTables(src)!==mechanicsTables(before))throw Error('Smelting, progression or output-type tables changed from the PR baseline');
-console.log('Smelting recipes, class/skill progression and output-type tables match the PR baseline.');
+if(mechanicsTables(src)!==mechanicsTables(before))throw Error('Smelting recipes or output-type tables changed from the PR baseline');
+console.log('Smelting recipes and output-type tables match the PR baseline.');

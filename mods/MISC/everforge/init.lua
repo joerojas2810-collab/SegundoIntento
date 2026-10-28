@@ -30,6 +30,9 @@ local function restore_waila_for_player(player, form_key)
 	end
 end
 
+everforge._suppress_waila = suppress_waila_for_player
+everforge._restore_waila = restore_waila_for_player
+
 core.register_on_player_receive_fields(function(player, formname, fields)
 	if not fields.quit then return end
 	local key = waila_suppressed[player:get_player_name()]
@@ -59,6 +62,7 @@ local function forge_slots(x, y, w, h)
 end
 
 dofile(core.get_modpath(modname) .. "/progression/ui.lua")
+dofile(core.get_modpath(modname) .. "/onboarding.lua")
 
 -- Mineclonia diggroups are authoritative for block mining. The optional perk
 -- augments only Everforge-forged tools, retaining each tool's registered caps.

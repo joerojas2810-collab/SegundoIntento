@@ -504,3 +504,174 @@ msgstr ""
 
 msgid "unknown"
 msgstr ""
+
+msgid "A World Without a Written Destination."
+msgstr ""
+
+msgid "There is no prescribed route. Set your own pace: explore, build, mine, or let the landscape suggest a direction. This story is yours."
+msgstr ""
+
+msgid "What You Do Defines You."
+msgstr ""
+
+msgid "Mining, forging, combat, exploration, and crafting each leave a different mark. What you choose to practice shapes your progress; there is no single way forward."
+msgstr ""
+
+msgid "Forge Your Own Path."
+msgstr ""
+
+msgid "No permanent class locks you into a role. Try skills from different disciplines and grow your Mastery at your own pace."
+msgstr ""
+
+msgid "Not Everything Is in Sight."
+msgstr ""
+
+msgid "There is more to discover than what you see at first, but nothing demands that you go in a particular direction. Explore when you are ready and let curiosity guide you."
+msgstr ""
+
+msgid "The World Continues With You."
+msgstr ""
+
+msgid "Your journey does not end with this welcome. Build, change, and inhabit the world around you. When you close this card, the wider world is yours to explore."
+msgstr ""
+
+msgid "Your First Tools"
+msgstr ""
+
+msgid "Collect a few logs. Turn them into planks in your inventory, make a crafting table, then use Mineclonia's recipe book to look up and craft a wooden axe."
+msgstr ""
+
+msgid "Learn by Doing"
+msgstr ""
+
+msgid "Try mining, forging, combat, exploration, or crafting. Use /everforge to see the five disciplines and available skills. There is no required order."
+msgstr ""
+
+msgid "Prepare Your Shelter"
+msgstr ""
+
+msgid "Build a shelter that suits you. Gather food and keep an eye on your health and hunger as you settle in."
+msgstr ""
+
+msgid "Discover the Unknown"
+msgstr ""
+
+msgid "Head out whenever you like. Take in the landscape and choose your own direction; exploration has no required objectives."
+msgstr ""
+
+msgid "Know Your Tools"
+msgstr ""
+
+msgid "Open /everforge for the native controls and commands help, Mineclonia's recipe book, and its achievements. You can return to this guide whenever you want."
+msgstr ""
+
+msgid "Everforge — Guide and Path"
+msgstr ""
+
+msgid "A world to shape at your own pace. Choose a guide or return to your progress."
+msgstr ""
+
+msgid "Introduction"
+msgstr ""
+
+msgid "Welcome to Everforge"
+msgstr ""
+
+msgid "First Steps"
+msgstr ""
+
+msgid "Suggestions, never missions"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Five disciplines and skills"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "Controls and commands"
+msgstr ""
+
+msgid "Recipes"
+msgstr ""
+
+msgid "Mineclonia recipe book"
+msgstr ""
+
+msgid "Achievements"
+msgstr ""
+
+msgid "Mineclonia interface"
+msgstr ""
+
+msgid "Controls and Commands"
+msgstr ""
+
+msgid "Open Mineclonia's existing help entries. Controls can be remapped in Luanti settings."
+msgstr ""
+
+msgid "Controls"
+msgstr ""
+
+msgid "Commands"
+msgstr ""
+
+msgid "Full Mineclonia Help"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Everforge — Welcome"
+msgstr ""
+
+msgid "Everforge — First Steps"
+msgstr ""
+
+msgid "Would you like to see a few first steps?"
+msgstr ""
+
+msgid "Yes, show me"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Finish and Explore"
+msgstr ""
+
+msgid "Finish"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Skip"
+msgstr ""
+
+msgid "Would you like to see a few first steps? You can open them any time with /everforge first_steps; the world is ready to explore."
+msgstr ""
+
+msgid "Mineclonia's help interface is not available right now."
+msgstr ""
+
+msgid "The Mineclonia recipe book is not available right now."
+msgstr ""
+
+msgid "Mineclonia's achievements interface is not available in this world."
+msgstr ""
+
+msgid "Everforge progression is not available right now."
+msgstr ""
+
+msgid "Open Everforge's guide, progression, or a reference."
+msgstr ""
+
+msgid "Unknown section; showing the Everforge guide."
+msgstr ""
+
+msgid "Card @1 of @2"
+msgstr ""

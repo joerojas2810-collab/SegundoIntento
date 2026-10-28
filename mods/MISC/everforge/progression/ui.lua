@@ -4,6 +4,7 @@ local M = P.model
 local labels = {mining = "Minería", forging = "Forja", combat = "Combate", exploration = "Exploración", crafting = "Artesanía"}
 local order = {"deep_miner", "forgemaster", "guard", "trailblazer"}
 local form = "everforge:progression"
+
 local function content(player)
  local p = P.load(player)
  if not p then return "label[.5,.5;Perfil inválido: consulta al administrador.]" end
@@ -20,12 +21,21 @@ local function content(player)
   fs[#fs+1] = ("button[.5,%s;3.1,.55;learn_%s;%s %d/%d]"):format(4.1+i*.65, id, skill.label, p.skills[id] or 0, skill.max)
   fs[#fs+1] = ("label[3.85,%s;%s]"):format(4.35+i*.65, core.formspec_escape(skill.description))
  end
+ fs[#fs+1] = "button_exit[.5,7.35;2.2,.55;guide;Guía Everforge]"
  fs[#fs+1] = "button_exit[9.4,7.35;1.6,.55;quit;Cerrar]"
  return table.concat(fs)
 end
+
 local function show(player)
+ if everforge.onboarding and everforge.onboarding.mark_manual_open then
+  everforge.onboarding.mark_manual_open(player)
+ end
+ if everforge._suppress_waila then everforge._suppress_waila(player, form) end
  core.show_formspec(player:get_player_name(), form, "formspec_version[7]size[11.5,8]" .. content(player))
 end
+
+everforge.open_progression = show
+
 local function receive(player, fields)
  for _, id in ipairs(order) do
   if fields["learn_" .. id] then
@@ -38,18 +48,18 @@ local function receive(player, fields)
   end
  end
 end
-core.register_chatcommand("everforge", {description = "Dominio, disciplinas y habilidades", func = function(name)
- local player = core.get_player_by_name(name)
- if not player then return false end
- show(player)
- return true
-end})
+
 core.register_on_player_receive_fields(function(player, name, fields)
  if name ~= form then return end
+ if fields.guide then
+  if everforge.onboarding then everforge.onboarding.show_hub(player) end
+  return true
+ end
  receive(player, fields)
  if not fields.quit then show(player) end
  return true
 end)
+
 mcl_inventory.register_survival_inventory_tab({id = "everforge_rpg", description = "Everforge", item_icon = "adamantine:ingot",
  show_inventory = false, build = content, handle = function(player, fields)
  if receive(player, fields) then mcl_inventory.update_inventory(player) end

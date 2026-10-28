@@ -507,3 +507,174 @@ msgstr "personalizado / no expuesto"
 
 msgid "unknown"
 msgstr "desconocido"
+
+msgid "A World Without a Written Destination."
+msgstr "Un mundo sin destino escrito."
+
+msgid "There is no prescribed route. Set your own pace: explore, build, mine, or let the landscape suggest a direction. This story is yours."
+msgstr "No hay un camino predeterminado. Marca tu propio ritmo: explora, construye, mina o deja que el paisaje te sugiera una dirección. Esta historia es tuya."
+
+msgid "What You Do Defines You."
+msgstr "Lo que haces te define."
+
+msgid "Mining, forging, combat, exploration, and crafting each leave a different mark. What you choose to practice shapes your progress; there is no single way forward."
+msgstr "Minería, forja, combate, exploración y artesanía dejan huellas distintas. Lo que decides practicar moldea tu progreso; no hay una única manera de avanzar."
+
+msgid "Forge Your Own Path."
+msgstr "Forja tu propio camino."
+
+msgid "No permanent class locks you into a role. Try skills from different disciplines and grow your Mastery at your own pace."
+msgstr "Ninguna clase permanente te encierra en un rol. Prueba habilidades de distintas disciplinas y desarrolla tu Dominio a tu ritmo."
+
+msgid "Not Everything Is in Sight."
+msgstr "No todo está a la vista."
+
+msgid "There is more to discover than what you see at first, but nothing demands that you go in a particular direction. Explore when you are ready and let curiosity guide you."
+msgstr "Hay más por descubrir de lo que se ve al llegar, pero nada te exige ir en una dirección concreta. Explora cuando quieras y deja que te guíe la curiosidad."
+
+msgid "The World Continues With You."
+msgstr "El mundo continúa contigo."
+
+msgid "Your journey does not end with this welcome. Build, change, and inhabit the world around you. When you close this card, the wider world is yours to explore."
+msgstr "Tu viaje no termina con esta bienvenida. Construye, transforma y habita el mundo que te rodea. Al cerrar esta tarjeta, el mundo queda libre para que lo explores."
+
+msgid "Your First Tools"
+msgstr "Tus primeras herramientas"
+
+msgid "Collect a few logs. Turn them into planks in your inventory, make a crafting table, then use Mineclonia's recipe book to look up and craft a wooden axe."
+msgstr "Recoge algunos troncos. Conviértelos en tablones en tu inventario, fabrica una mesa de trabajo y consulta el recetario de Mineclonia para encontrar y fabricar un hacha de madera."
+
+msgid "Learn by Doing"
+msgstr "Aprende haciendo"
+
+msgid "Try mining, forging, combat, exploration, or crafting. Use /everforge to see the five disciplines and available skills. There is no required order."
+msgstr "Prueba la minería, la forja, el combate, la exploración o la artesanía. Usa /everforge para ver las cinco disciplinas y las habilidades disponibles. No hay un orden obligatorio."
+
+msgid "Prepare Your Shelter"
+msgstr "Prepara tu refugio"
+
+msgid "Build a shelter that suits you. Gather food and keep an eye on your health and hunger as you settle in."
+msgstr "Construye un refugio a tu gusto. Reúne comida y vigila tu salud y hambre mientras te instalas."
+
+msgid "Discover the Unknown"
+msgstr "Descubre lo desconocido"
+
+msgid "Head out whenever you like. Take in the landscape and choose your own direction; exploration has no required objectives."
+msgstr "Sal cuando quieras. Observa el paisaje y elige tu propio rumbo; explorar no requiere cumplir objetivos."
+
+msgid "Know Your Tools"
+msgstr "Conoce tus herramientas"
+
+msgid "Open /everforge for the native controls and commands help, Mineclonia's recipe book, and its achievements. You can return to this guide whenever you want."
+msgstr "Abre /everforge para consultar los controles y comandos nativos, el recetario de Mineclonia y sus logros. Puedes volver a esta guía cuando quieras."
+
+msgid "Everforge — Guide and Path"
+msgstr "Everforge — Guía y camino"
+
+msgid "A world to shape at your own pace. Choose a guide or return to your progress."
+msgstr "Un mundo para transformar a tu ritmo. Elige una guía o vuelve a tu progreso."
+
+msgid "Introduction"
+msgstr "Introducción"
+
+msgid "Welcome to Everforge"
+msgstr "Bienvenido a Everforge"
+
+msgid "First Steps"
+msgstr "Primeros pasos"
+
+msgid "Suggestions, never missions"
+msgstr "Sugerencias, nunca misiones"
+
+msgid "Progress"
+msgstr "Progreso"
+
+msgid "Five disciplines and skills"
+msgstr "Cinco disciplinas y habilidades"
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Controls and commands"
+msgstr "Controles y comandos"
+
+msgid "Recipes"
+msgstr "Recetas"
+
+msgid "Mineclonia recipe book"
+msgstr "Recetario de Mineclonia"
+
+msgid "Achievements"
+msgstr "Logros"
+
+msgid "Mineclonia interface"
+msgstr "Interfaz de Mineclonia"
+
+msgid "Controls and Commands"
+msgstr "Controles y comandos"
+
+msgid "Open Mineclonia's existing help entries. Controls can be remapped in Luanti settings."
+msgstr "Abre las entradas de ayuda existentes de Mineclonia. Puedes reasignar los controles desde los ajustes de Luanti."
+
+msgid "Controls"
+msgstr "Controles"
+
+msgid "Commands"
+msgstr "Comandos"
+
+msgid "Full Mineclonia Help"
+msgstr "Ayuda completa de Mineclonia"
+
+msgid "Back"
+msgstr "Volver"
+
+msgid "Everforge — Welcome"
+msgstr "Everforge — Bienvenida"
+
+msgid "Everforge — First Steps"
+msgstr "Everforge — Primeros pasos"
+
+msgid "Would you like to see a few first steps?"
+msgstr "¿Quieres conocer algunos primeros pasos?"
+
+msgid "Yes, show me"
+msgstr "Sí, mostrarlos"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Finish and Explore"
+msgstr "Terminar y explorar"
+
+msgid "Finish"
+msgstr "Terminar"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Skip"
+msgstr "Saltar"
+
+msgid "Would you like to see a few first steps? You can open them any time with /everforge first_steps; the world is ready to explore."
+msgstr "¿Quieres conocer algunos primeros pasos? Puedes abrirlos cuando quieras con /everforge first_steps; el mundo está listo para explorar."
+
+msgid "Mineclonia's help interface is not available right now."
+msgstr "La interfaz de ayuda de Mineclonia no está disponible ahora."
+
+msgid "The Mineclonia recipe book is not available right now."
+msgstr "El recetario de Mineclonia no está disponible ahora."
+
+msgid "Mineclonia's achievements interface is not available in this world."
+msgstr "La interfaz de logros de Mineclonia no está disponible en este mundo."
+
+msgid "Everforge progression is not available right now."
+msgstr "El progreso de Everforge no está disponible ahora."
+
+msgid "Open Everforge's guide, progression, or a reference."
+msgstr "Abre la guía, el progreso o una referencia de Everforge."
+
+msgid "Unknown section; showing the Everforge guide."
+msgstr "Sección desconocida; se muestra la guía de Everforge."
+
+msgid "Card @1 of @2"
+msgstr "Tarjeta @1 de @2"
