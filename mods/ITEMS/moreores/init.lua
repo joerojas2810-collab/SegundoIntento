@@ -60,6 +60,13 @@ local function get_recipe(material, item)
 			{"group:stick"},
 		}
 	end
+	if item == "hoe" then
+		return {
+			{material, material},
+			{"", "mcl_core:stick"},
+			{"", "mcl_core:stick"},
+		}
+	end
 	if item == "axe" then
 		return {
 			{material, material},
@@ -294,8 +301,10 @@ local function add_ore(modname, description, mineral_name, oredef, extra_node_de
 			sound = {breaks = "default_tool_breaks"},
 			_repair_material = ingot,
 			_mcl_toollike_wield = true,
-      _mcl_diggroups = tooldef._mcl_diggroups,
+			_mcl_diggroups = tooldef._mcl_diggroups,
 			groups = tooldef.groups,
+			wield_scale = mcl_vars.tool_wield_scale,
+			on_place = mcl_tools.tool_place_funcs[tool_name],
 		}
 
 		if tool_name == "sword" then
@@ -337,30 +346,52 @@ local function add_ore(modname, description, mineral_name, oredef, extra_node_de
 
 		local fulltool_name = tool_base .. tool_name .. tool_post
 
-		if tool_name == "hoe" and minetest.get_modpath("farming") then
-			tdef.max_uses = tooldef.max_uses
-			tdef.material = ingot
+		if tool_name == "hoe" then
+			-- Mineclonia does not provide the Minetest Game farming.register_hoe
+			-- API. Register the hoe as a native MCL tool with the hoey diggroup,
+			-- Mineclonia's standard place callback and a tier matching the metal.
+			local pick = oredef.tools.pick
+			local pick_caps = pick and pick._mcl_diggroups and pick._mcl_diggroups.pickaxey or {}
+			local hoe_uses = tooldef.max_uses or pick_caps.uses or 150
+			local hoe_common = mcl_tools.commondefs.hoe
+			local hoe_groups = {}
+			if pick and pick.groups then
+				hoe_groups.dig_speed_class = pick.groups.dig_speed_class
+				hoe_groups.enchantability = pick.groups.enchantability
+			end
 			tdef.description = S("@1 Hoe", S(description))
-			farming.register_hoe(fulltool_name, tdef)
-		end
-
-		-- Hoe registration is handled above.
-		-- There are no crafting recipes for hoes, as they have been
-		-- deprecated from Minetest Game:
-		-- https://github.com/minetest/minetest_game/commit/9c459e77a
-		if tool_name ~= "hoe" then
+			tdef.groups = merge_tables(hoe_groups, {hoe = 1, tool = 1, offhand_item = 1})
+			tdef._doc_items_longdesc = hoe_common.longdesc
+			tdef._doc_items_usagehelp = hoe_common.usagehelp
+			tdef._placement_def = hoe_common._placement_def
+			tdef._mcl_diggroups = {
+				hoey = {
+					speed = pick_caps.speed or 6,
+					level = pick_caps.level or 3,
+					uses = hoe_uses,
+				},
+			}
+			tdef.tool_capabilities = {
+				full_punch_interval = oredef.full_punch_interval,
+				max_drop_level = 0,
+				punch_attack_uses = hoe_uses / 2,
+				damage_groups = {fleshy = 1},
+			}
+			tdef.on_place = mcl_tools.tool_place_funcs.hoe
+			tdef.max_uses = nil
 			minetest.register_tool(fulltool_name, tdef)
-
 			if oredef.makes.ingot then
-				minetest.register_craft({
-					output = fulltool_name,
-					recipe = get_recipe(ingot, tool_name)
-				})
+				minetest.register_craft({output = fulltool_name, recipe = get_recipe(ingot, "hoe")})
+			end
+		else
+			minetest.register_tool(fulltool_name, tdef)
+			if oredef.makes.ingot then
+				minetest.register_craft({output = fulltool_name, recipe = get_recipe(ingot, tool_name)})
 			end
 		end
 
 		-- Toolranks support
-		if minetest.get_modpath("toolranks") then
+		if minetest.get_modpath("toolranks") and minetest.registered_items[fulltool_name] then
 			minetest.override_item(fulltool_name, {
 				original_description = tdef.description,
 				description = toolranks.create_description(tdef.description, 0, 1),
@@ -584,16 +615,19 @@ else
 		},
 	}
 
-	-- Bronze has some special cases, because it is made from copper and tin
-	minetest.register_craft({
-		type = "shapeless",
-		output = "default:bronze_ingot 3",
-		recipe = {
-			"moreores:tin_ingot",
-			copper_ingredient,
-			copper_ingredient,
-		},
-	})
+	-- This legacy recipe belongs to Minetest Game's default namespace only.
+	-- Mineclonia already has its own copper/alloy progression.
+	if not is_mcl_core_present then
+		minetest.register_craft({
+			type = "shapeless",
+			output = "default:bronze_ingot 3",
+			recipe = {
+				"moreores:tin_ingot",
+				copper_ingredient,
+				copper_ingredient,
+			},
+		})
+	end
 end
 
 -- Copper rail (unique node)
@@ -612,14 +646,16 @@ if minetest.get_modpath("carts") then
 	}, {})
 end
 
-minetest.register_craft({
-	output = "moreores:copper_rail 24",
-	recipe = {
-		{copper_ingredient, "", copper_ingredient},
-		{copper_ingredient, "group:stick", copper_ingredient},
-		{copper_ingredient, "", copper_ingredient},
-	},
-})
+if minetest.get_modpath("carts") then
+	minetest.register_craft({
+		output = "moreores:copper_rail 24",
+		recipe = {
+			{copper_ingredient, "", copper_ingredient},
+			{copper_ingredient, "group:stick", copper_ingredient},
+			{copper_ingredient, "", copper_ingredient},
+		},
+	})
+end
 
 for orename, def in pairs(oredefs) do
 	-- Register everything
