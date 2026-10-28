@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-28",
+  "engine": "Luanti 5.17.0 macOS ARM64",
+  "checks": [
+    {
+      "check": "test_everforge_onboarding.py",
+      "chunk_id": "806ba3",
+      "wall_time_seconds": 0.4585475,
+      "exit_code": 0,
+      "original_token_count": 608,
+      "output": "test_all_ten_cards_have_exact_spanish_catalogue_keys (__main__.EverforgeOnboardingContract.test_all_ten_cards_have_exact_spanish_catalogue_keys) ... ok\ntest_auto_welcome_is_persisted_per_player_and_waits_for_the_camp (__main__.EverforgeOnboardingContract.test_auto_welcome_is_persisted_per_player_and_waits_for_the_camp) ... ok\ntest_basic_crafting_reuses_registered_recipes_and_keeps_the_full_catalog (__main__.EverforgeOnboardingContract.test_basic_crafting_reuses_registered_recipes_and_keeps_the_full_catalog) ... ok\ntest_basic_crafting_strings_are_in_both_catalogues (__main__.EverforgeOnboardingContract.test_basic_crafting_strings_are_in_both_catalogues) ... ok\ntest_everforge_hub_routes_to_native_help_recipes_and_achievements (__main__.EverforgeOnboardingContract.test_everforge_hub_routes_to_native_help_recipes_and_achievements) ... ok\ntest_five_narrative_titles_are_present_and_translated_as_requested (__main__.EverforgeOnboardingContract.test_five_narrative_titles_are_present_and_translated_as_requested) ... ok\ntest_five_optional_first_steps_cover_the_requested_topics (__main__.EverforgeOnboardingContract.test_five_optional_first_steps_cover_the_requested_topics) ... ok\ntest_guidance_does_not_create_quests_or_reveal_hidden_content (__main__.EverforgeOnboardingContract.test_guidance_does_not_create_quests_or_reveal_hidden_content) ... ok\ntest_hypertext_uses_global_as_a_style_setting_not_a_container (__main__.EverforgeOnboardingContract.test_hypertext_uses_global_as_a_style_setting_not_a_container) ... ok\ntest_introduction_matches_the_current_five_discipline_system (__main__.EverforgeOnboardingContract.test_introduction_matches_the_current_five_discipline_system) ... ok\ntest_inventory_help_chooser_preserves_the_native_complete_help (__main__.EverforgeOnboardingContract.test_inventory_help_chooser_preserves_the_native_complete_help) ... ok\ntest_inventory_tab_has_a_live_direct_route_to_the_guide (__main__.EverforgeOnboardingContract.test_inventory_tab_has_a_live_direct_route_to_the_guide) ... ok\ntest_skip_close_and_completion_do_not_repeat_automatically (__main__.EverforgeOnboardingContract.test_skip_close_and_completion_do_not_repeat_automatically) ... ok\ntest_strings_are_registered_in_both_catalogues (__main__.EverforgeOnboardingContract.test_strings_are_registered_in_both_catalogues) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 0.147s\n\nOK\n"
+    },
+    {
+      "check": "test_everforge_interfaces.py",
+      "chunk_id": "d6acef",
+      "wall_time_seconds": 0.241396416,
+      "exit_code": 0,
+      "original_token_count": 234,
+      "output": "test_melter_hides_waila_only_while_its_metadata_form_is_open (__main__.EverforgeInterfaceRegressions.test_melter_hides_waila_only_while_its_metadata_form_is_open) ... ok\ntest_melter_inventory_rows_and_fuel_label_do_not_overlap (__main__.EverforgeInterfaceRegressions.test_melter_inventory_rows_and_fuel_label_do_not_overlap) ... ok\ntest_melter_timer_refreshes_open_form_after_authoritative_state (__main__.EverforgeInterfaceRegressions.test_melter_timer_refreshes_open_form_after_authoritative_state) ... ok\ntest_progression_ui_replaces_permanent_class_selector (__main__.EverforgeInterfaceRegressions.test_progression_ui_replaces_permanent_class_selector) ... ok\ntest_reward_cache_storage_and_player_inventories_are_separated (__main__.EverforgeInterfaceRegressions.test_reward_cache_storage_and_player_inventories_are_separated) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "check": "test_everforge_crafting_registry.py",
+      "chunk_id": "a61d0e",
+      "wall_time_seconds": 0.249829334,
+      "exit_code": 0,
+      "original_token_count": 186,
+      "output": "test_five_tool_families_and_material_variants_come_from_live_registrations (__main__.RegisteredRecipeSource.test_five_tool_families_and_material_variants_come_from_live_registrations) ... ok\ntest_guide_never_registers_recipes_and_reads_the_engine_catalog (__main__.RegisteredRecipeSource.test_guide_never_registers_recipes_and_reads_the_engine_catalog) ... ok\ntest_logs_planks_sticks_and_table_are_registered (__main__.RegisteredRecipeSource.test_logs_planks_sticks_and_table_are_registered) ... ok\ntest_survival_recipes_and_bed_variants_match_source (__main__.RegisteredRecipeSource.test_survival_recipes_and_bed_variants_match_source) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+    },
+    {
+      "check": "test_translation_regression.py",
+      "chunk_id": "c98d4a",
+      "wall_time_seconds": 0.255429208,
+      "exit_code": 0,
+      "original_token_count": 130,
+      "output": "test_bad_raw_domain_nesting_reproduces_adamantine_warning (__main__.TranslationRegression.test_bad_raw_domain_nesting_reproduces_adamantine_warning) ... ok\ntest_translator_argument_and_waila_lines_are_safe (__main__.TranslationRegression.test_translator_argument_and_waila_lines_are_safe) ... ok\ntest_waila_localizes_fields_before_joining (__main__.TranslationRegression.test_waila_localizes_fields_before_joining) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "check": "test_everforge_help_translations.py",
+      "chunk_id": "ef21aa",
+      "wall_time_seconds": 0.237439166,
+      "exit_code": 0,
+      "original_token_count": 87,
+      "output": "test_controls_and_commands_are_native_and_have_spanish_translations (__main__.NativeHelpTranslationAudit.test_controls_and_commands_are_native_and_have_spanish_translations) ... Audited 50 controls and 22 command strings from mcl_doc_basics.es.po\nok\n\n----------------------------------------------------------------------\nRan 1 test in 0.017s\n\nOK\n"
+    },
+    {
+      "check": "test_everforge_crafting_guide.cjs",
+      "chunk_id": "ffb04a",
+      "wall_time_seconds": 0.539554292,
+      "exit_code": 0,
+      "original_token_count": 62,
+      "output": "Basic crafting harness passed: 13 guide entries, registered recipe shapes/alternatives, material variants, progressive notice, native book, and hub navigation.\nCrafting layout: 74 forms; 1798 foreground bounds, overlap and complete-grid checks.\n"
+    },
+    {
+      "check": "test_everforge_onboarding.cjs",
+      "chunk_id": "5f2ec5",
+      "wall_time_seconds": 0.536778167,
+      "exit_code": 0,
+      "original_token_count": 41,
+      "output": "Onboarding runtime harness passed: navigation, persistence, camp-ready gate, optional prompt, and native Mineclonia routes; 34 forms, 388 widget bounds checked.\n"
+    },
+    {
+      "check": "test_everforge_inventory_guide.cjs",
+      "chunk_id": "908c39",
+      "wall_time_seconds": 0.411424958,
+      "exit_code": 0,
+      "original_token_count": 77,
+      "output": "Native inventory guide harness passed: visible Everforge tab button opens the /everforge hub from both inventory and progression forms.\nSurvival inventory theme passed: native inventory lists, armor and crafting indices, action fields, in-window tabs, unthemed fallback and progression foreground geometry.\n"
+    },
+    {
+      "check": "check_everforge_ui.cjs",
+      "chunk_id": "87dbb2",
+      "wall_time_seconds": 0.482453125,
+      "exit_code": 0,
+      "original_token_count": 45,
+      "output": "Lua 5.1 syntax passed; generated cache and four melter states; 35 bounds passed; HUD visible dimensions preserved.\nSmelting recipes and output-type tables match the PR baseline.\n"
+    }
+  ]
+}

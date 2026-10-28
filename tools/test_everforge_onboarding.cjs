@@ -5,6 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const lua = require('luaparse');
+const checkLayout = require('./check_formspec_layout.cjs');
 const sourcePath = 'mods/MISC/everforge/onboarding.lua';
 const source = fs.readFileSync(sourcePath, 'utf8');
 lua.parse(source, { luaVersion: '5.1' });
@@ -68,6 +69,8 @@ end
 function core.chat_send_player(_,s) messages[#messages+1]=s end
 function core.get_player_privs() return {} end
 
+function core.hypertext_escape(s) return (s:gsub(string.char(92),string.char(92,92)):gsub("<",string.char(92).."<"):gsub(">",string.char(92)..">")) end
+function core.register_on_leaveplayer() end
 everforge={}
 everforge.start_region={get=function() return {state=region_state} end}
 everforge._suppress_waila=function(_,form) everforge.last_suppressed=form end
@@ -85,7 +88,9 @@ dofile("mods/MISC/everforge/onboarding.lua")
 assert(command and command.params:find("first_steps",1,true))
 assert(command.func("Tester","") == true)
 assert(current_form == "everforge:guide")
+dispatch(player,current_form,{hub_next=true})
 assert(current_spec:find("craftguide_book.png",1,true) and current_spec:find("mcl_achievements_button.png",1,true))
+dispatch(player,current_form,{hub_previous=true})
 assert(current_spec:find("Basic Crafting",1,true),"hub must expose the new basic crafting guide")
 dispatch(player,current_form,{basic_crafting=true})
 assert(current_form=="everforge:basic_crafting" and current_spec:find("This material is gathered from the world",1,true))
@@ -106,7 +111,7 @@ for i,title in ipairs(intro_titles) do
   assert(current_spec:find(title,1,true),"missing narrative card "..i)
   assert(not current_spec:find("</global>",1,true),"invalid global closing tag in narrative card "..i)
   if i==1 then
-    assert(current_spec:find("Unsafe &lt;tag&gt; &amp; translated &lt;/global&gt; text",1,true),"translated hypertext was not escaped")
+    assert(current_spec:find("Unsafe "..string.char(92).."<tag"..string.char(92).."> & translated "..string.char(92).."</global"..string.char(92).."> text",1,true),"translated hypertext was not escaped")
   end
   if i<#intro_titles then dispatch(player,current_form,{next=true}) end
 end
@@ -129,6 +134,19 @@ command.func("Tester","controls"); assert(native=="basics:controls")
 command.func("Tester","commands"); assert(native=="advanced:commands")
 command.func("Tester","progression"); assert(native=="progression")
 
+local returner=make_player("Returner")
+command.func("Returner","first_steps")
+assert(current_spec:find("see_basic_recipes",1,true))
+dispatch(returner,current_form,{see_basic_recipes=true})
+assert(current_form=="everforge:basic_crafting" and current_spec:find("Back to tutorial",1,true))
+assert(returner.meta:get_int("everforge:onboarding:intro_done")==0)
+dispatch(returner,current_form,{category_tools=true})
+dispatch(returner,current_form,{item_axe=true})
+dispatch(returner,current_form,{back_hub=true})
+assert(current_form=="everforge:first_steps" and current_spec:find("Your First Tools",1,true))
+assert(returner.meta:get_int("everforge:onboarding:intro_done")==0)
+dispatch(returner,current_form,{next=true})
+assert(current_spec:find("Learn by Doing",1,true),"continue the suspended tutorial instead of restarting/completing it")
 local full_steps=make_player("FullSteps")
 command.func("FullSteps","first_steps")
 local step_titles={"Your First Tools","Learn by Doing","Prepare Your Shelter","Discover the Unknown","Know Your Tools"}
@@ -168,7 +186,7 @@ dofile("mods/MISC/everforge/onboarding.lua")
 assert(player.meta:get_int("everforge:onboarding:auto_intro_seen")==saved_auto)
 assert(player.meta:get_int("everforge:onboarding:intro_done")==saved_done)
 assert(command.func("Tester","")==true and current_form=="everforge:guide")
-for _,screen in ipairs(screens) do print("SCREEN|"..screen[1].."|"..screen[2]) end
+for _,screen in ipairs(screens) do print("SCREEN|"..screen[1].."|"..screen[2]:gsub(string.char(10)," ")) end
 print("Onboarding runtime harness passed: navigation, persistence, camp-ready gate, optional prompt, and Mineclonia-native routes.")
 `;
 const file = path.join(os.tmpdir(), 'everforge-onboarding-harness.lua');
@@ -184,6 +202,7 @@ for (const line of output.split(/\r?\n/)) {
     : name === 'everforge:inventory_help' ? [12, 5.8]
     : name === 'everforge:basic_crafting' ? [12, 8.2]
     : [12, 7.5];
+  checkLayout(spec, ...size);
   if (spec.includes('</global>')) throw new Error(`${name}: invalid closing global tag reached the client`);
   if (spec.includes('Mineclonia')) throw new Error(`${name}: internal dependency brand leaked into Everforge UI`);
   const stylesOpen = (spec.match(/<style/g) || []).length;

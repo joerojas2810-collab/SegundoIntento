@@ -41,13 +41,29 @@ core.register_on_leaveplayer(function(player)
 	player_current_tab[player] = nil
 end)
 
+local function inventory_slots(x, y, width, height)
+	local theme = mcl_inventory.survival_inventory_theme
+	return mcl_formspec.get_itemslot_bg_v4(x, y, width, height, nil, theme and theme.slot)
+end
+
 local function build_page(_, content, inventory, tabname)
-	local tab_buttons = "style_type[image;noclip=true]"
+	local theme = mcl_inventory.survival_inventory_theme
+	local tab_buttons = theme and "" or "style_type[image;noclip=true]"
 
 	if #mcl_inventory.registered_survival_inventory_tabs ~= 1 then
 		for i, d in ipairs(mcl_inventory.registered_survival_inventory_tabs) do
 			local btn_name = "tab_" .. d.id
 
+			if theme then
+				local width = math.min(3.5, 11 / #mcl_inventory.registered_survival_inventory_tabs)
+				local x = 0.375 + (i - 1) * width
+				local title = d.id == "main" and theme.main_label or d.description
+				tab_buttons = tab_buttons .. ("item_image_button[%s,0.12;0.65,0.65;%s;%s;]"):format(x, d.item_icon, btn_name)
+				if width >= 2.5 then
+					tab_buttons = tab_buttons .. ("button[%s,0.12;%s,0.65;%s;%s]"):format(x + 0.75, width - 0.9, btn_name, F(title))
+				end
+				tab_buttons = tab_buttons .. "tooltip[" .. btn_name .. ";" .. F(title) .. "]"
+			else
 			tab_buttons = tab_buttons .. table.concat({
 				"style[" .. btn_name .. ";border=false;bgimg=;bgimg_pressed=;noclip=true]",
 				"image[" ..
@@ -57,43 +73,48 @@ local function build_page(_, content, inventory, tabname)
 				"item_image_button[" .. (0.44 + (i - 1) * 1.6) .. ",-1.1;1,1;" .. d.item_icon .. ";" .. btn_name .. ";]",
 				"tooltip[" .. btn_name .. ";" .. F(d.description) .. "]"
 			})
+			end
 		end
 	end
 
 	return table.concat({
 		"formspec_version[6]",
 		"size[11.75,10.9]",
+		theme and theme.frame(11.75, 10.9) or "",
 
 		inventory and table.concat({
 			--Main inventory
-			mcl_formspec.get_itemslot_bg_v4(0.375, 5.575, 9, 3),
+			inventory_slots(0.375, 5.575, 9, 3),
 			"list[current_player;main;0.375,5.575;9,3;9]",
 
 			--Hotbar
-			mcl_formspec.get_itemslot_bg_v4(0.375, 9.525, 9, 1),
+			inventory_slots(0.375, 9.525, 9, 1),
 			"list[current_player;main;0.375,9.525;9,1;]"
 		}) or "",
 
-		content,
+		theme and tabname ~= "main" and ("container[0,0.9]" .. content .. "container_end[]") or content,
 		tab_buttons,
 	})
 end
 
 local function get_inventory_formspec(player)
+	local theme = mcl_inventory.survival_inventory_theme
 	local inv = player:get_inventory()
 
 	local armor_slots = { "helmet", "chestplate", "leggings", "boots" }
 	local armor_slot_imgs = ""
 	for a = 1, 4 do
+		local y = theme and (0.95 + (a - 1) * 1.1) or (0.375 + (a - 1) * 1.25)
+		armor_slot_imgs = armor_slot_imgs .. inventory_slots(0.375, y, 1, 1)
+		armor_slot_imgs = armor_slot_imgs .. ("list[current_player;armor;0.375,%s;1,1;%d]"):format(y, a)
 		if inv:get_stack("armor", a + 1):is_empty() then
-			armor_slot_imgs = armor_slot_imgs ..
-				"image[0.375," .. (0.375 + (a - 1) * 1.25) .. ";1,1;mcl_inventory_empty_armor_slot_" .. armor_slots[a] .. ".png]"
+			armor_slot_imgs = armor_slot_imgs .. ("image[0.375,%s;1,1;%s]"):format(y, F("mcl_inventory_empty_armor_slot_" .. armor_slots[a] .. ".png" .. (theme and "^[colorize:#D6C6B5:180" or "")))
 		end
 	end
 
 	local offhand_slot_img = ""
 	if inv:get_stack("offhand", 1):is_empty() then
-		offhand_slot_img = "image[5.375,4.125;1,1;mcl_inventory_empty_armor_slot_shield.png]"
+		offhand_slot_img = "image[5.375,4.125;1,1;" .. F("mcl_inventory_empty_armor_slot_shield.png" .. (theme and "^[colorize:#D6C6B5:180" or "")) .. "]"
 	end
 
 	local craft_width = inv:get_width("craft")
@@ -103,35 +124,30 @@ local function get_inventory_formspec(player)
 	end
 
 	return table.concat({
-		--Armor slots
-		mcl_formspec.get_itemslot_bg_v4(0.375, 0.375, 1, 4),
-		"list[current_player;armor;0.375,0.375;1,1;1]",
-		"list[current_player;armor;0.375,1.625;1,1;2]",
-		"list[current_player;armor;0.375,2.875;1,1;3]",
-		"list[current_player;armor;0.375,4.125;1,1;4]",
+		-- Armor slot list names and indices are unchanged.
 		armor_slot_imgs,
 
 		--Player model background
-		"image[1.57,0.343;3.62,4.85;mcl_inventory_background9.png;2]",
+		theme and "background9[1.57,0.9;3.62,4.3;everforge_ui_panel.png;false;8]" or "image[1.57,0.343;3.62,4.85;mcl_inventory_background9.png;2]",
 
 		--Offhand
-		mcl_formspec.get_itemslot_bg_v4(5.375, 4.125, 1, 1),
+		inventory_slots(5.375, 4.125, 1, 1),
 		"list[current_player;offhand;5.375,4.125;1,1]",
 		offhand_slot_img,
 
 		--Craft grid
-		"label[6.61,0.5;" .. F(core.colorize(mcl_formspec.label_color, S("Crafting"))) .. "]",
+		("label[6.61,%s;%s]"):format(theme and 1.2 or 0.5, F(core.colorize(theme and "#E8B17D" or mcl_formspec.label_color, S("Crafting")))),
 
-		mcl_formspec.get_itemslot_bg_v4(6.625, 0.875, 2, 2),
-		"list[current_player;craft;6.625,0.875;2,1]",
-		"list[current_player;craft;6.625,2.125;2,1;", craft_width, "]",
+		inventory_slots(6.625, theme and 1.55 or 0.875, 2, 2),
+		("list[current_player;craft;6.625,%s;2,1]"):format(theme and 1.55 or 0.875),
+		("list[current_player;craft;6.625,%s;2,1;%d]"):format(theme and 2.8 or 2.125, craft_width),
 
-		"image[9.125,1;1,1;crafting_formspec_arrow.png]",
+		("image[9.125,%s;1,1;crafting_formspec_arrow.png]"):format(theme and 1.65 or 1),
 
-		mcl_formspec.get_itemslot_bg_v4(10.375, 1, 1, 1),
-		"list[current_player;craftpreview;10.375,1;1,1;]",
+		inventory_slots(10.375, theme and 1.65 or 1, 1, 1),
+		("list[current_player;craftpreview;10.375,%s;1,1;]"):format(theme and 1.65 or 1),
 
-		"image_button[9.125,2.125;1,1;mcl_crafting_table_inv_fill.png;__mcl_crafting_fillgrid;]",
+		("image_button[9.125,%s;1,1;mcl_crafting_table_inv_fill.png;__mcl_crafting_fillgrid;]"):format(theme and 2.8 or 2.125),
 		"tooltip[__mcl_crafting_fillgrid;" .. F(S("Fill Craft Grid")) .. "]",
 
 		--Crafting guide button
@@ -162,7 +178,7 @@ local function get_inventory_formspec(player)
 		"listring[current_player;main]",
 
 		-- Player model
-		mcl_player.get_player_formspec_model(player, 1.45, 0.5, 3.62, 4.85, ""),
+		mcl_player.get_player_formspec_model(player, 1.45, theme and 1.0 or 0.5, 3.62, theme and 4.2 or 4.85, ""),
 	})
 end
 

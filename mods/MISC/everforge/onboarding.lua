@@ -13,6 +13,8 @@ local META_AUTO_SEEN = "everforge:onboarding:auto_intro_seen"
 local META_INTRO_DONE = "everforge:onboarding:intro_done"
 local META_STEPS_OFFERED = "everforge:onboarding:first_steps_offer_seen"
 local active_cards = {}
+local hub_pages = {}
+local recipe_returns = {}
 
 local introductions = {
 	{
@@ -45,7 +47,7 @@ local introductions = {
 local first_steps = {
 	{
 		title = S("Your First Tools"),
-		text = S("Collect logs. Open your inventory, place logs in the crafting grid, and take the planks. Use them to make a crafting table; the recipe book (book icon) shows how to make a wooden axe."),
+		text = S("Collect logs first.\nOpen Inventory (I) → Everforge tab → Everforge Guide → Basic Crafting. Find visual recipes for essential materials and objects: axes, pickaxes, shovels, swords and torches."),
 		icon = "mcl_crafting_table_inv_fill.png",
 	},
 	{
@@ -65,7 +67,7 @@ local first_steps = {
 	},
 	{
 		title = S("Know Your Tools"),
-		text = S("To return to this guide without typing a command, open your inventory (I), select the Everforge tab, and choose \"Everforge Guide\". Or press T to open chat, type /everforge, and press Enter. I and T are Luanti's default keys; you can change them in Settings > Change keys."),
+		text = S("Return to the hub through Inventory (I) → Everforge tab → Everforge Guide. Basic Crafting shows recipes for materials, tools and essential objects.\nAlternative: /everforge. Change I in Settings > Change keys."),
 		icon = "doc_button_icon_lores.png",
 	},
 }
@@ -98,19 +100,20 @@ local function button_exit(x, y, width, height, field, label)
 end
 
 local function escape_hypertext(text)
-	return text:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("\n", "<br>")
+	return core.hypertext_escape(text)
 end
 
-local function card_text(text)
+local function translated(player, text)
+	local info = core.get_player_information(player:get_player_name())
+	return core.get_translated_string(info and info.lang_code or "en", text)
+end
+
+local function card_text(player, text)
 	-- In Luanti hypertext, <global> sets global styles and is not a container;
 	-- closing it is invalid and the client renders </global> as literal text.
 	-- Keep it open for this element, close only the nested style, and escape
 	-- translated copy before formspec delimiters are escaped.
-	return core.formspec_escape("<global valign=middle><style color=#F2E8D9 size=22>" .. escape_hypertext(text) .. "</style>")
-end
-
-local function subtitle_text(text)
-	return core.formspec_escape("<style color=#B9AEA3 size=13>" .. escape_hypertext(text) .. "</style>")
+	return core.formspec_escape("<global margin=0 valign=top><style color=#F2E8D9>" .. escape_hypertext(translated(player, text)) .. "</style>")
 end
 
 local function show_form(player, formname, formspec)
@@ -134,7 +137,7 @@ local function show_inventory_help(player)
 		"box[0.35,0.25;11.3,0.75;#242325]",
 		"box[0.35,0.25;0.06,0.75;#C27A4A]",
 		"label[0.72,0.49;" .. core.formspec_escape(core.colorize("#E8B17D", S("Help"))) .. "]",
-		"label[0.72,1.22;" .. core.formspec_escape(S("Choose a practical crafting guide or open the complete help library.")) .. "]",
+		"label[0.72,1.22;" .. core.formspec_escape(S("Crafting guides and the complete help library.")) .. "]",
 		"image[1.15,2.0;0.85,0.85;mcl_crafting_table_inv_fill.png]",
 		button(2.25, 2.0, 7.6, 0.75, "basic_crafting", S("Basic Crafting")),
 		"image[1.15,3.15;0.85,0.85;doc_button_icon_lores.png]",
@@ -150,33 +153,42 @@ local function show_basic_crafting(player)
 	crafting_guide.show(player, "materials", "logs", 1)
 end
 
-local function show_hub(player, manual)
+local function show_hub(player, manual, page)
 	if manual ~= false then mark_manual_open(player) end
-	active_cards[player:get_player_name()] = nil
+	local name = player:get_player_name()
+	active_cards[name] = nil
+	recipe_returns[name] = nil
+	page = math.max(1, math.min(2, page or 1))
+	hub_pages[name] = page
 	local fs = {
 		theme(12, 7.5),
 		"box[0.35,0.25;11.3,0.75;#242325]",
 		"box[0.35,0.25;0.06,0.75;#C27A4A]",
 		"label[0.72,0.49;" .. core.formspec_escape(core.colorize("#E8B17D", S("Everforge — Guide and Path"))) .. "]",
-		"label[0.72,1.12;" .. core.formspec_escape(S("A world to shape at your own pace. Choose a guide or return to your progress.")) .. "]",
+		"label[0.72,1.12;" .. core.formspec_escape(S("Choose a guide or check your progress.")) .. "]",
 	}
 	local tiles = {
 		{0.55, 1.7, "intro", S("Introduction"), S("Welcome to Everforge"), "everforge_part_handle.png"},
 		{4.35, 1.7, "first_steps", S("First Steps"), S("Suggestions, never missions"), "mcl_crafting_table_inv_fill.png"},
+		{4.35, 4.8, "basic_crafting", S("Basic Crafting"), S("Materials, tools and survival"), "mcl_crafting_table_inv_fill.png"},
 		{8.15, 1.7, "progression", S("Progress"), S("Five disciplines and skills"), "everforge_part_head.png"},
 		{0.55, 3.25, "help", S("Help"), S("Controls and commands"), "doc_button_icon_lores.png"},
 		{4.35, 3.25, "recipes", S("Recipes"), S("General recipe book"), "craftguide_book.png"},
 		{8.15, 3.25, "achievements", S("Achievements"), S("Game achievements"), "mcl_achievements_button.png"},
-		{4.35, 4.8, "basic_crafting", S("Basic Crafting"), S("Materials, tools and survival"), "mcl_crafting_table_inv_fill.png"},
 	}
-	for _, tile in ipairs(tiles) do
-		local x, y, field, title, subtitle, icon = unpack(tile)
-		fs[#fs + 1] = ("box[%s,%s;3.3,1.3;#111214EE]"):format(x, y)
-		fs[#fs + 1] = ("image[%s,%s;0.8,0.8;%s]"):format(x + 0.16, y + 0.2, icon)
-		fs[#fs + 1] = button(x + 1.0, y + 0.15, 2.15, 0.5, field, title)
-		fs[#fs + 1] = ("hypertext[%s,%s;2.15,0.48;tile_subtitle;%s]"):format(x + 1.0, y + 0.73, subtitle_text(subtitle))
+	for index = (page - 1) * 4 + 1, math.min(page * 4, #tiles) do
+		local tile = tiles[index]
+		local _, _, field, title, subtitle, icon = unpack(tile)
+		local y = 1.55 + ((index - 1) % 4) * 1.2
+		fs[#fs + 1] = ("box[0.55,%s;10.9,1.15;#111214EE]"):format(y)
+		fs[#fs + 1] = ("image[0.75,%s;0.7,0.7;%s]"):format(y + 0.15, icon)
+		fs[#fs + 1] = button(1.65, y + 0.08, 9.5, 0.48, field, title)
+		fs[#fs + 1] = ("label[1.75,%s;9.2,0.48;%s]"):format(y + 0.62, core.formspec_escape(subtitle))
 	end
-	fs[#fs + 1] = button_exit(0.55, 6.55, 2.0, 0.55, "close", S("Close"))
+	fs[#fs + 1] = button_exit(0.55, 6.45, 2.2, 0.6, "close", S("Close"))
+	fs[#fs + 1] = button(3.1, 6.45, 2.3, 0.6, "hub_previous", S("Previous"))
+	fs[#fs + 1] = "style_type[label;font_size=*0.8;halign=center]label[5.6,6.45;2.6,0.6;" .. core.formspec_escape(S("Page @1 of @2", tostring(page), "2")) .. "]"
+	fs[#fs + 1] = button(8.4, 6.45, 2.8, 0.6, "hub_next", S("Next"))
 	show_form(player, FORM_HUB, "formspec_version[7]size[12,7.5]" .. table.concat(fs))
 end
 
@@ -187,7 +199,7 @@ local function show_help(player, manual)
 		"box[0.35,0.25;11.3,0.75;#242325]",
 		"box[0.35,0.25;0.06,0.75;#C27A4A]",
 		"label[0.72,0.49;" .. core.formspec_escape(core.colorize("#E8B17D", S("Controls and Commands"))) .. "]",
-		"label[0.72,1.25;" .. core.formspec_escape(S("Open the available help pages. Controls can be changed in the game settings.")) .. "]",
+		"label[0.72,1.25;" .. core.formspec_escape(S("Open help pages. Change controls in the game settings.")) .. "]",
 		button(0.8, 2.1, 4.5, 0.8, "controls", S("Controls")),
 		button(6.7, 2.1, 4.5, 0.8, "commands", S("Commands")),
 		button(0.8, 3.3, 4.5, 0.8, "all_help", S("Complete Help")),
@@ -213,21 +225,35 @@ local function show_cards(player, kind, page, manual)
 		"label[0.72,0.52;" .. core.formspec_escape(core.colorize("#E8B17D", title)) .. "]",
 		"label[0.72,1.18;" .. core.formspec_escape(S("Card @1 of @2", tostring(page), tostring(#cards))) .. "]",
 		"label[1.0,1.63;" .. core.formspec_escape(core.colorize("#E8B17D", card.title)) .. "]",
-		("image[9.75,1.45;1.0,1.0;%s]"):format(card.icon),
+		("image[9.9,1.35;0.65,0.65;%s]"):format(card.icon),
 		"box[0.7,2.05;10.6,3.15;#111214EE]",
-		"hypertext[1.0,2.35;9.95,2.55;card_text;" .. card_text(card.text) .. "]",
+		"hypertext[1.0,2.3;9.95,2.7;card_text;" .. card_text(player, card.text) .. "]",
 	}
+	if not is_intro and page == 1 then
+		fs[#fs + 1] = button(0.8, 5.45, 5.5, 0.6, "see_basic_recipes", S("See Basic Recipes"))
+	end
 	if is_intro and page == #cards then
-		fs[#fs + 1] = "label[0.78,5.42;" .. core.formspec_escape(core.colorize("#E8B17D", S("Would you like to see a few first steps?"))) .. "]"
-		fs[#fs + 1] = button(7.0, 5.3, 3.25, 0.5, "steps_now", S("Yes, show me"))
+		fs[#fs + 1] = "hypertext[0.8,5.3;6.25,0.85;steps_offer;" .. card_text(player, S("Would you like to see a few first steps?")) .. "]"
+		fs[#fs + 1] = button(7.4, 5.4, 3.6, 0.6, "steps_now", S("Yes, show me"))
 	end
 	fs[#fs + 1] = button(0.55, 6.45, 1.85, 0.55, "previous", S("Previous"))
 	local next_label = page == #cards and (is_intro and S("Finish and Explore") or S("Finish")) or S("Next")
-	fs[#fs + 1] = button(2.55, 6.45, 2.25, 0.55, "next", next_label)
+	fs[#fs + 1] = button(2.55, 6.45, 4.4, 0.55, "next", next_label)
 	fs[#fs + 1] = ("button_exit[7.45,6.45;1.8,0.55;skip;%s]"):format(core.formspec_escape(S("Skip")))
 	fs[#fs + 1] = ("button_exit[9.55,6.45;1.8,0.55;close;%s]"):format(core.formspec_escape(S("Close")))
 	local formname = is_intro and FORM_INTRO or FORM_STEPS
 	show_form(player, formname, "formspec_version[7]size[12,7.5]" .. table.concat(fs))
+end
+
+local function return_from_recipes(player)
+	local name = player:get_player_name()
+	local session = recipe_returns[name]
+	recipe_returns[name] = nil
+	if session then
+		show_cards(player, session.kind, session.page, false)
+	else
+		show_hub(player, false, hub_pages[name])
+	end
 end
 
 local function tell_steps_offer(player)
@@ -324,6 +350,12 @@ local function handle_card_fields(player, formname, fields)
 	local is_intro = session.kind == "intro"
 	local cards = is_intro and introductions or first_steps
 
+	if fields.see_basic_recipes and not is_intro and session.page == 1 then
+		recipe_returns[name] = {kind = session.kind, page = session.page}
+		release_onboarding_waila(player)
+		crafting_guide.show(player, "materials", "logs", 1)
+		return true
+	end
 	if fields.steps_now and is_intro then
 		player:get_meta():set_int(META_STEPS_OFFERED, 1)
 		end_intro(player, false)
@@ -370,7 +402,9 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	if formname == FORM_INTRO or formname == FORM_STEPS then
 		return handle_card_fields(player, formname, fields)
 	elseif formname == FORM_HUB then
-		if fields.intro then show_cards(player, "intro", 1, false)
+		if fields.hub_previous then show_hub(player, false, (hub_pages[name] or 1) - 1)
+		elseif fields.hub_next then show_hub(player, false, (hub_pages[name] or 1) + 1)
+		elseif fields.intro then show_cards(player, "intro", 1, false)
 		elseif fields.first_steps then show_cards(player, "first_steps", 1, false)
 		elseif fields.progression then show_progression(player)
 		elseif fields.help then show_help(player, false)
@@ -486,7 +520,14 @@ core.register_on_joinplayer(function(player)
 	core.after(1, function() try_auto_intro(name, 0) end)
 end)
 
+core.register_on_leaveplayer(function(player)
+	local name = player:get_player_name()
+	active_cards[name], hub_pages[name], recipe_returns[name] = nil, nil, nil
+end)
+
 everforge.onboarding = {
+	return_from_recipes = return_from_recipes,
+	recipe_return_pending = function(player) return recipe_returns[player:get_player_name()] ~= nil end,
 	show_hub = function(player) show_hub(player, false) end,
 	show_intro = function(player) show_cards(player, "intro", 1, false) end,
 	show_first_steps = function(player) show_cards(player, "first_steps", 1, false) end,

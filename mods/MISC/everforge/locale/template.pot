@@ -921,3 +921,70 @@ msgstr ""
 
 msgid "Recipes follow this world, not a fixed Minecraft edition; bed behavior can depend on server settings."
 msgstr ""
+
+
+msgid "See Basic Recipes"
+msgstr ""
+
+msgid "Page @1 of @2"
+msgstr ""
+
+msgid "Back to tutorial"
+msgstr ""
+
+msgid "Variant"
+msgstr ""
+
+msgid "Back to guide"
+msgstr ""
+
+msgid "@1×"
+msgstr ""
+
+msgid "Collect logs first.\nOpen Inventory (I) → Everforge tab → Everforge Guide → Basic Crafting. Find visual recipes for essential materials and objects: axes, pickaxes, shovels, swords and torches."
+msgstr ""
+
+msgid "Return to the hub through Inventory (I) → Everforge tab → Everforge Guide. Basic Crafting shows recipes for materials, tools and essential objects.\nAlternative: /everforge. Change I in Settings > Change keys."
+msgstr ""
+
+msgid "Materials"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "Crafting\nTable"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Recipe"
+msgstr ""
+
+msgid "Shapeless"
+msgstr ""
+
+msgid "2×2 or 3×3"
+msgstr ""
+
+msgid "3×3"
+msgstr ""
+
+msgid "Choose a guide or check your progress."
+msgstr ""
+
+msgid "Crafting guides and the complete help library."
+msgstr ""
+
+msgid "Open help pages. Change controls in the game settings."
+msgstr ""
+
+msgid "Recipe @1 of @2"
+msgstr ""
+
+msgid "Materials: @1"
+msgstr ""
+
+msgid "Use the registered wood recipe, or another recipe shown here when available."
+msgstr ""

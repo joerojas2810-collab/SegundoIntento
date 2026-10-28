@@ -6,8 +6,8 @@ local S = core.get_translator("everforge")
 local FORM = "everforge:basic_crafting"
 local CATEGORIES = {"materials", "tools", "survival"}
 local category_labels = {
-	materials = S("First Materials"),
-	tools = S("Tools and Weapons"),
+	materials = S("Materials"),
+	tools = S("Tools"),
 	survival = S("Survival"),
 }
 
@@ -108,7 +108,7 @@ local function escape(text)
 end
 
 local function html(text)
-	return tostring(text or ""):gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("\n", "<br>")
+	return core.hypertext_escape(tostring(text or ""))
 end
 
 local function icon_id(itemname)
@@ -163,7 +163,7 @@ local function craft_location(recipe, last)
 end
 
 local function matrix_size(recipe, last)
-	if recipe.width == 0 then return 2 end
+	if recipe.width == 0 then return last > 4 and 3 or 2 end
 	local width = math.max(1, recipe.width or 1)
 	local height = math.max(1, math.ceil(last / width))
 	return (width <= 2 and height <= 2) and 2 or 3
@@ -261,17 +261,23 @@ end
 local function grid_formspec(recipe, player, x, y)
 	local items, last = recipe_items(recipe)
 	local size = matrix_size(recipe, last)
-	local cell = size == 2 and 0.78 or 0.62
-	local gap = 0.12
+	-- Backgrounds and icons share the same pitch in real formspec units.
+	local cell, gap = 0.74, 0.12
 	local grid_width = size * cell + (size - 1) * gap
-	local start_x = x + (2.85 - grid_width) / 2
-	local start_y = y + (2.25 - grid_width) / 2
-	local fs = {mcl_formspec.get_itemslot_bg_v4(start_x, start_y, size, size, nil, "everforge_ui_slot.png")}
-	local recipe_width = recipe.width == 0 and 2 or math.max(1, recipe.width or 1)
+	local start_x = x + (2.46 - grid_width) / 2
+	local start_y = y + (2.46 - grid_width) / 2
+	local fs = {}
+	for row = 0, size - 1 do
+		for col = 0, size - 1 do
+			fs[#fs + 1] = ("image[%0.3f,%0.3f;0.74,0.74;everforge_ui_slot.png]"):format(
+				start_x + col * (cell + gap), start_y + row * (cell + gap))
+		end
+	end
+	local recipe_width = recipe.width == 0 and size or math.max(1, recipe.width or 1)
 	for index = 1, last do
 		local item = items[index]
 		if item and item ~= "" then
-			local id = item
+			local id, count = output_parts(item)
 			if id:sub(1, 6) == "group:" then
 				local group = group_display[id]
 				id = group and group.icon or nil
@@ -281,14 +287,14 @@ local function grid_formspec(recipe, player, x, y)
 				local col = slot % recipe_width
 				local row = math.floor(slot / recipe_width)
 				if recipe.width == 0 then
-					col = slot % 2
-					row = math.floor(slot / 2)
+					col = slot % size
+					row = math.floor(slot / size)
 				end
 				if col < size and row < size then
-					fs[#fs + 1] = ("item_image[%0.3f,%0.3f;0.60,0.60;%s]"):format(
-						start_x + col * (cell + gap) + 0.08,
-						start_y + row * (cell + gap) + 0.08,
-						id)
+					fs[#fs + 1] = ("item_image[%0.3f,%0.3f;0.60,0.60;%s %d]"):format(
+						start_x + col * (cell + gap) + 0.07,
+						start_y + row * (cell + gap) + 0.07,
+						id, count)
 				end
 			end
 		end
@@ -306,7 +312,7 @@ local function recipe_shapes(entry, item, player)
 	return result
 end
 
-local function build_formspec(player, category, key, recipe_index, variant)
+local function build_formspec(player, category, key, recipe_index, variant, detail_page)
 	category = entries[category] and category or "materials"
 	local selection = item_by_key[key]
 	if not selection or selection.category ~= category then
@@ -324,93 +330,98 @@ local function build_formspec(player, category, key, recipe_index, variant)
 	local recipes = recipe_shapes(entry, selected_item, player)
 	recipe_index = math.max(1, math.min(#recipes, recipe_index or 1))
 	local recipe = recipes[recipe_index]
+	local function rich(text)
+		-- Resolve the translation key before escaping markup characters such as >.
+		return escape("<global margin=0><style color=#F2E8D9>" .. html(core.get_translated_string(lang_for(player), text)) .. "</style>")
+	end
 	local fs = {
 		"formspec_version[7]size[12,8.2]",
 		"bgcolor[#08090BEF;true]",
 		"background9[0,0;12,8.2;everforge_ui_panel.png;false;8]",
-		"style_type[label;textcolor=#F2E8D9]",
+		"style_type[label;textcolor=#F2E8D9;font_size=*0.9]",
+		"style_type[textarea;textcolor=#F2E8D9;font_size=*0.85]",
 		"style_type[hypertext;textcolor=#F2E8D9]",
-		"style_type[button,button_exit;textcolor=#FFF1DC;border=false;bgimg=everforge_ui_button.png;bgimg_pressed=everforge_ui_button_pressed.png;bgimg_middle=4;font=bold]",
+		"style_type[button,button_exit;textcolor=#FFF1DC;border=false;bgimg=everforge_ui_button.png;bgimg_pressed=everforge_ui_button_pressed.png;bgimg_middle=4;font=bold;font_size=*0.85]",
 		"style_type[button:hovered,button_exit:hovered;bgimg=everforge_ui_button_hover.png]",
 		"box[0.35,0.25;11.3,0.75;#242325]",
 		"box[0.35,0.25;0.06,0.75;#C27A4A]",
-		"label[0.72,0.49;" .. escape(core.colorize("#E8B17D", S("Basic Crafting"))) .. "]",
-		"label[0.72,1.12;" .. escape(S("Choose a subject to see its purpose, how to obtain it and the registered grid.")) .. "]",
+		"label[0.72,0.6;" .. escape(core.colorize("#E8B17D", S("Basic Crafting"))) .. "]",
 	}
 	for index, id in ipairs(CATEGORIES) do
-		local x = 0.55 + (index - 1) * 3.78
-		fs[#fs + 1] = ("button[%0.2f,1.48;3.3,0.48;category_%s;%s]"):format(x, id, escape(category_labels[id]))
+		local x = 0.55 + (index - 1) * 3.7
+		fs[#fs + 1] = ("button[%0.2f,1.25;3.5,0.6;category_%s;%s]"):format(x, id, escape(category_labels[id]))
 	end
-	fs[#fs + 1] = "box[0.45,2.12;2.85,4.45;#111214EE]"
+	fs[#fs + 1] = "box[0.45,2.05;3.1,5.1;#111214EE]"
 	for index, candidate in ipairs(entries[category]) do
-		local y = 2.3 + (index - 1) * 0.66
-		if candidate.item and icon_id(candidate.item) then
-			fs[#fs + 1] = ("item_image[%0.2f,%0.2f;0.42,0.42;%s]"):format(0.62, y + 0.04, candidate.item)
-		end
-		fs[#fs + 1] = ("button[%0.2f,%0.2f;2.15,0.5;item_%s;%s]"):format(1.08, y, candidate.key, escape(candidate.label))
+		local y = 2.25 + (index - 1) * 0.85
+		fs[#fs + 1] = ("button[0.6,%0.2f;2.8,0.7;item_%s;%s]"):format(y, candidate.key, escape(candidate.key == "table" and S("Crafting\nTable") or candidate.label))
 	end
-	fs[#fs + 1] = "box[3.48,2.12;8.05,4.45;#111214EE]"
-	fs[#fs + 1] = "label[3.78,2.28;" .. escape(core.colorize("#E8B17D", name)) .. "]"
+	fs[#fs + 1] = "box[3.7,2.05;7.85,5.1;#111214EE]"
+	fs[#fs + 1] = "label[3.9,2.15;6.5,0.6;" .. escape(name) .. "]"
 	if output_def and icon_id(selected_item) then
-		fs[#fs + 1] = "item_image[10.72,2.22;0.72,0.72;" .. selected_item .. "]"
+		fs[#fs + 1] = "item_image[10.6,2.16;0.65,0.65;" .. selected_item .. "]"
 	end
-	fs[#fs + 1] = "hypertext[3.78,2.68;7.3,0.48;purpose;" .. escape("<style color=#F2E8D9>" .. html(entry.purpose) .. "</style>") .. "]"
-	fs[#fs + 1] = "hypertext[3.78,3.13;7.3,0.64;obtain;" .. escape("<style color=#D6C6B5>" .. html(entry.obtain) .. "</style>") .. "]"
-	if entry.use then
-		fs[#fs + 1] = "hypertext[3.78,3.72;7.3,0.48;use;" .. escape("<style color=#D6C6B5>" .. html(entry.use) .. "</style>") .. "]"
+	detail_page = detail_page == "description" and "description" or "recipe"
+	fs[#fs + 1] = "button[3.9,2.85;3.5,0.55;description_page;" .. escape(S("Description")) .. "]"
+	fs[#fs + 1] = "button[7.6,2.85;3.65,0.55;recipe_page;" .. escape(S("Recipe")) .. "]"
+	local description = entry.purpose .. "\n" .. entry.obtain
+	if entry.use then description = description .. "\n" .. entry.use end
+	local variant_labels, selected_index = {}, 1
+	for index, info in ipairs(variants) do
+		variant_labels[#variant_labels + 1] = escape(core.get_translated_string(lang_for(player), info.label or display_name(info.id, player)))
+		if info.id == selected_item then selected_index = index end
 	end
-	if entry.tool and #variants > 0 then
-		local x = 3.78
-		for _, info in ipairs(variants) do
-			local width = 1.03
-			fs[#fs + 1] = ("button[%0.2f,3.8;%0.2f,0.42;variant_%s;%s]"):format(x, width, info.set, escape(info.label))
-			x = x + width + 0.06
+	if #variants > 1 then
+		fs[#fs + 1] = "label[3.9,3.85;" .. escape(S("Variant")) .. "]"
+		fs[#fs + 1] = ("dropdown[5.4,3.55;5.85,0.55;material_variant;%s;%d;true]"):format(table.concat(variant_labels, ","), selected_index)
+	end
+	if detail_page == "description" or not recipe then
+		if not recipe and not entry.no_recipe then
+			description = description .. "\n" .. S("No crafting-grid recipe is registered for this variant in the current game.")
+			local set = selected_item:match("_([^_]+)$")
+			local materialdefs = entry.tool and set and mcl_tools and mcl_tools.sets and mcl_tools.sets[set]
+			if materialdefs and materialdefs.craftable == false then
+				description = description .. "\n" .. S("This tool material is registered as non-grid-craftable.")
+			end
+		elseif entry.no_recipe then
+			description = entry.purpose .. "\n" .. S("This material is gathered from the world; no crafting recipe is registered.")
 		end
-	elseif entry.variant_family and #variants > 1 then
-		local variant_label = entry.variant_family == "bed" and S("Bed color") or S("Wood type")
-		fs[#fs + 1] = "label[3.78,3.84;" .. escape(variant_label) .. "]"
-		fs[#fs + 1] = "button[7.0,3.8;1.45,0.42;previous_variant;" .. escape(S("Previous")) .. "]"
-		fs[#fs + 1] = "button[8.55,3.8;1.45,0.42;next_variant;" .. escape(S("Next")) .. "]"
-	end
-	if recipe then
+		local y, height = #variants > 1 and 4.3 or 3.6, #variants > 1 and 2.7 or 3.4
+		fs[#fs + 1] = ("hypertext[3.9,%s;7.35,%s;description;%s]"):format(y, height, rich(description))
+	else
 		local _, last = recipe_items(recipe)
 		local outname, outcount = output_parts(recipe.output)
-		fs[#fs + 1] = "label[3.78,4.02;" .. escape(S("Recipe @1 of @2", tostring(recipe_index), tostring(#recipes))) .. "]"
-		fs[#fs + 1] = "hypertext[3.78,4.28;3.05,0.65;where;" .. escape("<style color=#D6C6B5>" .. html(craft_location(recipe, last)) .. "</style>") .. "]"
-		local grid, size = grid_formspec(recipe, player, 6.88, 4.16)
-		fs[#fs + 1] = grid
-		fs[#fs + 1] = "image[9.78,4.86;0.65,0.52;craftguide_arrow.png]"
+		fs[#fs + 1] = "label[3.9,4.4;" .. escape(S("Recipe @1 of @2", tostring(recipe_index), tostring(#recipes))) .. "]"
+		fs[#fs + 1] = "textarea[3.9,5.2;3.15,1.85;;;" .. escape(core.get_translated_string(lang_for(player), S("Materials: @1", material_summary(recipe, player)))) .. "]"
+		local grid_label = recipe.width == 0 and S("Shapeless") or (matrix_size(recipe, last) == 2 and S("2×2 or 3×3") or S("3×3"))
+		fs[#fs + 1] = "label[3.9,4.7;3.15,0.45;" .. escape(grid_label) .. "]"
+		fs[#fs + 1] = "tooltip[3.9,4.7;3.15,0.45;" .. escape(core.get_translated_string(lang_for(player), craft_location(recipe, last))) .. "]"
+		fs[#fs + 1] = grid_formspec(recipe, player, 7.35, 4.65)
+		fs[#fs + 1] = "image[9.92,5.35;0.45,0.4;craftguide_arrow.png]"
 		if outname and icon_id(outname) then
-			fs[#fs + 1] = "item_image[10.5,4.65;0.86,0.86;" .. outname .. "]"
+			fs[#fs + 1] = "item_image[10.5,5.13;0.74,0.74;" .. outname .. " " .. outcount .. "]"
 		end
-		local result_name = outname and display_name(outname, player) or name
-		fs[#fs + 1] = "hypertext[9.85,5.52;1.58,0.72;output_name;" .. escape("<style color=#D6C6B5>" .. html(S("@1× @2", tostring(outcount), result_name)) .. "</style>") .. "]"
-		fs[#fs + 1] = "hypertext[3.78,5.38;3.0,0.84;materials;" .. escape("<style color=#D6C6B5>" .. html(S("Materials: @1", material_summary(recipe, player))) .. "</style>") .. "]"
-	else
-		local message = entry.no_recipe and S("This material is gathered from the world; no crafting recipe is registered.")
-			or S("No crafting-grid recipe is registered for this variant in the current game.")
-		fs[#fs + 1] = "hypertext[3.78,4.2;7.2,0.9;no_recipe;" .. escape("<style color=#D6C6B5>" .. html(message) .. "</style>") .. "]"
-	end
-	if entry.tool then
-		local set = selected_item:match("_([^_]+)$")
-		local materialdefs = set and mcl_tools and mcl_tools.sets and mcl_tools.sets[set]
-		if materialdefs and materialdefs.craftable == false then
-			fs[#fs + 1] = "hypertext[3.78,6.08;7.25,0.3;variant_note;" .. escape("<style color=#E8B17D>" .. html(S("This tool material is registered as non-grid-craftable.")) .. "</style>") .. "]"
+		fs[#fs + 1] = "label[10.65,6.15;" .. escape(S("@1×", tostring(outcount))) .. "]"
+		if #recipes > 1 then
+			fs[#fs + 1] = "button[7.35,4.15;1.75,0.45;previous_recipe;" .. escape(S("Previous")) .. "]"
+			fs[#fs + 1] = "button[9.25,4.15;2.0,0.45;next_recipe;" .. escape(S("Next")) .. "]"
 		end
 	end
-	fs[#fs + 1] = "hypertext[0.55,6.66;11.0,0.56;progressive_note;" .. escape("<style color=#B9AEA3>" .. html(get_progressive_notice()) .. "</style>") .. "]"
-	fs[#fs + 1] = ("button[0.55,7.34;2.5,0.55;general_book;%s]"):format(escape(S("Open general recipe book")))
-	fs[#fs + 1] = ("button[4.7,7.34;2.5,0.55;back_hub;%s]"):format(escape(S("Back to Everforge guide")))
-	fs[#fs + 1] = ("button_exit[9.35,7.34;2.0,0.55;close;%s]"):format(escape(S("Close")))
-	return table.concat(fs), category, key, recipe_index, selected_item
+	-- The progressive-discovery explanation belongs to the complete catalog.
+	fs[#fs + 1] = "tooltip[general_book;" .. escape(core.get_translated_string(lang_for(player), get_progressive_notice())) .. "]"
+	local tutorial = everforge.onboarding and everforge.onboarding.recipe_return_pending and everforge.onboarding.recipe_return_pending(player)
+	fs[#fs + 1] = "button[0.55,7.45;3.45,0.55;general_book;" .. escape(S("Recipe book")) .. "]"
+	fs[#fs + 1] = "button[4.2,7.45;4.55,0.55;back_hub;" .. escape(tutorial and S("Back to tutorial") or S("Back to guide")) .. "]"
+	fs[#fs + 1] = "button_exit[9.0,7.45;2.25,0.55;close;" .. escape(S("Close")) .. "]"
+	return table.concat(fs), category, key, recipe_index, selected_item, detail_page
 end
 
 local state = {}
 
-local function show(player, category, key, recipe_index, variant)
+local function show(player, category, key, recipe_index, variant, detail_page)
 	local name = player:get_player_name()
-	local formspec, saved_category, saved_key, saved_index, saved_variant = build_formspec(player, category, key, recipe_index, variant)
-	state[name] = {category = saved_category, key = saved_key, recipe_index = saved_index, variant = saved_variant}
+	local formspec, saved_category, saved_key, saved_index, saved_variant, saved_page = build_formspec(player, category, key, recipe_index, variant, detail_page)
+	state[name] = {category = saved_category, key = saved_key, recipe_index = saved_index, variant = saved_variant, detail_page = saved_page}
 	if everforge._suppress_waila then everforge._suppress_waila(player, FORM) end
 	core.show_formspec(name, FORM, formspec)
 end
@@ -431,6 +442,10 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	if formname ~= FORM then return end
 	local name = player:get_player_name()
 	local current = state[name] or {category = "materials", key = "logs", recipe_index = 1}
+	if fields.description_page or fields.recipe_page then
+		show(player, current.category, current.key, current.recipe_index, current.variant, fields.description_page and "description" or "recipe")
+		return true
+	end
 	for _, category in ipairs(CATEGORIES) do
 		if fields["category_" .. category] then
 			show(player, category, entries[category][1].key, 1)
@@ -448,6 +463,15 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	local selected = item_by_key[current.key]
 	if selected then
 		local variants = entry_variants(selected.entry)
+		if fields.material_variant then
+			local info = variants[tonumber(fields.material_variant)]
+			-- Luanti submits dropdown values with other buttons too. Only a
+			-- changed selection is a variant event; otherwise handle navigation.
+			if info and info.id ~= current.variant then
+				show(player, current.category, current.key, 1, info.id)
+				return true
+			end
+		end
 		if selected.entry.tool then
 			for _, info in ipairs(variants) do
 				if fields["variant_" .. info.set] then
@@ -475,7 +499,11 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		open_general_book(player)
 		return true
 	elseif fields.back_hub then
-		if everforge.onboarding and everforge.onboarding.show_hub then everforge.onboarding.show_hub(player) end
+		state[name] = nil
+		if everforge._restore_waila then everforge._restore_waila(player, FORM) end
+		if everforge.onboarding and everforge.onboarding.return_from_recipes then
+			everforge.onboarding.return_from_recipes(player)
+		elseif everforge.onboarding and everforge.onboarding.show_hub then everforge.onboarding.show_hub(player) end
 		return true
 	elseif fields.close or fields.quit then
 		state[name] = nil
@@ -485,20 +513,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 	return true
 end)
 
--- Recipe alternatives are navigable. Add controls only when a recipe has peers.
-local original_build = build_formspec
-build_formspec = function(player, category, key, recipe_index, variant)
-	local formspec, saved_category, saved_key, saved_index, saved_variant = original_build(player, category, key, recipe_index, variant)
-	local selected = item_by_key[saved_key]
-	local selected_item = saved_variant or (selected and selected.entry.item)
-	local recipes = selected and recipe_shapes(selected.entry, selected_item, player) or {}
-	if #recipes > 1 then
-		local controls = ("button[7.05,6.08;1.55,0.42;previous_recipe;%s]button[8.7,6.08;1.55,0.42;next_recipe;%s]"):format(
-			escape(S("Previous")), escape(S("Next")))
-		formspec = formspec .. controls
-	end
-	return formspec, saved_category, saved_key, saved_index, saved_variant
-end
+core.register_on_leaveplayer(function(player) state[player:get_player_name()] = nil end)
 
 everforge.basic_crafting = {
 	formname = FORM,

@@ -5,13 +5,14 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const lua = require('luaparse');
+const checkLayout = require("./check_formspec_layout.cjs");
 const source = fs.readFileSync('mods/MISC/everforge/crafting_guide.lua', 'utf8');
 lua.parse(source, { luaVersion: '5.1' });
 
 const script = `
 local callbacks, current_form, current_spec = {}, nil, nil
 local opened_book, opened_hub, suppressed, restored, writes = nil, nil, {}, {}, 0
-local strings = {}
+local strings, snapshots = {}, {}
 local function translator(text, ...)
   local args={...}
   local result=text:gsub("@(%d+)",function(i) return tostring(args[tonumber(i)]) end)
@@ -27,11 +28,13 @@ core={
  get_modpath=function() return "mods/MISC/everforge" end,
  registered_items={},
  register_on_player_receive_fields=function(fn) callbacks[#callbacks+1]=fn end,
- show_formspec=function(_,form,spec) current_form=form;current_spec=spec end,
+ show_formspec=function(_,form,spec) current_form=form;current_spec=spec; snapshots[#snapshots+1]=spec end,
  get_all_craft_recipes=function(name) return recipes[name] end,
  chat_send_player=function(_,s) strings[#strings+1]=s end,
  register_craft=function() writes=writes+1 end,
 }
+function core.hypertext_escape(s) return (s:gsub(string.char(92),string.char(92,92)):gsub("<",string.char(92).."<"):gsub(">",string.char(92)..">")) end
+function core.register_on_leaveplayer() end
 local known={
  ["mcl_trees:tree_oak"]="Oak Log", ["mcl_trees:wood_oak"]="Oak Planks",
  ["mcl_trees:tree_spruce"]="Spruce Log", ["mcl_trees:wood_spruce"]="Spruce Planks",
@@ -124,16 +127,16 @@ assert(current_spec:find("Spruce Planks",1,true) and current_spec:find("mcl_tree
 dispatch({category_tools=true})
 dispatch({item_axe=true})
 assert(current_spec:find("Recipe 1 of 2",1,true) and current_spec:find("previous_recipe",1,true))
-dispatch({next_recipe=true})
+dispatch({next_recipe=true,material_variant="1"})
 assert(current_spec:find("Recipe 2 of 2",1,true))
 dispatch({item_hoe=true})
 assert(current_spec:find("Recipe 1 of 2",1,true))
 -- Variant selection reads the registered output and its actual material recipe.
 dispatch({item_pick=true})
-dispatch({variant_copper=true})
+dispatch({material_variant="2"})
 assert(current_spec:find("Copper Pickaxe",1,true))
 assert(current_spec:find("mcl_copper:copper_ingot",1,true))
-dispatch({variant_netherite=true})
+dispatch({material_variant="3"})
 assert(current_spec:find("No crafting-grid recipe is registered",1,true))
 assert(current_spec:find("non-grid-craftable",1,true))
 -- Survival examples render the real 3x3 patterns and show the bed's shapeless alternative.
@@ -149,14 +152,41 @@ assert(current_spec:find("Blue Bed",1,true) and current_spec:find("mcl_wool:blue
 -- The complete guide remains native and does not disable or rewrite filters.
 dispatch({general_book=true})
 assert(opened_book=="Tester" and writes==0)
-dispatch({back_hub=true})
-assert(opened_hub==p)
+dispatch({category_tools=true})
+dispatch({item_pick=true})
+dispatch({back_hub=true,material_variant="1"})
+assert(opened_hub==p,"unchanged dropdown fields must not consume Back")
 assert(suppressed["everforge:basic_crafting"] and restored["everforge:basic_crafting"])
+-- Exercise every entry, both content panes, and clamped recipe alternatives.
+local catalog={materials={"logs","planks","sticks","table"},tools={"pick","axe","shovel","sword","hoe"},survival={"torch","furnace","chest","bed"}}
+for category,keys in pairs(catalog) do
+ for _,key in ipairs(keys) do
+  for index=1,2 do
+   for _,pane in ipairs({"recipe","description"}) do
+    api.show(p,category,key,index,nil,pane)
+   end
+  end
+ end
+end
+api.show(p,"tools","pick",1,"mcl_tools:pick_netherite")
+dispatch({material_variant="1"})
+assert(current_spec:find("Wooden Pickaxe",1,true),"non-grid variant must retain the selector to return to a craftable material")
+dispatch({description_page=true})
+assert(current_spec:find("purpose",1,true)==nil and current_spec:find("description",1,true))
+dispatch({recipe_page=true})
+for _,spec in ipairs(snapshots) do print("LAYOUT|"..spec:gsub(string.char(10)," ")) end
 print("Basic crafting harness passed: 13 guide entries, registered recipe shapes/alternatives, material variants, progressive notice, native book, and hub navigation.")
 `;
 const file = path.join(os.tmpdir(), 'everforge-crafting-guide-harness.lua');
 fs.writeFileSync(file, script + tests);
 const result = cp.spawnSync('fengari', [file], { encoding: 'utf8' });
-process.stdout.write(result.stdout || '');
+process.stdout.write((result.stdout || '').split(/\r?\n/).filter(line=>!line.startsWith('LAYOUT|')).join('\n'));
 process.stderr.write(result.stderr || '');
 if (result.status !== 0 || /stack traceback|error/i.test(result.stderr || '')) process.exit(1);
+
+let layouts=0, widgets=0;
+for(const line of (result.stdout||'').split(/\r?\n/)) {
+  if(line.startsWith('LAYOUT|')) { widgets+=checkLayout(line.slice(7),12,8.2); layouts++; }
+}
+if(layouts<52) throw new Error(`Missing entry/pane coverage: ${layouts}`);
+console.log(`Crafting layout: ${layouts} forms; ${widgets} foreground bounds, overlap and complete-grid checks.`);

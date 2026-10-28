@@ -25,7 +25,12 @@ p.add_argument("--port", type=int, default=49177)
 p.add_argument("--test-stage", choices=["bootstrap", "restart", "players", "verify_players", "mechanics", "solo"])
 p.add_argument("--name", default="Forjador")
 p.add_argument("--client", help="Connect a separately isolated test client to localhost (e.g. ForgeAlice)")
+p.add_argument("--resolution", nargs=2, type=int, default=(1280, 800), metavar=("WIDTH", "HEIGHT"), help="Isolated QA window size")
+p.add_argument("--ui-preview", action="store_true", help="Disable damage only in this disposable UI test world")
+p.add_argument("--gui-scale", type=float, default=1.0, help="Isolated QA GUI scaling")
 a = p.parse_args()
+if min(a.resolution) < 480 or not 0.5 <= a.gui_scale <= 3:
+    p.error("Use dimensions >= 480 and GUI scale between 0.5 and 3")
 data = a.data_dir.expanduser().resolve()
 data.mkdir(parents=True, exist_ok=True)
 marker = data / ".everforge-development"
@@ -100,8 +105,9 @@ config = data / "playtest.conf"
 config.write_text("\n".join([
     "mg_name = singlenode", "fixed_map_seed = 12345", "num_emerge_threads = 2",
     "server_announce = false", "bind_address = 127.0.0.1", f"port = {a.port}",
-    "enable_ipv6 = false", "creative_mode = false", "enable_damage = true",
-    "mcl_levelgen_use_ffi = false", "enable_sound = false", "screen_w = 1280", "screen_h = 800",
+    "enable_ipv6 = false", "creative_mode = false", f"enable_damage = {str(not a.ui_preview).lower()}",
+    *(["mobs_spawn = false", "only_peaceful_mobs = true"] if a.ui_preview else []),
+    "mcl_levelgen_use_ffi = false", "enable_sound = false", f"screen_w = {a.resolution[0]}", f"screen_h = {a.resolution[1]}", f"gui_scaling = {a.gui_scale}",
     "language = es", "everforge_start_region = true",
     f"everforge_test_stage = {a.test_stage or ''}",
 ]) + "\n")

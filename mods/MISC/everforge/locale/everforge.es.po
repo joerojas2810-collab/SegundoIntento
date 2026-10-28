@@ -924,3 +924,70 @@ msgstr "El recetario general sigue siendo útil para buscar y consultar un catá
 
 msgid "Recipes follow this world, not a fixed Minecraft edition; bed behavior can depend on server settings."
 msgstr "Las recetas siguen las de este mundo, no una edición fija de Minecraft; el comportamiento de las camas puede depender de los ajustes del servidor."
+
+
+msgid "See Basic Recipes"
+msgstr "Ver recetas básicas"
+
+msgid "Page @1 of @2"
+msgstr "Página @1 de @2"
+
+msgid "Back to tutorial"
+msgstr "Volver al tutorial"
+
+msgid "Variant"
+msgstr "Variante"
+
+msgid "Back to guide"
+msgstr "Volver a la guía"
+
+msgid "@1×"
+msgstr "@1×"
+
+msgid "Collect logs first.\nOpen Inventory (I) → Everforge tab → Everforge Guide → Basic Crafting. Find visual recipes for essential materials and objects: axes, pickaxes, shovels, swords and torches."
+msgstr "Empieza recogiendo troncos.\nAbre Inventario (I) → pestaña Everforge → Guía de Everforge → Fabricación básica. Allí verás recetas de materiales y objetos esenciales: hachas, picos, palas, espadas y antorchas."
+
+msgid "Return to the hub through Inventory (I) → Everforge tab → Everforge Guide. Basic Crafting shows recipes for materials, tools and essential objects.\nAlternative: /everforge. Change I in Settings > Change keys."
+msgstr "Vuelve al hub desde Inventario (I) → pestaña Everforge → Guía de Everforge. En Fabricación básica verás recetas de materiales, herramientas y objetos esenciales.\nAlternativa: /everforge. Cambia I en Ajustes > Teclas."
+
+msgid "Materials"
+msgstr "Materiales"
+
+msgid "Tools"
+msgstr "Herramientas"
+
+msgid "Crafting\nTable"
+msgstr "Mesa de\nfabricación"
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "Recipe"
+msgstr "Receta"
+
+msgid "Shapeless"
+msgstr "Sin forma"
+
+msgid "2×2 or 3×3"
+msgstr "2×2 o 3×3"
+
+msgid "3×3"
+msgstr "3×3"
+
+msgid "Choose a guide or check your progress."
+msgstr "Elige una guía o consulta tu progreso."
+
+msgid "Crafting guides and the complete help library."
+msgstr "Guías de fabricación y biblioteca de ayuda."
+
+msgid "Open help pages. Change controls in the game settings."
+msgstr "Abre la ayuda. Cambia los controles en los ajustes del juego."
+
+msgid "Recipe @1 of @2"
+msgstr "Receta @1 de @2"
+
+msgid "Materials: @1"
+msgstr "Materiales: @1"
+
+msgid "Use the registered wood recipe, or another recipe shown here when available."
+msgstr "Usa la receta de madera registrada u otra de las alternativas disponibles aquí."

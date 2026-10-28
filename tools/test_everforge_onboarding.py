@@ -7,6 +7,7 @@ This checks source wiring/content only; it is not an in-engine UI test.
 from __future__ import annotations
 
 import ast
+import json
 import re
 import unittest
 from pathlib import Path
@@ -24,7 +25,7 @@ POT = (ROOT / "mods/MISC/everforge/locale/template.pot").read_text(encoding="utf
 
 def po_translation(text: str, msgid: str) -> str | None:
     pattern = re.compile(
-        r'^msgid "' + re.escape(msgid) + r'"\nmsgstr "((?:[^"\\]|\\.)*)"$',
+        r'^msgid "' + re.escape(json.dumps(msgid, ensure_ascii=False)[1:-1]) + r'"\nmsgstr "((?:[^"\\]|\\.)*)"$',
         re.MULTILINE,
     )
     match = pattern.search(text)
@@ -53,16 +54,16 @@ class EverforgeOnboardingContract(unittest.TestCase):
             "Conoce tus herramientas",
         ):
             self.assertIn(title, ES)
-        self.assertIn("wooden axe", ONBOARDING)
+        self.assertIn("axes, pickaxes, shovels, swords and torches", ONBOARDING)
         self.assertIn("five disciplines", ONBOARDING)
         self.assertIn("health and hunger", ONBOARDING)
-        self.assertIn("open your inventory (I)", ONBOARDING)
-        self.assertIn("press T to open chat", ONBOARDING)
+        self.assertIn("Inventory (I) → Everforge tab → Everforge Guide → Basic Crafting", ONBOARDING)
+        self.assertIn("see_basic_recipes", ONBOARDING)
         self.assertIn("Settings > Change keys", ONBOARDING)
 
     def test_hypertext_uses_global_as_a_style_setting_not_a_container(self) -> None:
-        self.assertIn('<global valign=middle><style color=#F2E8D9 size=22>', ONBOARDING)
-        self.assertIn('escape_hypertext(text) .. "</style>"', ONBOARDING)
+        self.assertIn('<global margin=0 valign=top><style color=#F2E8D9>', ONBOARDING)
+        self.assertIn('escape_hypertext(translated(player, text)) .. "</style>"', ONBOARDING)
         self.assertNotIn('escape_hypertext(text) .. "</global>', ONBOARDING)
 
     def test_inventory_tab_has_a_live_direct_route_to_the_guide(self) -> None:
@@ -117,7 +118,7 @@ class EverforgeOnboardingContract(unittest.TestCase):
         self.assertIn('button(2.25, 2.0, 7.6, 0.75, "basic_crafting"', ONBOARDING)
 
     def test_basic_crafting_strings_are_in_both_catalogues(self) -> None:
-        messages = re.findall(r'\bS\("((?:\\.|[^"\\])*)"\)', CRAFTING)
+        messages = re.findall(r'\bS\("((?:\\.|[^"\\])*)"', CRAFTING)
         for raw in messages:
             msgid = ast.literal_eval('"' + raw + '"')
             self.assertIsNotNone(po_translation(POT, msgid), f"missing POT entry: {msgid}")
@@ -149,6 +150,15 @@ class EverforgeOnboardingContract(unittest.TestCase):
         self.assertIn("Para volver a esta guía sin escribir un comando", ES)
         visible = re.findall(r'S\("((?:[^"\\]|\\.)*)"\)', ONBOARDING)
         self.assertFalse(any("Mineclonia" in value for value in visible))
+
+    def test_all_ten_cards_have_exact_spanish_catalogue_keys(self) -> None:
+        cards = ONBOARDING.split("local introductions = {", 1)[1].split("local function mark_auto_handled", 1)[0]
+        messages = re.findall(r'\b(?:title|text) = S\("((?:\\.|[^"\\])*)"\)', cards)
+        self.assertEqual(len(messages), 20)
+        for raw in messages:
+            msgid = ast.literal_eval('"' + raw + '"')
+            self.assertTrue(po_translation(ES, msgid), f"missing Spanish card text: {msgid}")
+            self.assertIsNotNone(po_translation(POT, msgid))
 
     def test_guidance_does_not_create_quests_or_reveal_hidden_content(self) -> None:
         self.assertNotIn("register_on_dig", ONBOARDING)
