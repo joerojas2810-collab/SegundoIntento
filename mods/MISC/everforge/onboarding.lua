@@ -6,6 +6,7 @@ local unpack = table.unpack or unpack
 
 local FORM_HUB = "everforge:guide"
 local FORM_HELP = "everforge:guide_help"
+local FORM_INVENTORY_HELP = "everforge:inventory_help"
 local FORM_INTRO = "everforge:introduction"
 local FORM_STEPS = "everforge:first_steps"
 local META_AUTO_SEEN = "everforge:onboarding:auto_intro_seen"
@@ -117,11 +118,36 @@ local function show_form(player, formname, formspec)
 	core.show_formspec(player:get_player_name(), formname, formspec)
 end
 
+local crafting_guide = dofile(core.get_modpath("everforge") .. "/crafting_guide.lua")
+
 local function release_onboarding_waila(player)
 	if not everforge._restore_waila then return end
-	for _, formname in ipairs({FORM_HUB, FORM_HELP, FORM_INTRO, FORM_STEPS, "everforge:progression"}) do
+	for _, formname in ipairs({FORM_HUB, FORM_HELP, FORM_INVENTORY_HELP, FORM_INTRO, FORM_STEPS, "everforge:progression"}) do
 		everforge._restore_waila(player, formname)
 	end
+end
+
+local function show_inventory_help(player)
+	mark_manual_open(player)
+	local fs = {
+		theme(12, 5.8),
+		"box[0.35,0.25;11.3,0.75;#242325]",
+		"box[0.35,0.25;0.06,0.75;#C27A4A]",
+		"label[0.72,0.49;" .. core.formspec_escape(core.colorize("#E8B17D", S("Help"))) .. "]",
+		"label[0.72,1.22;" .. core.formspec_escape(S("Choose a practical crafting guide or open the complete help library.")) .. "]",
+		"image[1.15,2.0;0.85,0.85;mcl_crafting_table_inv_fill.png]",
+		button(2.25, 2.0, 7.6, 0.75, "basic_crafting", S("Basic Crafting")),
+		"image[1.15,3.15;0.85,0.85;doc_button_icon_lores.png]",
+		button(2.25, 3.15, 7.6, 0.75, "complete_help", S("Complete Help")),
+		button_exit(9.25, 4.65, 2.0, 0.55, "close", S("Close")),
+	}
+	show_form(player, FORM_INVENTORY_HELP, "formspec_version[7]size[12,5.8]" .. table.concat(fs))
+end
+
+local function show_basic_crafting(player)
+	mark_manual_open(player)
+	release_onboarding_waila(player)
+	crafting_guide.show(player, "materials", "logs", 1)
 end
 
 local function show_hub(player, manual)
@@ -139,8 +165,9 @@ local function show_hub(player, manual)
 		{4.35, 1.7, "first_steps", S("First Steps"), S("Suggestions, never missions"), "mcl_crafting_table_inv_fill.png"},
 		{8.15, 1.7, "progression", S("Progress"), S("Five disciplines and skills"), "everforge_part_head.png"},
 		{0.55, 3.25, "help", S("Help"), S("Controls and commands"), "doc_button_icon_lores.png"},
-		{4.35, 3.25, "recipes", S("Recipes"), S("Recipe book"), "craftguide_book.png"},
+		{4.35, 3.25, "recipes", S("Recipes"), S("General recipe book"), "craftguide_book.png"},
 		{8.15, 3.25, "achievements", S("Achievements"), S("Game achievements"), "mcl_achievements_button.png"},
+		{4.35, 4.8, "basic_crafting", S("Basic Crafting"), S("Materials, tools and survival"), "mcl_crafting_table_inv_fill.png"},
 	}
 	for _, tile in ipairs(tiles) do
 		local x, y, field, title, subtitle, icon = unpack(tile)
@@ -348,7 +375,21 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 		elseif fields.progression then show_progression(player)
 		elseif fields.help then show_help(player, false)
 		elseif fields.recipes then open_recipes(player)
+		elseif fields.basic_crafting then show_basic_crafting(player)
 		elseif fields.achievements then open_achievements(player)
+		end
+		return true
+	elseif formname == FORM_INVENTORY_HELP then
+		if fields.basic_crafting then
+			show_basic_crafting(player)
+		elseif fields.complete_help then
+			release_onboarding_waila(player)
+			if doc and doc.show_doc then
+				if everforge._suppress_waila then everforge._suppress_waila(player, "doc:") end
+				doc.show_doc(name)
+			else
+				core.chat_send_player(name, S("The help pages are unavailable right now."))
+			end
 		end
 		return true
 	elseif formname == FORM_HELP then
@@ -370,7 +411,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 core.register_chatcommand("everforge", {
-	params = "[guide|intro|first_steps|help|controls|commands|recipes|achievements|progression]",
+	params = "[guide|intro|first_steps|help|controls|commands|recipes|basic_crafting|achievements|progression]",
 	description = S("Open Everforge's guide, progression, or a reference."),
 	func = function(name, param)
 		local player = core.get_player_by_name(name)
@@ -382,7 +423,8 @@ core.register_chatcommand("everforge", {
 		elseif action == "help" then show_help(player)
 		elseif action == "controls" then open_controls(player)
 		elseif action == "commands" then open_commands(player)
-		elseif action == "recipes" then open_recipes(player)
+		elseif action == "recipes" or action == "recipe_book" then open_recipes(player)
+		elseif action == "basic_crafting" or action == "crafting" then show_basic_crafting(player)
 		elseif action == "achievements" or action == "advancements" then open_achievements(player)
 		elseif action == "progression" or action == "progress" then show_progression(player)
 		else
@@ -452,6 +494,8 @@ everforge.onboarding = {
 	open_controls = open_controls,
 	open_commands = open_commands,
 	open_recipes = open_recipes,
+	open_basic_crafting = show_basic_crafting,
+	show_inventory_help = show_inventory_help,
 	open_achievements = open_achievements,
 	mark_manual_open = mark_manual_open,
 }

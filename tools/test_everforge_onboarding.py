@@ -6,6 +6,7 @@ This checks source wiring/content only; it is not an in-engine UI test.
 """
 from __future__ import annotations
 
+import ast
 import re
 import unittest
 from pathlib import Path
@@ -14,6 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 ONBOARDING = (ROOT / "mods/MISC/everforge/onboarding.lua").read_text(encoding="utf-8")
 PROGRESSION = (ROOT / "mods/MISC/everforge/progression/model.lua").read_text(encoding="utf-8")
 UI = (ROOT / "mods/MISC/everforge/progression/ui.lua").read_text(encoding="utf-8")
+CRAFTING = (ROOT / "mods/MISC/everforge/crafting_guide.lua").read_text(encoding="utf-8")
+MCL_DOC = (ROOT / "mods/HELP/mcl_doc/init.lua").read_text(encoding="utf-8")
 MODCONF = (ROOT / "mods/MISC/everforge/mod.conf").read_text(encoding="utf-8")
 ES = (ROOT / "mods/MISC/everforge/locale/everforge.es.po").read_text(encoding="utf-8")
 POT = (ROOT / "mods/MISC/everforge/locale/template.pot").read_text(encoding="utf-8")
@@ -88,8 +91,40 @@ class EverforgeOnboardingContract(unittest.TestCase):
         self.assertIn('meta:set_int(META_INTRO_DONE, 1)', ONBOARDING)
         self.assertIn('META_STEPS_OFFERED', ONBOARDING)
 
+    def test_basic_crafting_reuses_registered_recipes_and_keeps_the_full_catalog(self) -> None:
+        for section in ("materials", "tools", "survival"):
+            self.assertIn(f'{section} = {{', CRAFTING)
+        for item in (
+            "mcl_trees:tree_oak", "mcl_trees:wood_oak", "mcl_core:stick",
+            "mcl_crafting_table:crafting_table", "mcl_tools:pick_wood",
+            "mcl_tools:axe_wood", "mcl_tools:shovel_wood", "mcl_tools:sword_wood",
+            "mcl_tools:hoe_wood", "mcl_torches:torch", "mcl_furnaces:furnace",
+            "mcl_chests:chest", "mcl_beds:bed_red_bottom",
+        ):
+            self.assertIn(item, CRAFTING)
+        self.assertIn("core.get_all_craft_recipes(itemname)", CRAFTING)
+        self.assertIn("mcl_craftguide.show(name)", CRAFTING)
+        self.assertIn("get_recipe_filters()", CRAFTING)
+        self.assertNotIn("core.register_craft(", CRAFTING)
+        self.assertIn('"basic_crafting"', ONBOARDING)
+        self.assertIn('action == "basic_crafting" or action == "crafting"', ONBOARDING)
+
+    def test_inventory_help_chooser_preserves_the_native_complete_help(self) -> None:
+        self.assertIn('type(everforge.onboarding.show_inventory_help) == "function"', MCL_DOC)
+        self.assertIn('everforge.onboarding.show_inventory_help(player)', MCL_DOC)
+        self.assertIn('doc.show_doc(player:get_player_name())', MCL_DOC)
+        self.assertIn('button(2.25, 3.15, 7.6, 0.75, "complete_help"', ONBOARDING)
+        self.assertIn('button(2.25, 2.0, 7.6, 0.75, "basic_crafting"', ONBOARDING)
+
+    def test_basic_crafting_strings_are_in_both_catalogues(self) -> None:
+        messages = re.findall(r'\bS\("((?:\\.|[^"\\])*)"\)', CRAFTING)
+        for raw in messages:
+            msgid = ast.literal_eval('"' + raw + '"')
+            self.assertIsNotNone(po_translation(POT, msgid), f"missing POT entry: {msgid}")
+            self.assertIsNotNone(po_translation(ES, msgid), f"missing Spanish entry: {msgid}")
+
     def test_everforge_hub_routes_to_native_help_recipes_and_achievements(self) -> None:
-        for route in ("intro", "first_steps", "help", "controls", "commands", "recipes", "achievements", "progression"):
+        for route in ("intro", "first_steps", "help", "controls", "commands", "recipes", "basic_crafting", "achievements", "progression"):
             self.assertIn(route, ONBOARDING)
         self.assertIn('doc.show_entry(name, category, entry)', ONBOARDING)
         self.assertIn('mcl_craftguide.show(player:get_player_name())', ONBOARDING)

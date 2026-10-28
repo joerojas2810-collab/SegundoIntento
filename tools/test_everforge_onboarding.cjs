@@ -13,6 +13,11 @@ const harness = `
 local queue, callbacks, join_callback, command = {}, {}, nil, nil
 local current_form, current_spec, native, messages, closed, screens = nil, nil, nil, {}, {}, {}
 local region_state = "ready"
+local function dispatch(player, formname, fields)
+  for _, callback in ipairs(callbacks) do
+    if callback(player, formname, fields) then return true end
+  end
+end
 local players = {}
 function make_player(name)
   local values = {}
@@ -37,6 +42,15 @@ function core.get_translator() return function(s,...)
   local args={...}
   return (s:gsub("@(%d+)",function(i) return tostring(args[tonumber(i)]) end))
 end end
+function core.get_modpath() return "mods/MISC/everforge" end
+core.registered_items={}
+core.registered_nodes=core.registered_items
+function core.get_player_information() return {lang_code="es"} end
+function core.get_translated_string(_,s) return s end
+function core.get_all_craft_recipes() return nil end
+mcl_formspec={get_itemslot_bg_v4=function() return "" end}
+mcl_tools={sets={}}
+function core.register_craft() error("guide must not register recipes") end
 function core.formspec_escape(s) return s end
 function core.colorize(_,s) return s end
 function core.show_formspec(_,name,spec) current_form=name;current_spec=spec;screens[#screens+1]={name,spec} end
@@ -47,7 +61,10 @@ function core.register_chatcommand(name,def) if name=="everforge" then command=d
 function core.after(_,fn) queue[#queue+1]=fn end
 function core.get_player_by_name(name) return players[name] end
 function core.get_node_or_nil() return {name="air"} end
-function core.get_modpath(name) if name=="mcl_achievements" then return "mods/HUD/mcl_achievements" end end
+function core.get_modpath(name)
+  if name=="mcl_achievements" then return "mods/HUD/mcl_achievements" end
+  if name=="everforge" then return "mods/MISC/everforge" end
+end
 function core.chat_send_player(_,s) messages[#messages+1]=s end
 function core.get_player_privs() return {} end
 
@@ -69,7 +86,20 @@ assert(command and command.params:find("first_steps",1,true))
 assert(command.func("Tester","") == true)
 assert(current_form == "everforge:guide")
 assert(current_spec:find("craftguide_book.png",1,true) and current_spec:find("mcl_achievements_button.png",1,true))
-callbacks[1](player,current_form,{intro=true})
+assert(current_spec:find("Basic Crafting",1,true),"hub must expose the new basic crafting guide")
+dispatch(player,current_form,{basic_crafting=true})
+assert(current_form=="everforge:basic_crafting" and current_spec:find("This material is gathered from the world",1,true))
+dispatch(player,current_form,{general_book=true})
+assert(native=="recipes","basic guide must reuse the general recipe book")
+everforge.onboarding.show_inventory_help(player)
+assert(current_form=="everforge:inventory_help" and current_spec:find("Complete Help",1,true))
+dispatch(player,current_form,{complete_help=true})
+assert(native=="full_help","inventory help chooser must preserve complete help")
+everforge.onboarding.show_inventory_help(player)
+dispatch(player,current_form,{basic_crafting=true})
+assert(current_form=="everforge:basic_crafting","inventory help chooser must open basic crafting")
+command.func("Tester","")
+dispatch(player,current_form,{intro=true})
 assert(current_form == "everforge:introduction")
 local intro_titles={"A World Without a Written Destination","What You Do Defines You","Forge Your Own Path","Not Everything Is in Sight","The World Continues With You"}
 for i,title in ipairs(intro_titles) do
@@ -78,11 +108,11 @@ for i,title in ipairs(intro_titles) do
   if i==1 then
     assert(current_spec:find("Unsafe &lt;tag&gt; &amp; translated &lt;/global&gt; text",1,true),"translated hypertext was not escaped")
   end
-  if i<#intro_titles then callbacks[1](player,current_form,{next=true}) end
+  if i<#intro_titles then dispatch(player,current_form,{next=true}) end
 end
 assert(current_spec:find("The World Continues With You",1,true))
 assert(current_spec:find("Would you like to see a few first steps?",1,true))
-callbacks[1](player,current_form,{next=true})
+dispatch(player,current_form,{next=true})
 assert(closed["everforge:introduction"] == 1)
 assert(player.meta:get_int("everforge:onboarding:auto_intro_seen") == 1)
 assert(player.meta:get_int("everforge:onboarding:intro_done") == 1)
@@ -90,7 +120,7 @@ while #queue>0 do local fn=table.remove(queue,1); fn() end
 assert(messages[#messages]:find("/everforge first_steps",1,true))
 command.func("Tester","first_steps")
 assert(current_form == "everforge:first_steps" and current_spec:find("Your First Tools",1,true))
-callbacks[1](player,current_form,{skip=true,quit=true})
+dispatch(player,current_form,{skip=true,quit=true})
 assert(everforge.last_restored == "everforge:first_steps")
 command.func("Tester","recipes"); assert(native=="recipes")
 command.func("Tester","achievements"); assert(native=="achievements")
@@ -105,15 +135,15 @@ local step_titles={"Your First Tools","Learn by Doing","Prepare Your Shelter","D
 for i,title in ipairs(step_titles) do
   assert(current_spec:find(title,1,true),"missing practical card "..i)
   assert(not current_spec:find("</global>",1,true),"invalid global closing tag in practical card "..i)
-  if i<#step_titles then callbacks[1](full_steps,current_form,{next=true}) end
+  if i<#step_titles then dispatch(full_steps,current_form,{next=true}) end
 end
-callbacks[1](full_steps,current_form,{next=true})
+dispatch(full_steps,current_form,{next=true})
 assert(closed["everforge:first_steps"]==1,"finishing practical cards must close the form")
 
 local optional=make_player("Optional")
 command.func("Optional","intro")
-for _=1,4 do callbacks[1](optional,current_form,{next=true}) end
-callbacks[1](optional,current_form,{steps_now=true})
+for _=1,4 do dispatch(optional,current_form,{next=true}) end
+dispatch(optional,current_form,{steps_now=true})
 assert(current_form=="everforge:first_steps")
 assert(optional.meta:get_int("everforge:onboarding:intro_done")==1)
 assert(optional.meta:get_int("everforge:onboarding:first_steps_offer_seen")==1)
@@ -150,7 +180,10 @@ for (const line of output.split(/\r?\n/)) {
   if (!line.startsWith('SCREEN|')) continue;
   const [, name, ...rest] = line.split('|');
   const spec = rest.join('|');
-  const size = name === 'everforge:guide_help' ? [12, 6.2] : [12, 7.5];
+  const size = name === 'everforge:guide_help' ? [12, 6.2]
+    : name === 'everforge:inventory_help' ? [12, 5.8]
+    : name === 'everforge:basic_crafting' ? [12, 8.2]
+    : [12, 7.5];
   if (spec.includes('</global>')) throw new Error(`${name}: invalid closing global tag reached the client`);
   if (spec.includes('Mineclonia')) throw new Error(`${name}: internal dependency brand leaked into Everforge UI`);
   const stylesOpen = (spec.match(/<style/g) || []).length;

@@ -859,6 +859,15 @@ end
 
 local localized_item_name
 
+local function safe_hud_status(text)
+	if type(text) ~= "string" or text == "" then return "" end
+	text = text:gsub("([%w_%-]+:[%w_%-]+)", function(itemname)
+		return localized_item_name and localized_item_name(itemname) or ""
+	end)
+	text = text:gsub("%s+([,.;:])", "%1"):gsub("%s%s+", " ")
+	return text
+end
+
 local function get_node_extra(node_name, def, pos, meta)
 	local extra = {}
 	local info = meta and meta:get_string("infotext") or ""
@@ -869,15 +878,20 @@ local function get_node_extra(node_name, def, pos, meta)
 		local active = meta and meta:get_string("active_input") or ""
 		local recipe = smelt_recipes[active]
 		if recipe then
-			local input_def = core.registered_items[active]
-			extra[#extra + 1] = S("Processing: @1 → @2", input_def and input_def.description or active, localized_item_name and localized_item_name(recipe.output) or recipe.output)
+			local input_name = localized_item_name and localized_item_name(active)
+			local output_name = localized_item_name and localized_item_name(recipe.output)
+			if input_name and output_name then
+				extra[#extra + 1] = S("Processing: @1 → @2", input_name, output_name)
+			elseif info ~= "" then
+				extra[#extra + 1] = S("Status: @1", safe_hud_status(info))
+			end
 		elseif meta and meta:get_int("burn") > 0 then
 			extra[#extra + 1] = S("Machine is burning fuel.")
 		elseif info ~= "" then
-			extra[#extra + 1] = S("Status: @1", info)
+			extra[#extra + 1] = S("Status: @1", safe_hud_status(info))
 		end
 	elseif info ~= "" then
-		extra[#extra + 1] = S("Status: @1", info)
+		extra[#extra + 1] = S("Status: @1", safe_hud_status(info))
 	end
 	if core.get_item_group(node_name, "plant") > 0 then
 		local stage = node_name:match("_(%d+)$")
@@ -905,12 +919,13 @@ local function waila_text(player)
 	local node = core.get_node_or_nil(pointed.under)
 	local def = node and core.registered_nodes[node.name]
 	if not def or node.name == "air" or node.name == "ignore" then return "" end
-	local name = (def.description or node.name):match("^[^\n]+") or node.name
+	local name = localized_item_name and localized_item_name(node.name)
 	local meta = core.get_meta(pointed.under)
-	-- Keep mining requirements in the field guide and native diggroups. The HUD
-	-- shows only the name, minimum level (when applicable) and live target state.
+	-- Prefer a registered, translated description (including documentation
+	-- aliases for internal variants). If none exists, use a translated generic
+	-- label and keep live-state information without exposing registry IDs.
 	local _, level = get_mining_requirement(def.groups or {})
-	local lines = {name}
+	local lines = {name or S("Unlabeled block")}
 	if level then lines[#lines + 1] = level end
 	for _, line in ipairs(get_node_extra(node.name, def, pointed.under, meta)) do lines[#lines + 1] = line end
 	-- Resolve each independently translated field in the player's language
@@ -1040,9 +1055,31 @@ core.register_chatcommand("everforge_waila", {
 	end,
 })
 
+local function valid_display_name(text)
+	if type(text) ~= "string" or text == "" then return nil end
+	local first = text:match("^[^\n]+") or text
+	-- Some internally generated nodes have no description. Never turn their
+	-- registry key into ordinary HUD copy.
+	if first:match("^[%w_%-]+:[%w_%-]+$") then return nil end
+	return first
+end
+
+local function documentation_display_name(itemname)
+	if not (doc and doc.get_entry_definition) then return nil end
+	for _, category in ipairs({"nodes", "tools", "craftitems", "mobs"}) do
+		local entry = doc.get_entry_definition(category, itemname)
+		local name = entry and valid_display_name(entry.name)
+		if name then return name end
+	end
+	return nil
+end
+
 localized_item_name = function(itemname)
+	if type(itemname) ~= "string" or itemname == "" then return nil end
+	itemname = itemname:match("^([^%s]+)") or itemname
 	local def = core.registered_items[itemname]
-	return def and ((def.description or ""):match("^[^\n]+")) or itemname
+	local name = def and (valid_display_name(def.description) or valid_display_name(def._doc_items_entry_name))
+	return name or documentation_display_name(itemname)
 end
 
 local function mineral_drop_item(node_def)
@@ -1112,7 +1149,7 @@ end
 local function mineral_entry_text(mineral, title, node_name, ingot, moreores_key)
 	local def = core.registered_nodes[node_name]
 	if not def then return nil end
-	local lines = {S("Mineral: @1", title), S("Block: @1", (def.description or node_name):match("^[^\n]+") or node_name),
+	local lines = {S("Mineral: @1", title), S("Block: @1", localized_item_name(node_name) or S("Unlabeled block")),
 		S("Dimension: Overworld"), S("Biomes: registered overworld biome entries for high, middle and deep features (@1, @2 and @3).",
 			tostring(active_overworld_biome_count("moreores:" .. mineral .. "_high_placed")),
 			tostring(active_overworld_biome_count("moreores:" .. mineral .. "_placed")),
@@ -1144,10 +1181,14 @@ local function mineral_entry_text(mineral, title, node_name, ingot, moreores_key
 	lines[#lines + 1] = S("Mined resource: @1.", drop_name)
 	local recipe = drop and smelt_recipes[drop]
 	if recipe then
-		lines[#lines + 1] = S("Processing: @1 → @2 in a Mineclonia furnace or Alloy Melter.", drop_name, localized_item_name(recipe.output))
+		local output_name = localized_item_name(recipe.output)
+		if output_name then lines[#lines + 1] = S("Processing: @1 → @2 in a Mineclonia furnace or Alloy Melter.", drop_name, output_name) end
 	elseif drop and core.get_craft_result then
 		local result = core.get_craft_result({method = "cooking", width = 1, items = {ItemStack(drop)}})
-		if result and result.item and not result.item:is_empty() then lines[#lines + 1] = S("Processing: @1 → @2 in a Mineclonia furnace.", drop_name, localized_item_name(result.item:get_name())) end
+		if result and result.item and not result.item:is_empty() then
+			local output_name = localized_item_name(result.item:get_name())
+			if output_name then lines[#lines + 1] = S("Processing: @1 → @2 in a Mineclonia furnace.", drop_name, output_name) end
+		end
 	end
 	lines[#lines + 1] = S("Main uses: @1", get_material_uses(mineral, ingot))
 	lines[#lines + 1] = S("Only newly generated terrain can contain new deposits; existing map blocks are unchanged.")

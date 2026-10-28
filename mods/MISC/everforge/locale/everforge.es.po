@@ -681,3 +681,246 @@ msgstr "Tarjeta @1 de @2"
 
 msgid "Everforge Guide"
 msgstr "Guía de Everforge"
+
+msgid "Choose a practical crafting guide or open the complete help library."
+msgstr "Elige una guía práctica de fabricación o abre toda la biblioteca de ayuda."
+
+msgid "Basic Crafting"
+msgstr "Fabricación básica"
+
+msgid "General recipe book"
+msgstr "Recetario general"
+
+msgid "Materials, tools and survival"
+msgstr "Materiales, herramientas y supervivencia"
+
+msgid "First Materials"
+msgstr "Primeros materiales"
+
+msgid "Tools and Weapons"
+msgstr "Herramientas y armas"
+
+msgid "Survival"
+msgstr "Supervivencia"
+
+msgid "Compatible wood"
+msgstr "Madera compatible"
+
+msgid "Any log"
+msgstr "Cualquier tronco"
+
+msgid "Compatible stone"
+msgstr "Piedra compatible"
+
+msgid "Compatible coal"
+msgstr "Carbón compatible"
+
+msgid "Any bed"
+msgstr "Cualquier cama"
+
+msgid "Logs"
+msgstr "Troncos"
+
+msgid "Tree trunks are the first raw material for wooden building and crafting."
+msgstr "Los troncos son la primera materia prima para construir y fabricar objetos de madera."
+
+msgid "Break a tree trunk; it is gathered from the world and has no crafting recipe."
+msgstr "Rompe el tronco de un árbol para recogerlo; se obtiene del mundo y no tiene receta de fabricación."
+
+msgid "Gathered from the world; no crafting grid."
+msgstr "Se obtiene del mundo; no requiere cuadrícula de fabricación."
+
+msgid "Planks"
+msgstr "Tablones"
+
+msgid "Planks are a common building material and a base ingredient for early tools and stations."
+msgstr "Los tablones son un material de construcción común y sirven para fabricar herramientas y estaciones iniciales."
+
+msgid "Sticks"
+msgstr "Palos"
+
+msgid "Sticks are handles and components used by tools, weapons and torches."
+msgstr "Los palos sirven como mangos y componentes de herramientas, armas y antorchas."
+
+msgid "Crafting Table"
+msgstr "Mesa de fabricación"
+
+msgid "A crafting table opens the full 3×3 crafting grid."
+msgstr "La mesa de fabricación permite usar la cuadrícula completa de 3×3."
+
+msgid "Place four compatible wood items in a 2×2 square."
+msgstr "Coloca cuatro piezas de madera compatible formando un cuadrado de 2×2."
+
+msgid "Place it in the world and right-click it to open the 3×3 grid."
+msgstr "Colócala en el mundo y haz clic derecho para abrir la cuadrícula de 3×3."
+
+msgid "A pickaxe mines stone and other hard blocks; the suitable material depends on the block."
+msgstr "El pico sirve para extraer piedra y otros bloques duros; el material adecuado depende del bloque."
+
+msgid "The wood version uses compatible wood for the head and two sticks for the handle. Other registered material versions are selectable below."
+msgstr "La versión de madera usa piezas de madera compatible para la cabeza y dos palos para el mango. Más abajo puedes elegir otras variantes registradas."
+
+msgid "An axe is useful for tree trunks, wooden blocks and some other tasks."
+msgstr "El hacha es útil para talar troncos, trabajar bloques de madera y otras tareas."
+
+msgid "The wood version uses three compatible wood items and two sticks. Mineclonia registers two mirrored layouts."
+msgstr "La versión de madera usa tres piezas de madera compatible y dos palos. Mineclonia registra dos diseños reflejados."
+
+msgid "A shovel is useful for dirt, sand, gravel and other loose blocks."
+msgstr "La pala es útil para tierra, arena, grava y otros bloques sueltos."
+
+msgid "The wood version uses one compatible wood item above two sticks."
+msgstr "La versión de madera coloca una pieza de madera compatible sobre dos palos."
+
+msgid "A sword is a close-range weapon and can also cut some particular blocks."
+msgstr "La espada es un arma de combate cercano y también puede cortar algunos bloques concretos."
+
+msgid "The wood version uses two compatible wood items above one stick."
+msgstr "La versión de madera coloca dos piezas de madera compatible sobre un palo."
+
+msgid "A hoe prepares suitable soil for growing crops."
+msgstr "La azada prepara la tierra adecuada para cultivar."
+
+msgid "The wood version uses two compatible wood items and two sticks; the registered layout can face either way."
+msgstr "La versión de madera usa dos piezas de madera compatible y dos palos; el diseño registrado admite ambas orientaciones."
+
+msgid "Torch"
+msgstr "Antorcha"
+
+msgid "A torch lights nearby spaces."
+msgstr "La antorcha ilumina los alrededores."
+
+msgid "Combine one compatible coal item above one stick; the registered recipe returns four torches."
+msgstr "Coloca una pieza de carbón compatible sobre un palo; la receta registrada produce cuatro antorchas."
+
+msgid "Furnace"
+msgstr "Horno"
+
+msgid "A furnace cooks food and processes materials using fuel."
+msgstr "El horno cocina alimentos y procesa materiales usando combustible."
+
+msgid "Place compatible stone around the outside of a 3×3 grid, leaving the center empty."
+msgstr "Rodea el centro vacío de una cuadrícula de 3×3 con piedra compatible."
+
+msgid "Chest"
+msgstr "Cofre"
+
+msgid "A chest stores items. Open it with a right-click."
+msgstr "El cofre sirve para guardar objetos. Ábrelo con clic derecho."
+
+msgid "Place compatible wood around the outside of a 3×3 grid, leaving the center empty."
+msgstr "Rodea el centro vacío de una cuadrícula de 3×3 con madera compatible."
+
+msgid "Bed"
+msgstr "Cama"
+
+msgid "A bed lets you sleep under the world's conditions; the world settings determine whether it also sets a respawn point."
+msgstr "La cama permite dormir si se cumplen las condiciones del mundo; la configuración determina si también establece el punto de reaparición."
+
+msgid "Use three matching wool blocks above three compatible wood items. Other colors have corresponding registered recipes."
+msgstr "Coloca tres bloques de lana del mismo color sobre tres piezas de madera compatible. Cada color tiene su receta registrada correspondiente."
+
+msgid "Place it and right-click at night or during a thunderstorm, when the bed is safe to use."
+msgstr "Colócala y haz clic derecho durante la noche o una tormenta, siempre que sea seguro usarla."
+
+msgid "Unlabeled item"
+msgstr "Objeto sin descripción"
+
+msgid "Compatible material"
+msgstr "Material compatible"
+
+msgid "Inventory or table; ingredients may be placed in any order."
+msgstr "Inventario o mesa; los ingredientes pueden colocarse en cualquier orden."
+
+msgid "Inventory 2×2 or crafting table 3×3."
+msgstr "Inventario de 2×2 o mesa de fabricación de 3×3."
+
+msgid "Crafting table 3×3."
+msgstr "Mesa de fabricación de 3×3."
+
+msgid ", "
+msgstr ", "
+
+msgid "Diamond"
+msgstr "Diamante"
+
+msgid "Netherite"
+msgstr "Netherita"
+
+msgid "Other"
+msgstr "Otro"
+
+msgid "The general recipe book uses progressive discovery here: it may show few recipes until you collect their ingredients. This guide shows selected basic recipes without changing that filter."
+msgstr "El recetario general usa aquí el descubrimiento progresivo: puede mostrar pocas recetas hasta que recojas sus ingredientes. Esta guía enseña recetas básicas seleccionadas sin cambiar ese filtro."
+
+msgid "The general recipe book remains available for the complete registered catalog."
+msgstr "El recetario general sigue disponible como catálogo completo de recetas registradas."
+
+msgid "Choose a subject to see its purpose, how to obtain it and the registered grid."
+msgstr "Elige un tema para ver su propósito, cómo obtenerlo y la cuadrícula registrada."
+
+msgid "This material is gathered from the world; no crafting recipe is registered."
+msgstr "Este material se recoge del mundo; no tiene una receta de fabricación registrada."
+
+msgid "No crafting-grid recipe is registered for this variant in the current game."
+msgstr "Esta variante no tiene una receta de cuadrícula registrada en este mundo."
+
+msgid "This tool material is registered as non-grid-craftable."
+msgstr "Este material de herramienta figura como no fabricable en cuadrícula."
+
+msgid "Open general recipe book"
+msgstr "Abrir el recetario general"
+
+msgid "Back to Everforge guide"
+msgstr "Volver a la guía de Everforge"
+
+msgid "The general recipe book is unavailable right now."
+msgstr "El recetario general no está disponible ahora."
+
+msgid "Unlabeled block"
+msgstr "Bloque sin descripción"
+
+msgid "These examples follow Mineclonia's registered recipes, not a copied Minecraft list; material groups and bed behavior may differ by version or server setting."
+msgstr "Estos ejemplos siguen las recetas registradas por Mineclonia, no una lista copiada de Minecraft; los grupos de materiales y el uso de las camas pueden variar según la versión o la configuración del servidor."
+
+msgid "These examples follow this world's registered recipes, not a copied Minecraft list; material groups and bed behavior may differ by version or server setting."
+msgstr "Estos ejemplos siguen las recetas registradas en este mundo, no una lista copiada de Minecraft; los grupos de materiales y el uso de las camas pueden variar según la versión o la configuración del servidor."
+
+msgid "Craft one log to receive four planks. Each registered tree type has its own matching plank output."
+msgstr "Fabrica un tronco para obtener cuatro tablones. Cada tipo de árbol registrado produce sus tablones correspondientes."
+
+msgid "Place three pieces of the selected tool material across the top row, then two sticks below the center."
+msgstr "Coloca tres piezas del material elegido para la herramienta en la fila superior y dos palos debajo del centro."
+
+msgid "Use three pieces of the selected tool material and two sticks. Two mirrored layouts are registered."
+msgstr "Usa tres piezas del material elegido para la herramienta y dos palos. Hay dos diseños reflejados registrados."
+
+msgid "Place one piece of the selected tool material above two sticks."
+msgstr "Coloca una pieza del material elegido para la herramienta sobre dos palos."
+
+msgid "Place two pieces of the selected tool material above one stick."
+msgstr "Coloca dos piezas del material elegido para la herramienta sobre un palo."
+
+msgid "Place two pieces of the selected tool material across the top, then two sticks below. Two mirrored layouts are registered."
+msgstr "Coloca dos piezas del material elegido para la herramienta arriba y dos palos debajo. Hay dos diseños reflejados registrados."
+
+msgid "A bed lets you sleep when it is safe to use. World settings determine whether it also sets a respawn point."
+msgstr "La cama permite dormir cuando es seguro usarla. La configuración del mundo determina si también establece el punto de reaparición."
+
+msgid "Bed color"
+msgstr "Color de cama"
+
+msgid "Wood type"
+msgstr "Tipo de madera"
+
+msgid "Craft a log; the output count appears in the registered recipe. Each tree type has its matching plank output."
+msgstr "Fabrica un tronco; la cantidad aparece en la receta registrada. Cada tipo de árbol tiene sus tablones correspondientes."
+
+msgid "The general book may hide undiscovered recipes; this guide shows basics without changing that filter."
+msgstr "El recetario general puede ocultar recetas aún no descubiertas; esta guía muestra lo básico sin cambiar ese filtro."
+
+msgid "The general book remains useful for searching and the wider registered catalog."
+msgstr "El recetario general sigue siendo útil para buscar y consultar un catálogo más amplio de recetas registradas."
+
+msgid "Recipes follow this world, not a fixed Minecraft edition; bed behavior can depend on server settings."
+msgstr "Las recetas siguen las de este mundo, no una edición fija de Minecraft; el comportamiento de las camas puede depender de los ajustes del servidor."

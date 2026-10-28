@@ -678,3 +678,246 @@ msgstr ""
 
 msgid "Everforge Guide"
 msgstr ""
+
+msgid "Choose a practical crafting guide or open the complete help library."
+msgstr ""
+
+msgid "Basic Crafting"
+msgstr ""
+
+msgid "General recipe book"
+msgstr ""
+
+msgid "Materials, tools and survival"
+msgstr ""
+
+msgid "First Materials"
+msgstr ""
+
+msgid "Tools and Weapons"
+msgstr ""
+
+msgid "Survival"
+msgstr ""
+
+msgid "Compatible wood"
+msgstr ""
+
+msgid "Any log"
+msgstr ""
+
+msgid "Compatible stone"
+msgstr ""
+
+msgid "Compatible coal"
+msgstr ""
+
+msgid "Any bed"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Tree trunks are the first raw material for wooden building and crafting."
+msgstr ""
+
+msgid "Break a tree trunk; it is gathered from the world and has no crafting recipe."
+msgstr ""
+
+msgid "Gathered from the world; no crafting grid."
+msgstr ""
+
+msgid "Planks"
+msgstr ""
+
+msgid "Planks are a common building material and a base ingredient for early tools and stations."
+msgstr ""
+
+msgid "Sticks"
+msgstr ""
+
+msgid "Sticks are handles and components used by tools, weapons and torches."
+msgstr ""
+
+msgid "Crafting Table"
+msgstr ""
+
+msgid "A crafting table opens the full 3×3 crafting grid."
+msgstr ""
+
+msgid "Place four compatible wood items in a 2×2 square."
+msgstr ""
+
+msgid "Place it in the world and right-click it to open the 3×3 grid."
+msgstr ""
+
+msgid "A pickaxe mines stone and other hard blocks; the suitable material depends on the block."
+msgstr ""
+
+msgid "The wood version uses compatible wood for the head and two sticks for the handle. Other registered material versions are selectable below."
+msgstr ""
+
+msgid "An axe is useful for tree trunks, wooden blocks and some other tasks."
+msgstr ""
+
+msgid "The wood version uses three compatible wood items and two sticks. Mineclonia registers two mirrored layouts."
+msgstr ""
+
+msgid "A shovel is useful for dirt, sand, gravel and other loose blocks."
+msgstr ""
+
+msgid "The wood version uses one compatible wood item above two sticks."
+msgstr ""
+
+msgid "A sword is a close-range weapon and can also cut some particular blocks."
+msgstr ""
+
+msgid "The wood version uses two compatible wood items above one stick."
+msgstr ""
+
+msgid "A hoe prepares suitable soil for growing crops."
+msgstr ""
+
+msgid "The wood version uses two compatible wood items and two sticks; the registered layout can face either way."
+msgstr ""
+
+msgid "Torch"
+msgstr ""
+
+msgid "A torch lights nearby spaces."
+msgstr ""
+
+msgid "Combine one compatible coal item above one stick; the registered recipe returns four torches."
+msgstr ""
+
+msgid "Furnace"
+msgstr ""
+
+msgid "A furnace cooks food and processes materials using fuel."
+msgstr ""
+
+msgid "Place compatible stone around the outside of a 3×3 grid, leaving the center empty."
+msgstr ""
+
+msgid "Chest"
+msgstr ""
+
+msgid "A chest stores items. Open it with a right-click."
+msgstr ""
+
+msgid "Place compatible wood around the outside of a 3×3 grid, leaving the center empty."
+msgstr ""
+
+msgid "Bed"
+msgstr ""
+
+msgid "A bed lets you sleep under the world's conditions; the world settings determine whether it also sets a respawn point."
+msgstr ""
+
+msgid "Use three matching wool blocks above three compatible wood items. Other colors have corresponding registered recipes."
+msgstr ""
+
+msgid "Place it and right-click at night or during a thunderstorm, when the bed is safe to use."
+msgstr ""
+
+msgid "Unlabeled item"
+msgstr ""
+
+msgid "Compatible material"
+msgstr ""
+
+msgid "Inventory or table; ingredients may be placed in any order."
+msgstr ""
+
+msgid "Inventory 2×2 or crafting table 3×3."
+msgstr ""
+
+msgid "Crafting table 3×3."
+msgstr ""
+
+msgid ", "
+msgstr ""
+
+msgid "Diamond"
+msgstr ""
+
+msgid "Netherite"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "The general recipe book uses progressive discovery here: it may show few recipes until you collect their ingredients. This guide shows selected basic recipes without changing that filter."
+msgstr ""
+
+msgid "The general recipe book remains available for the complete registered catalog."
+msgstr ""
+
+msgid "Choose a subject to see its purpose, how to obtain it and the registered grid."
+msgstr ""
+
+msgid "This material is gathered from the world; no crafting recipe is registered."
+msgstr ""
+
+msgid "No crafting-grid recipe is registered for this variant in the current game."
+msgstr ""
+
+msgid "This tool material is registered as non-grid-craftable."
+msgstr ""
+
+msgid "Open general recipe book"
+msgstr ""
+
+msgid "Back to Everforge guide"
+msgstr ""
+
+msgid "The general recipe book is unavailable right now."
+msgstr ""
+
+msgid "Unlabeled block"
+msgstr ""
+
+msgid "These examples follow Mineclonia's registered recipes, not a copied Minecraft list; material groups and bed behavior may differ by version or server setting."
+msgstr ""
+
+msgid "These examples follow this world's registered recipes, not a copied Minecraft list; material groups and bed behavior may differ by version or server setting."
+msgstr ""
+
+msgid "Craft one log to receive four planks. Each registered tree type has its own matching plank output."
+msgstr ""
+
+msgid "Place three pieces of the selected tool material across the top row, then two sticks below the center."
+msgstr ""
+
+msgid "Use three pieces of the selected tool material and two sticks. Two mirrored layouts are registered."
+msgstr ""
+
+msgid "Place one piece of the selected tool material above two sticks."
+msgstr ""
+
+msgid "Place two pieces of the selected tool material above one stick."
+msgstr ""
+
+msgid "Place two pieces of the selected tool material across the top, then two sticks below. Two mirrored layouts are registered."
+msgstr ""
+
+msgid "A bed lets you sleep when it is safe to use. World settings determine whether it also sets a respawn point."
+msgstr ""
+
+msgid "Bed color"
+msgstr ""
+
+msgid "Wood type"
+msgstr ""
+
+msgid "Craft a log; the output count appears in the registered recipe. Each tree type has its matching plank output."
+msgstr ""
+
+msgid "The general book may hide undiscovered recipes; this guide shows basics without changing that filter."
+msgstr ""
+
+msgid "The general book remains useful for searching and the wider registered catalog."
+msgstr ""
+
+msgid "Recipes follow this world, not a fixed Minecraft edition; bed behavior can depend on server settings."
+msgstr ""

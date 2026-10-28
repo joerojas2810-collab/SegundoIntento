@@ -11,7 +11,7 @@ local function build_forge_formspec()return 'unchanged formspec','No fuel' end
 local smelt_recipes={}
 local localized_item_name
 `;
-for(const name of ['update_melter_interface','get_node_extra']){
+for(const name of ['update_melter_interface','safe_hud_status','get_node_extra']){
 const n=ast.body.find(n=>n.type==='FunctionDeclaration'&&n.identifier?.name===name);if(!n)throw Error(name);code+=source.slice(...n.range)+'\n';}
 code+=`update_melter_interface({})
 assert(fields.infotext=='','native duplicate survives')
