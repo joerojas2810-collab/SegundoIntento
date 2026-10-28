@@ -67,8 +67,8 @@ Alcance: integración de Everforge con Luanti 5.17.0 y Mineclonia 0.124.1 en est
 ### Identidad visual y recursos de menú
 
 - Aplicado un acento discreto oscuro/cobre al encabezado del formulario RPG y del Melter; el texto de WAILA usa marfil cálido y la categoría de minerales conserva constructor/galería `doc` nativos con un panel de texto oscuro cálido. No se alteran rótulos identificadores ni requisitos de herramientas.
-- Inspección de `menu/header.png`: conserva el logotipo Mineclonia. `menu/icon.png` muestra bloques de césped. Los seis `menu/overlay*.png` disponibles son fondos desenfocados de paisaje/bosque o mar, no escenas de fantasía medieval; ninguno se reemplazó ni se modificó el menú global, el motor o los demás juegos.
-- El adjunto exacto `Everforge.png` no está en el workspace. **No se generó, calcó ni sustituyó el logo.** Queda pendiente recibir el archivo original para instalarlo solo en el recurso de header del juego, conservando el mecanismo nativo y las demás funciones del menú. Si se quiere un fondo medieval distinto de los overlays existentes, hace falta proporcionar ese arte o aprobar un recurso nuevo específico del juego; no se sobreescribió ningún paisaje.
+- `menu/header.png` ya contiene el archivo original `Everforge.png` que adjuntó el usuario, copiado byte por byte (2172×724; SHA-256 `351938cf3f58248b69d5533bf609aa386b2b347471ee89c3eb38fc99cad1849d`). No se redibujó, recortó ni retocó. Se usa el recurso header del juego; el motor, el menú global y los demás juegos no se modificaron. `menu/icon.png` aún muestra bloques de césped.
+- Los seis `menu/overlay*.png` disponibles son fondos desenfocados de paisaje/bosque o mar, no escenas de fantasía medieval; no se reemplazó ninguno. Un fondo medieval distinto sigue pendiente de que el usuario proporcione el arte o apruebe un recurso nuevo específico del juego. La visualización del header se debe confirmar in-game: Luanti no está instalado en este entorno.
 
 ### Auditoría visual y licencias de herramientas (diagnóstico/propuesta; sin rediseño)
 
@@ -109,7 +109,7 @@ En esta iteración `luaparse` parseó `mods/MISC/everforge/init.lua`; `polib` va
 6. Usar la prueba reproducible de `/everforge_mobdiag` descrita arriba con zombis de la misma especie en superficie y profundidad; registrar salud, daño y multiplicadores. Guardar/descargar el chunk para revisar que no haya acumulación; repetir en Nether/End/void y comprobar que el diagnóstico informa exclusión.
 7. Para el Melter, probar una pepita con combustible y verificar relación 1:1 y tiempos previos; retirar combustible, vaciar/cargar entrada y llenar/sacar salida para ver cada estado/overlay. Repetir con tolvas, protecciones, traducción es y escalas DPI distintas. Esta prueba requiere cliente/servidor Luanti 5.17.0.
 8. Comparar en inventario los picos nativos de madera, piedra, acero, oro, diamante/netherita y las herramientas modulares por material; registrar contraste a escala 1× y no sustituir texturas sin aprobación. Repetir la guía de Minerales, WAILA y formulario RPG en inglés/español.
-9. Adjuntar `Everforge.png` original antes de reemplazar `menu/header.png`; confirmar que el cambio solo afecta el juego y no desplaza ni recorta controles del menú. Decidir/proporcionar aparte un fondo medieval si se desea cambiar los overlays paisajísticos existentes.
+9. Confirmar en la pantalla de menú que el header original `Everforge.png` se muestra completo, legible y sin desplazar controles; este recurso ya se instaló sin modificar su imagen fuente. Decidir/proporcionar aparte un fondo medieval si se desea cambiar los overlays paisajísticos existentes.
 
 ## Diagnóstico y corrección del recorte de WAILA (después de `bf047ed`)
 
