@@ -1,5 +1,7 @@
 # Resultados de la primera versión jugable — 28/10/2026
 
+> Seguimiento del 28/10: launcher gráfico nativo, campamento visible y hospedaje con segundo cliente comprobados. Véase [resultado actualizado](everforge-camp-launcher-fixes.md). Los límites gráficos de la ejecución CLI descritos abajo son históricos.
+
 Motor identificado y ejecutado: **Luanti 5.17.0 OSX ARM64, LuaJIT 2.1.1764270282**, obtenido mediante extracción limpia del ZIP oficial. SHA256 comprobado contra `digest` del release oficial de GitHub; coincide con el fijado en el launcher. Juego: checkout de PR #2, Mineclonia 0.124.1 con los cambios de esta entrega. Sin mundos ni perfiles reales y sin migraciones.
 
 ## Comprobado ejecutando el juego
