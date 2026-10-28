@@ -11,7 +11,9 @@ VoxeLibre (formerly MineClone2) with focus on stability, multiplayer
 performance and features. For information about migrating from VoxeLibre
 (formerly MineClone2) to Mineclonia, see [VoxeLibre Refugee's Guide](https://mineclonia.codeberg.page/wiki/intros/voxelibre-guide.html).
 
-Version: 0.124.1
+Version: Mineclonia 0.124.1
+
+This repository packages Mineclonia as **Everforge**. RPG progression, modular forging, additional minerals, Graveyard/Ice Tower structures, regional enemy scaling, and bundled upstream attributions are described in [the Everforge integration guide](mods/MISC/everforge/README.md) and [THIRD_PARTY.md](THIRD_PARTY.md).
 
 ### Differences from VoxeLibre (formerly MineClone2)
 * Overworld depth increased from 64 to 128 nodes

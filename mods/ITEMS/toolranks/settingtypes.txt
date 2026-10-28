@@ -1,0 +1,3 @@
+toolranks_levels (Maximum displayed tool rank) int 10 1 100
+
+toolranks_level_digs (Successful digs per tool rank) int 100 1 100000
