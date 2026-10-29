@@ -1,0 +1,12 @@
+{
+  "mods/MISC/everforge/init.lua": "53123e1d5d9e8694676f5749fd35f051ade4baf805cf521373b066ccf32c662d",
+  "mods/MISC/everforge/start_region.lua": "86be0d64f53b0ff1297e3e1748406e31e2f20ff4dc0b552caeaf447d6491ddd4",
+  "mods/MISC/everforge/camp.lua": "ea8b884629143715323c5df17e0785d720d9d3955985a7ff5a733ae3d66a587a",
+  "mods/MISC/everforge/camp_site.lua": "6eab833222dfc489c7ef69e28320fafb368add800f815377ff0f50d0655fbba7",
+  "mods/MISC/everforge/worldgen_compat.lua": "490126faf94362cd82f48461ce791a0407b0604e1b8aa8a14dd03f6763f9a2ee",
+  "mods/MISC/everforge_world_visuals/lg_register.lua": "eade2526ad70dd7d09ac77acf7d651152dc31013ecad4f2aa98162e92f29f8ee",
+  "mods/ITEMS/mcl_dripstone/lg_register.lua": "d3cae6d4cef674e3e221f87d180fc58a0abc2e641fbc3166ce1ffd65b309f0c6",
+  "tools/everforge_runtime_test/seedtest.lua": "96a14d38fa36d31899b6e569adb6ddc8b41a420bdd523ffe670369af3714884d",
+  "tools/test_everforge_seeds.py": "ee503194310cd54e2ba12f38d2d9aa11aa2ee1d1ac51eb494853e36a4629aad9",
+  "mods/MAPGEN/mcl_levelgen/biomes.lua": "a0d8ed8e307f6df977b4221a3cc13d3f82661ffb36c3cd8d5267f128c14a53d5"
+}

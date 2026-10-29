@@ -19,16 +19,20 @@ p.add_argument("--luanti", type=Path, help="Luanti executable (5.17.0)")
 p.add_argument("--data-dir", type=Path, default=ROOT / ".everforge-dev")
 p.add_argument("--install", action="store_true", help="Clean, SHA256-verified macOS ARM64 install into the isolated directory")
 p.add_argument("--archive", type=Path, help="Reuse the official archive instead of downloading")
+p.add_argument("--spawn", nargs=2, type=int, metavar=("X","Z"), help="Optional native static spawn anchor for isolated terrain stress tests")
+p.add_argument("--seed", help="World seed (number or text); omitted means engine-selected random seed for a new world")
 p.add_argument("--new", action="store_true", help="Create a fresh development world; keep earlier worlds")
 p.add_argument("--server", action="store_true")
 p.add_argument("--port", type=int, default=49177)
-p.add_argument("--test-stage", choices=["bootstrap", "restart", "players", "verify_players", "mechanics", "solo", "legacy"])
+p.add_argument("--test-stage", choices=["bootstrap", "restart", "players", "verify_players", "mechanics", "solo", "legacy", "seedtest", "seedrestart", "seedlocate"])
 p.add_argument("--name", default="Forjador")
 p.add_argument("--client", help="Connect a separately isolated test client to localhost (e.g. ForgeAlice)")
 p.add_argument("--resolution", nargs=2, type=int, default=(1280, 800), metavar=("WIDTH", "HEIGHT"), help="Isolated QA window size")
 p.add_argument("--ui-preview", action="store_true", help="Disable damage only in this disposable UI test world")
 p.add_argument("--gui-scale", type=float, default=1.0, help="Isolated QA GUI scaling")
 a = p.parse_args()
+if a.seed is not None and any(c in a.seed for c in "\r\n"):
+    p.error("Seed must be a single line")
 if min(a.resolution) < 480 or not 0.5 <= a.gui_scale <= 3:
     p.error("Use dimensions >= 480 and GUI scale between 0.5 and 3")
 data = a.data_dir.expanduser().resolve()
@@ -103,12 +107,13 @@ elif testmod.is_symlink():
     testmod.unlink()  # Never ship the testing mod into normal play.
 config = data / "playtest.conf"
 config.write_text("\n".join([
-    "mg_name = singlenode", "fixed_map_seed = 12345", "num_emerge_threads = 2",
+    "mg_name = singlenode", *([f"fixed_map_seed = {a.seed}"] if a.seed is not None else []), "num_emerge_threads = 2",
     "server_announce = false", "bind_address = 127.0.0.1", f"port = {a.port}",
     "enable_ipv6 = false", "creative_mode = false", f"enable_damage = {str(not a.ui_preview).lower()}",
     *(["mobs_spawn = false", "only_peaceful_mobs = true"] if a.ui_preview else []),
     "mcl_levelgen_use_ffi = false", "enable_sound = false", f"screen_w = {a.resolution[0]}", f"screen_h = {a.resolution[1]}", f"gui_scaling = {a.gui_scale}",
     "language = es", "everforge_start_region = true",
+    *([f"static_spawnpoint = ({a.spawn[0]},0,{a.spawn[1]})"] if a.spawn else []),
     f"everforge_test_stage = {a.test_stage or ''}",
 ]) + "\n")
 env = os.environ.copy()

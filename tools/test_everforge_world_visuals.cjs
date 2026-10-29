@@ -87,4 +87,4 @@ check(commands.everforge_visuals~=nil)
 print('PASS '..checks..' world visual behavior checks using actual biome definitions and generate_feature')
 `;
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'everforge-visuals-'));
-try {const file=path.join(tmp,'test.lua'); fs.writeFileSync(file,lua); process.stdout.write(cp.execFileSync('fengari',[file],{encoding:'utf8'}));} finally {fs.rmSync(tmp,{recursive:true,force:true});}
+try {const file=path.join(tmp,'test.lua'); fs.writeFileSync(file,lua); const output=cp.execFileSync('fengari',[file],{encoding:'utf8'});if(!/^PASS /m.test(output))throw new Error('Lua tests did not complete');process.stdout.write(output);} finally {fs.rmSync(tmp,{recursive:true,force:true});}

@@ -1,0 +1,77 @@
+Luanti 5.17.0 (OSX)
+Using LuaJIT 2.1.1764270282
+Built by Clang 21.0
+Running on Darwin/25.5.0 arm64
+BUILD_TYPE=Release
+RUN_IN_PLACE=0
+USE_CURL=1
+USE_GETTEXT=1
+USE_SOUND=1
+STATIC_SHAREDIR="luanti.app/Contents/Resources"
+STATIC_LOCALEDIR="luanti.app/Contents/Resources/locale"
+
+World: /private/tmp/everforge-seeds-hook-final/engine-replay/world-1793303044068011000
+Log: /private/tmp/everforge-seeds-hook-final/engine-replay/server.log
+2026-10-29 16:44:06: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 10643281652235288712 (Biome seed: 9571820233864579372)
+2026-10-29 16:44:06: ACTION[Main]: [mcl_villages]: World was upgraded or is pristine.
+2026-10-29 16:44:06: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-29 16:44:06: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:44:06: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-29 16:44:06: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:44:06: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-29 16:44:06: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: bounded native stronghold preparation on Luanti 5.17.0 macOS ARM64; temporary execution hook, unchanged RNG
+2026-10-29 16:44:07: ACTION[Main]: [mcl_levelgen]: Preparing stronghold placement.  This may take a while.
+ _                   _   _
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-29 16:44:20: ACTION[Main]: World at [/private/tmp/everforge-seeds-hook-final/engine-replay/world-1793303044068011000]
+2026-10-29 16:44:20: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:49457.
+2026-10-29 16:44:20: ACTION[Server]: [everforge_world_visuals] Everforge visual: ACTIVO; Roble: nodebox / everforge_world_visuals_leaves_oak.png; Cesped: everforge_world_visuals_grass_top.png; Generador: singlenode; mcl_levelgen=true
+2026-10-29 16:44:20: ACTION[Server]: Generating world spawn from (-24,-128,-25) to (24,255,23)
+2026-10-29 16:44:20: ACTION[Server]: [Everforge] REGION_SEARCH seed=10643281652235288712 radius=12 max_candidates=1922 max_anchors=2
+2026-10-29 16:44:20: ACTION[Server]: Emerged 0/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:44:21: ACTION[Server]: EVERFORGE_TEST_PASS: model: serialization, curves, points, purchase, dedupe, exploration, bounds
+2026-10-29 16:44:25: WARNING[Server]: Server: Maximum lag peaked at 3.23865 (steplen=0.05)
+2026-10-29 16:44:38: ACTION[Server]: Emerged 1/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:44:43: ACTION[Server]: Emerged 3/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:44:52: ACTION[Server]: Emerged 467/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:44:54: ACTION[Server]: Emerged 1000/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:45:00: ACTION[Server]: Emerged 1001/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:45:02: ACTION[Server]: Emerged 1003/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:45:02: ACTION[Server]: Emerged 1003/5400 MapBlocks; 24/384 MapBlocks regenerated
+2026-10-29 16:45:03: ACTION[Server]: Emerged 1003/5400 MapBlocks; 48/384 MapBlocks regenerated
+2026-10-29 16:45:04: ACTION[Server]: Emerged 1003/5400 MapBlocks; 72/384 MapBlocks regenerated
+2026-10-29 16:45:05: ACTION[Server]: Emerged 1003/5400 MapBlocks; 96/384 MapBlocks regenerated
+2026-10-29 16:45:06: ACTION[Server]: Emerged 1003/5400 MapBlocks; 144/384 MapBlocks regenerated
+2026-10-29 16:45:06: ACTION[Server]: Emerged 1003/5400 MapBlocks; 168/384 MapBlocks regenerated
+2026-10-29 16:45:08: ACTION[Server]: Emerged 1003/5400 MapBlocks; 216/384 MapBlocks regenerated
+2026-10-29 16:45:16: ACTION[Server]: Emerged 1779/5400 MapBlocks; 216/384 MapBlocks regenerated
+2026-10-29 16:45:17: ACTION[Server]: Emerged 1779/5400 MapBlocks; 240/384 MapBlocks regenerated
+2026-10-29 16:45:18: ACTION[Server]: Emerged 1779/5400 MapBlocks; 264/384 MapBlocks regenerated
+2026-10-29 16:45:20: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=21 m_static_exists=true but static data doesn't actually exist in (-2,-5,-3)
+2026-10-29 16:45:20: WARNING[Server]: StaticObjectList::remove(): id=21 not found
+2026-10-29 16:45:20: ACTION[Server]: Emerged 2672/5400 MapBlocks; 264/384 MapBlocks regenerated
+2026-10-29 16:45:22: ACTION[Server]: Emerged 2672/5400 MapBlocks; 288/384 MapBlocks regenerated
+2026-10-29 16:45:37: ACTION[Server]: Emerged 2673/5400 MapBlocks; 288/384 MapBlocks regenerated
+2026-10-29 16:45:45: ACTION[Server]: Emerged 2675/5400 MapBlocks; 288/384 MapBlocks regenerated
+2026-10-29 16:45:45: ACTION[Server]: Emerged 2675/5400 MapBlocks; 312/384 MapBlocks regenerated
+2026-10-29 16:45:46: ACTION[Server]: Emerged 2675/5400 MapBlocks; 336/384 MapBlocks regenerated
+2026-10-29 16:45:48: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=36 m_static_exists=true but static data doesn't actually exist in (4,-3,-3)
+2026-10-29 16:45:48: WARNING[Server]: StaticObjectList::remove(): id=36 not found
+2026-10-29 16:45:48: ACTION[Server]: Emerged 2675/5400 MapBlocks; 360/384 MapBlocks regenerated
+2026-10-29 16:46:11: ACTION[Server]: Emerged 3451/5400 MapBlocks; 360/384 MapBlocks regenerated
+2026-10-29 16:46:11: ACTION[Server]: Completed regeneration of 384 MapBlocks
+2026-10-29 16:46:12: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=13 m_static_exists=true but static data doesn't actually exist in (4,-2,7)
+2026-10-29 16:46:12: WARNING[Server]: StaticObjectList::remove(): id=13 not found
+2026-10-29 16:46:12: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=14 m_static_exists=true but static data doesn't actually exist in (6,-2,7)
+2026-10-29 16:46:12: WARNING[Server]: StaticObjectList::remove(): id=14 not found
+2026-10-29 16:47:07: ERROR[Emerge-0]: [Everforge] REGION_FAILED seed=10643281652235288712 {"attempts":0,"elapsed_seconds":180.103286,"reason":"generation deadline exceeded (180s); no automatic retry","rejected":null}
+2026-10-29 16:47:07: ACTION[Main]: Server: Shutting down
+2026-10-29 16:47:08: ERROR[Main]: ServerError: AsyncErr: Lua: Runtime error from mod '??' in callback environment_Step(): .../Desktop/Everforge/tools/everforge_runtime_test/init.lua:242: EVERFORGE_TEST_FAIL: region needs review: {"center":{"x":0,"y":0,"z":-1},"failure":{"attempts":0,"elaps
+2026-10-29 16:47:08: ERROR[Main]: ed_seconds":180.103286,"reason":"generation deadline exceeded (180s); no automatic retry"},"origin":{"x":0,"y":0,"z":-1},"radius":10,"search_radius":12,"seed":"10643281652235288712","state":"needs_review","version":1}
+2026-10-29 16:47:08: ERROR[Main]: stack traceback:
+2026-10-29 16:47:08: ERROR[Main]: 	[C]: in function 'error'
+2026-10-29 16:47:08: ERROR[Main]: 	.../Desktop/Everforge/tools/everforge_runtime_test/init.lua:242: in function <.../Desktop/Everforge/tools/everforge_runtime_test/init.lua:236>
+2026-10-29 16:47:08: ERROR[Main]: 	...uanti.app/Contents/Resources/builtin/common/register.lua:27: in function <...uanti.app/Contents/Resources/builtin/common/register.lua:13>

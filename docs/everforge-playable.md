@@ -9,7 +9,7 @@ Abrir **Luanti.app** normalmente, desde Finder/Dock o desde el enlace local `Lua
 En esta instalación macOS, el juego ya está enlazado desde `~/Library/Application Support/minetest/games/mineclonia` a la carpeta del repositorio. **Everforge** es el nombre visible de `game.conf`; `mineclonia` es el identificador histórico de la instalación normal y se conserva para que los mundos previos sigan abriendo. No se duplica el juego con otro identificador. La cabecera Everforge y el icono siguen siendo archivos distintos; no se ha sustituido uno por el otro.
 
 - **Individual:** seleccionar Everforge, pestaña **Start Game / Iniciar juego**, seleccionar el mundo y dejar **Host Server / Hospedar servidor** desmarcado. Pulsar **Play Game / Jugar**.
-- **Crear:** en esa misma pestaña, **New / Nuevo**, escribir un nombre y elegir **singlenode** para la generación procedural propia de Mineclonia. Para repetir la prueba documentada usar semilla `12345`. Confirmar crea solo ese mundo; abrir Luanti o pulsar Jugar no crea otros.
+- **Crear:** en esa misma pestaña, **New / Nuevo**, escribir un nombre y elegir **singlenode** para la generación procedural propia de Mineclonia. Puede dejarse la semilla vacía para usar una aleatoria, o introducir cualquier semilla válida. `12345` sirve únicamente para reproducir la prueba de referencia. Confirmar crea solo ese mundo; abrir Luanti o pulsar Jugar no crea otros.
 - **Continuar:** seleccionar el mismo mundo. Construcciones y perfiles se guardan en él; cerrar y volver a abrir el launcher no lo reinicia.
 - **Hospedar con amigos:** seleccionar el mismo mundo, marcar **Host Server**, escribir el nombre del anfitrión y la contraseña de su propio personaje, mantener **Announce Server** desmarcado si no se desea publicar en la lista, y usar puerto **30000**. Pulsar **Host Game / Hospedar partida**. El anfitrión juega en su propia computadora; al salir se detiene esa sesión y el mundo queda guardado.
 - **Desde otra computadora en la misma red:** abrir Luanti 5.17.0 → **Join Game / Unirse**, dirección IP local del anfitrión (por ejemplo `192.168.1.50`), puerto `30000`, nombre propio y su propia contraseña (se registra al primer ingreso). No usar `127.0.0.1`, que apunta a la computadora de cada jugador. El servidor envía los mods y recursos del juego; el invitado no necesita instalar otro launcher ni copiar el mundo.
@@ -47,7 +47,7 @@ El campamento revisado incluye pabellón de roble con techo, fogata nativa, banc
 
 La región usa un manifiesto mundial `start_region:v1`, radio de llegada 10 nodos en el prototipo revisado, ancla del spawn procedural. Se coloca una vez en un mundo nuevo y no se restaura al cargarlo. Camas/anclas mantienen su selección y validación nativas; solo el fallback mundial y jugadores nuevos usan el proveedor compartido. Las alternativas seguras se buscan dentro de la misma región, leyendo nodos actuales. Si no existe llegada segura, se registra el error administrativo y se rechaza la llegada con explicación; no se rompen construcciones ni se envía al jugador fuera de la región. El intento se vuelve a resolver al reconectar.
 
-Un reinicio con creación incompleta deja `needs_review`: revisar o crear otro mundo de desarrollo. Nunca se repone automáticamente la plantilla. No hay transacción conjunta entre mapa, jugador y mod storage; estos tests comprueban reinicio limpio, no durabilidad ante cualquier corte eléctrico. Mundos previos sin manifiesto no reciben una región por defecto. `everforge_start_region=false` permite comparar con spawn nativo.
+Un reinicio con creación incompleta deja `needs_review`: detener y revisar el registro y las copias de seguridad; no se reintenta ni reconstruye automáticamente. Nunca se repone automáticamente la plantilla. No hay transacción conjunta entre mapa, jugador y mod storage; estos tests comprueban reinicio limpio, no durabilidad ante cualquier corte eléctrico. Mundos previos sin manifiesto no reciben una región por defecto. `everforge_start_region=false` permite comparar con spawn nativo.
 
 ## Pruebas reproducibles
 
@@ -61,7 +61,7 @@ python3 tools/play_everforge.py --test-stage verify_players --port 49179
 # Reconectar ForgeAlice.
 ```
 
-Solo los mundos de integración cargan el mod de pruebas. Ese mod prepara perfiles/objetos desechables, comprueba aserciones y apaga el servidor. No usar esos nombres ni fixtures como una partida de juego normal. El launcher retira el enlace al mod de pruebas al abrir normalmente el mundo. Cada etapa informa `EVERFORGE_TEST_PASS` o falla con error; el límite de ejecución es 180 segundos.
+Solo los mundos de integración cargan el mod de pruebas. Ese mod prepara perfiles/objetos desechables, comprueba aserciones y apaga el servidor. No usar esos nombres ni fixtures como una partida de juego normal. El launcher retira el enlace al mod de pruebas al abrir normalmente el mundo. Cada etapa informa `EVERFORGE_TEST_PASS` o falla con error; el límite del arnés de integración es 360 segundos; la creación del campamento tiene un plazo de 180 segundos y búsquedas acotadas.
 
 Evidencia de la ejecución y límites concretos: `docs/everforge-runtime-results.md`.
 
@@ -70,7 +70,7 @@ Evidencia de la ejecución y límites concretos: `docs/everforge-runtime-results
 - Balance y protección contra farming son provisionales: deduplicación reciente por posición minada y límite de 0,5 s por actividad no impiden todas las granjas. Minar nodos colocados puede dar XP fuera de la ventana reciente; los IDs no son un historial infinito.
 - Forja acredita al último proveedor manual del input, conectado y cercano; no recompensa automatización, suministro anónimo ni jugadores desconectados. Mezclar proveedores en un mismo lote no reparte crédito.
 - Una fabricación múltiple dentro de 0,5 s se limita a una concesión; no hay recompensa por unidades de output ni craft predictivo. Combate exige daño atribuible al jugador; bajas ambientales sin esa fuente no cuentan.
-- El prototipo está probado con singlenode/seed 12345. No hay garantía para todos los seeds/mapgens; si el centro no tiene suelo seco, se informa y se pide otro mundo de desarrollo. No se aplana el bioma.
+- Se mantiene `singlenode`, con semillas libres o aleatorias. El campamento valida su huella antes de construir y busca posiciones alternativas; si un ancla está en océano, puede usar una vez el ancla terrestre nativa de la misma semilla. Si se agota el presupuesto, se registra el motivo y no se reintenta al cargar. Semillas y límites realmente comprobados: [validación multisemilla](everforge-worldgen-seeds.md). No se aplana el bioma.
 - Interfaz funcional inicial, español; faltan traducciones completas, revisión gráfica en distintas resoluciones y el árbol definitivo. Icono de yunque y logo de cabecera no se modificaron.
 
 Pruebas adicionales:

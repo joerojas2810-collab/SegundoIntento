@@ -1,0 +1,58 @@
+Luanti 5.17.0 (OSX)
+Using LuaJIT 2.1.1764270282
+Built by Clang 21.0
+Running on Darwin/25.5.0 arm64
+BUILD_TYPE=Release
+RUN_IN_PLACE=0
+USE_CURL=1
+USE_GETTEXT=1
+USE_SOUND=1
+STATIC_SHAREDIR="luanti.app/Contents/Resources"
+STATIC_LOCALEDIR="luanti.app/Contents/Resources/locale"
+
+World: /private/tmp/everforge-seeds-acceptance/reference/world-1793304335247057000
+Log: /private/tmp/everforge-seeds-acceptance/reference/server.log
+2026-10-29 17:05:37: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 12345 (Biome seed: 293737985876514017)
+2026-10-29 17:05:38: ACTION[Main]: [mcl_villages]: World was upgraded or is pristine.
+2026-10-29 17:05:38: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-29 17:05:38: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 17:05:38: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-29 17:05:38: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 17:05:38: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-29 17:05:38: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: bounded native stronghold preparation on Luanti 5.17.0 macOS ARM64; temporary execution hook, unchanged RNG
+2026-10-29 17:05:38: ACTION[Main]: [mcl_levelgen]: Preparing stronghold placement.  This may take a while.
+ _                   _   _ 
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-29 17:05:48: ACTION[Main]: World at [/private/tmp/everforge-seeds-acceptance/reference/world-1793304335247057000]
+2026-10-29 17:05:48: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:49700.
+2026-10-29 17:05:48: ACTION[Server]: [everforge_world_visuals] Everforge visual: ACTIVO; Roble: nodebox / everforge_world_visuals_leaves_oak.png; Cesped: everforge_world_visuals_grass_top.png; Generador: singlenode; mcl_levelgen=true
+2026-10-29 17:05:48: ACTION[Server]: Generating world spawn from (79,-128,2) to (127,255,50)
+2026-10-29 17:05:49: ACTION[Server]: [Everforge] REGION_SEARCH seed=12345 radius=4 max_candidates=1922 max_anchors=2
+2026-10-29 17:05:49: ACTION[Server]: Emerged 0/3600 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 17:05:49: ACTION[Server]: EVERFORGE_TEST_PASS: model: serialization, curves, points, purchase, dedupe, exploration, bounds
+2026-10-29 17:05:54: WARNING[Server]: Server: Maximum lag peaked at 3.46718 (steplen=0.05)
+2026-10-29 17:05:57: ACTION[Server]: Emerged 5/3600 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 17:05:57: ACTION[Server]: Emerged 5/3600 MapBlocks; 48/384 MapBlocks regenerated
+2026-10-29 17:05:58: ACTION[Server]: Emerged 469/3600 MapBlocks; 72/384 MapBlocks regenerated
+2026-10-29 17:05:59: ACTION[Server]: Emerged 469/3600 MapBlocks; 96/384 MapBlocks regenerated
+2026-10-29 17:06:00: ACTION[Server]: Emerged 471/3600 MapBlocks; 96/384 MapBlocks regenerated
+2026-10-29 17:06:01: ACTION[Server]: Emerged 1006/3600 MapBlocks; 96/384 MapBlocks regenerated
+2026-10-29 17:06:02: ACTION[Server]: Emerged 1008/3600 MapBlocks; 120/384 MapBlocks regenerated
+2026-10-29 17:06:03: ACTION[Server]: Emerged 1008/3600 MapBlocks; 168/384 MapBlocks regenerated
+2026-10-29 17:06:04: ACTION[Server]: Emerged 1784/3600 MapBlocks; 192/384 MapBlocks regenerated
+2026-10-29 17:06:05: ACTION[Server]: Emerged 2677/3600 MapBlocks; 216/384 MapBlocks regenerated
+2026-10-29 17:06:06: ACTION[Server]: Emerged 2678/3600 MapBlocks; 264/384 MapBlocks regenerated
+2026-10-29 17:06:07: ACTION[Server]: Emerged 2678/3600 MapBlocks; 312/384 MapBlocks regenerated
+2026-10-29 17:06:09: ACTION[Server]: Emerged 2680/3600 MapBlocks; 336/384 MapBlocks regenerated
+2026-10-29 17:06:15: WARNING[Server]: Server: Maximum lag peaked at 4.82887 (steplen=0.05)
+2026-10-29 17:06:15: ACTION[Server]: Emerged 2682/3600 MapBlocks; 336/384 MapBlocks regenerated
+2026-10-29 17:06:16: ACTION[Server]: [Everforge] REGION_SEARCH seed=12345 radius=12 max_candidates=1922 max_anchors=2
+2026-10-29 17:06:16: ACTION[Server]: Emerged 3600/3600 MapBlocks; 360/384 MapBlocks regenerated
+2026-10-29 17:06:17: ACTION[Server]: Completed regeneration of 384 MapBlocks
+2026-10-29 17:06:18: ACTION[Server]: [Everforge] REGION_READY {"arrival":{"x":103,"y":72,"z":41},"center":{"x":103,"y":72,"z":34},"components":{"beam":14,"bench":6,"bench_support":6,"campfire":1,"clearance":400,"courtyard_clearance":128,"floor":35,"foundation":25,"furnace":1,"hearth":9,"lamp_post":6,"lamp_support":2,"lantern":3,"path":21,"post":12,"roof":63,"workbench":1},"origin":{"x":103,"y":0,"z":26},"radius":10,"revision":3,"search_radius":12,"seed":"12345","site":{"attempts":18,"elapsed_seconds":33.791274999999999,"max_support_depth":3,"rejected":{"blocked_surface:mcl_lush_caves:moss":1,"node_metadata":2,"protected":3,"slope_over_3":11},"search_radius":12},"state":"ready","version":1}
+2026-10-29 17:06:18: ACTION[Server]: EVERFORGE_SEED_RESULT {"arrival":{"x":103,"y":71.5,"z":41},"biome":"DarkForest","center":{"x":103,"y":72,"z":34},"decoration_counts":{"field_stones":1,"foothill_stones":0,"forest_shrub":0,"mountain_stones":0},"decorations":1,"digest":"f868becaafd2d2a604613dbf67d13d03670c1891","origin":{"x":103,"y":0,"z":26},"seed":"12345","site":{"attempts":18,"elapsed_seconds":33.791274999999999,"max_support_depth":3,"rejected":{"blocked_surface:mcl_lush_caves:moss":1,"node_metadata":2,"protected":3,"slope_over_3":11},"search_radius":12},"stage":"seedtest","terrain":{"biomes":{"DarkForest":16},"max_y":86,"min_y":20,"mountain_samples":null,"water_samples":0},"terrain_digest":"045c62f8849f0644db13da86ce1000e657f4e74f"}
+2026-10-29 17:06:18: ACTION[Server]: EVERFORGE_TEST_PASS: seed: full camp, bounded supports, safe arrival, saved world unchanged
+2026-10-29 17:06:19: ACTION[Main]: Server: Shutting down

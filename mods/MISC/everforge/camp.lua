@@ -1,6 +1,7 @@
 -- SPDX-License-Identifier: GPL-3.0-or-later
 -- Only used during the first creation of a world, never on load/join/respawn.
-local C = {revision = 2}
+local C = {revision = 3}
+local site = dofile(core.get_modpath("everforge") .. "/camp_site.lua")
 local LOG = "mcl_trees:tree_oak"
 local WOOD = "mcl_trees:wood_oak"
 local STONE = "mcl_core:cobble"
@@ -48,6 +49,8 @@ function C.plan(center)
  return plan
 end
 function C.place(center)
+ local valid,reason=site.validate(center)
+ assert(valid,"Unsafe camp site before placement: "..tostring(reason))
  local plan=C.plan(center)
  -- Missing bundled resources must fail before the first block is placed.
  for _,op in ipairs(plan) do assert(core.registered_nodes[op.name],"Missing camp node: "..op.name) end
@@ -57,7 +60,8 @@ function C.place(center)
   local pos=vector.offset(center,x,y,z)
   local name=core.get_node(pos).name
   if core.get_item_group(name,"tree")>0 or core.get_item_group(name,"leaves")>0
-  or core.get_item_group(name,"huge_mushroom")>0 or core.get_item_group(name,"plant")>0 then
+  or core.get_item_group(name,"huge_mushroom")>0 or core.get_item_group(name,"plant")>0
+  or core.get_item_group(name,"double_plant")>0 or core.get_item_group(name,"top_snow")>0 then
    core.set_node(pos,{name="air"})
   end
  end end end
@@ -66,25 +70,36 @@ function C.place(center)
   core.set_node(op.pos,{name=op.name,param2=op.param2})
   final[core.hash_node_position(op.pos)]=op
  end
- -- Foundations descend to natural support, including sloped terrain.
- for _,op in pairs(final) do
-  if op.component=="foundation" or op.component=="floor" or op.component=="path" or op.component=="hearth" then
-   for dy=1,16 do
+ -- Stable order also fixes callback and support placement order across runs.
+ local ordered={}
+ for _,op in pairs(final) do ordered[#ordered+1]=op end
+ table.sort(ordered,function(a,b)
+  if a.pos.x~=b.pos.x then return a.pos.x<b.pos.x end
+  if a.pos.y~=b.pos.y then return a.pos.y<b.pos.y end
+  return a.pos.z<b.pos.z
+ end)
+ -- Every support was preflighted: no 16-block pillars or filling water/caves.
+ for _,op in ipairs(ordered) do
+  if op.component=="foundation" or op.component=="floor" or op.component=="path" or op.component=="hearth"
+   or op.component=="bench_support" or op.component=="lamp_support" then
+   local supported=false
+   for dy=1,3 do
     local p=vector.offset(op.pos,0,-dy,0)
-    local node=core.get_node(p)
-    local def=core.registered_nodes[node.name]
-    if def and def.walkable and core.get_item_group(node.name,"leaves")==0 and core.get_item_group(node.name,"tree")==0 then break end
+    local name=core.get_node(p).name
+    if site.natural(name) then supported=true;break end
+    assert(site.clearable(name),"Camp support changed after preflight")
     core.set_node(p,{name=BRICK})
    end
+   assert(supported,"Camp foundation must meet natural support")
   end
  end
  -- Initialize only the final stations, with native vectors and callbacks.
- for _,op in pairs(final) do
+ for _,op in ipairs(ordered) do
   local construct=core.registered_nodes[op.name].on_construct
   if construct then construct(op.pos) end
  end
  local counts={}
- for _,op in pairs(final) do
+ for _,op in ipairs(ordered) do
   assert(core.get_node(op.pos).name==op.name,"Camp placement mismatch: "..op.component)
   counts[op.component]=(counts[op.component] or 0)+1
  end

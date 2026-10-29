@@ -29,7 +29,7 @@ local function region_tests()
  if not r or r.state~="ready" then return false end
  local arrival=everforge.start_region.find_arrival()
  check(arrival and math.abs(arrival.x-r.center.x)<=r.radius,"safe arrival in region")
- if r.revision==2 then
+ if r.revision>=2 then
   check(arrival.x==r.arrival.x and arrival.z==r.arrival.z and arrival.y==r.center.y-.5,"ground-first courtyard arrival")
   local c=r.center
   local expected={
@@ -58,7 +58,7 @@ local function region_tests()
   core.set_node(marker,{name="mcl_core:goldblock"})
   core.get_meta(marker):set_string("everforge_test","player construction survives restart")
   store:set_string("center",core.write_json(r.center))
-  if r.revision==2 then
+  if r.revision>=2 then
    local edit=vector.offset(r.center,4,4,-4)
    core.set_node(edit,{name="mcl_core:goldblock"})
    core.get_meta(edit):set_string("player_edit","do not rebuild")
@@ -68,7 +68,7 @@ local function region_tests()
  elseif stage=="restart" or stage=="legacy" then
   check(store:get_string("center")==core.write_json(r.center),"same region after restart")
   check(core.get_node(marker).name=="mcl_core:goldblock","construction preserved")
-  if r.revision==2 then
+  if r.revision>=2 then
    local edit=vector.offset(r.center,4,4,-4)
    check(core.get_node(edit).name=="mcl_core:goldblock" and core.get_meta(edit):get_string("player_edit")=="do not rebuild","player modification of roof survives without regeneration")
   end
@@ -237,10 +237,18 @@ core.register_on_mods_loaded(function()
   elapsed=elapsed+dt
   if elapsed<1 then return end
   elapsed=0
+  if not executed and (stage=="seedtest" or stage=="seedrestart") then
+   local r=everforge.start_region and everforge.start_region.get()
+   if r and r.state=="needs_review" then error("EVERFORGE_TEST_FAIL: region needs review: "..core.write_json(r)) end
+   if r and r.state=="ready" then
+    executed=true
+    dofile(core.get_modpath("everforge_runtime_test").."/seedtest.lua")(stage,store,check,passed,stop)
+   end
+  end
   if not executed and (stage=="bootstrap" or stage=="restart" or stage=="legacy") then executed=region_tests() end
  end)
  -- Bounded smoke test: a hung generation must fail visibly.
- core.after(180,function() error("EVERFORGE_TEST_FAIL: runtime timeout") end)
+ core.after(360,function() error("EVERFORGE_TEST_FAIL: runtime timeout") end)
 end)
 
 core.register_on_shutdown(function()
@@ -252,3 +260,16 @@ core.register_on_shutdown(function()
   end
  end
 end)
+
+if stage=="seedlocate" then
+ core.register_on_mods_loaded(function() core.after(0,function()
+  local lg=mcl_levelgen
+  local dim=lg.get_dimension("mcl_levelgen:overworld")
+  for _,group in ipairs({{"StonyPeaks","JaggedPeaks","WindsweptHills"},{"Ocean"}}) do
+   local x,y,z=lg.locate_biome_spirally(dim.preset,0,128,0,4096,64,384,lg.make_biome_test(group),nil)
+   check(x,"stress biome located")
+   core.log("action","EVERFORGE_STRESS_ANCHOR "..core.write_json({biomes=group,x=x,y=y-dim.y_offset,z=-z-1}))
+  end
+  core.request_shutdown("Biome anchor discovery complete",false,0)
+ end) end)
+end

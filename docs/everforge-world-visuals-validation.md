@@ -1,5 +1,7 @@
 # Validación técnica de la apariencia única de Everforge — 29/10/2026
 
+Revisión posterior: [semillas libres, campamento y llegada segura](everforge-worldgen-seeds.md). La semilla `12345` de esta evidencia histórica no es un requisito del juego.
+
 Base integrada: rama remota `arena/77e5e496-segundointento`, commit `041600f46`, sobre `c2571110b`. Trabajo consolidado en `main`, sin crear otra rama ni alternativas visuales.
 
 ## Correcciones
@@ -31,7 +33,7 @@ Pasaron los cinco tests estáticos de assets/licencias/registro y **124 comproba
 Luanti **5.17.0**, Mineclonia **0.124.1**, macOS ARM64, `singlenode`, semilla `12345`, `mcl_levelgen_use_ffi=false`, servidor local sin ventana. No se abrieron mundos personales.
 
 ```sh
-python3 tools/play_everforge.py --data-dir /tmp/everforge-world-visuals-release --new --test-stage bootstrap --port 49281
+python3 tools/play_everforge.py --data-dir /tmp/everforge-world-visuals-release --new --seed 12345 --test-stage bootstrap --port 49281
 python3 tools/play_everforge.py --data-dir /tmp/everforge-world-visuals-release --test-stage restart --port 49281
 ```
 

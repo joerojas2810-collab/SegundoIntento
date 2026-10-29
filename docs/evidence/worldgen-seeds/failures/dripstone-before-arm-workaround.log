@@ -1,0 +1,54 @@
+Luanti 5.17.0 (OSX)
+Using LuaJIT 2.1.1764270282
+Built by Clang 21.0
+Running on Darwin/25.5.0 arm64
+BUILD_TYPE=Release
+RUN_IN_PLACE=0
+USE_CURL=1
+USE_GETTEXT=1
+USE_SOUND=1
+STATIC_SHAREDIR="luanti.app/Contents/Resources"
+STATIC_LOCALEDIR="luanti.app/Contents/Resources/locale"
+
+World: /private/tmp/everforge-seeds-frozen/engine-random/world-1793303816800916000
+Log: /private/tmp/everforge-seeds-frozen/engine-random/server.log
+2026-10-29 16:56:58: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 5022212097447892020 (Biome seed: 18057373455278478071)
+2026-10-29 16:56:58: ACTION[Main]: [mcl_villages]: World was upgraded or is pristine.
+2026-10-29 16:56:58: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-29 16:56:58: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:56:58: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-29 16:56:58: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:56:58: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-29 16:56:58: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: bounded native stronghold preparation on Luanti 5.17.0 macOS ARM64; temporary execution hook, unchanged RNG
+2026-10-29 16:56:59: ACTION[Main]: [mcl_levelgen]: Preparing stronghold placement.  This may take a while.
+ _                   _   _ 
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-29 16:57:05: ACTION[Main]: World at [/private/tmp/everforge-seeds-frozen/engine-random/world-1793303816800916000]
+2026-10-29 16:57:05: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:49578.
+2026-10-29 16:57:05: ACTION[Server]: [everforge_world_visuals] Everforge visual: ACTIVO; Roble: nodebox / everforge_world_visuals_leaves_oak.png; Cesped: everforge_world_visuals_grass_top.png; Generador: singlenode; mcl_levelgen=true
+2026-10-29 16:57:05: ACTION[Server]: Generating world spawn from (-24,-128,-25) to (24,255,23)
+2026-10-29 16:57:05: ACTION[Server]: [Everforge] REGION_SEARCH seed=5022212097447892020 radius=4 max_candidates=1922 max_anchors=2
+2026-10-29 16:57:05: ACTION[Server]: Emerged 0/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:57:06: ACTION[Server]: EVERFORGE_TEST_PASS: model: serialization, curves, points, purchase, dedupe, exploration, bounds
+2026-10-29 16:57:09: WARNING[Server]: Server: Maximum lag peaked at 2.29856 (steplen=0.05)
+2026-10-29 16:57:12: ACTION[Server]: Emerged 3/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:57:13: ACTION[Server]: Emerged 5/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:57:15: ACTION[Server]: Emerged 972/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:57:18: ACTION[Server]: Emerged 973/5400 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:57:19: ACTION[Server]: Emerged 975/5400 MapBlocks; 72/384 MapBlocks regenerated
+2026-10-29 16:57:20: ACTION[Server]: Emerged 975/5400 MapBlocks; 144/384 MapBlocks regenerated
+2026-10-29 16:57:20: ACTION[Main]: Server: Shutting down
+2026-10-29 16:57:24: ERROR[Main]: ServerError: AsyncErr: Runtime error from mod 'mcl_levelgen' in callback <async>(): .../Desktop/Everforge/mods/MAPGEN/mcl_levelgen/features.lua:650: attempt to compare number with nil
+2026-10-29 16:57:24: ERROR[Main]: stack traceback:
+2026-10-29 16:57:24: ERROR[Main]: 	.../Desktop/Everforge/mods/MAPGEN/mcl_levelgen/features.lua:650: in function 'get_block'
+2026-10-29 16:57:24: ERROR[Main]: 	...sktop/Everforge/mods/ITEMS/mcl_dripstone/lg_register.lua:50: in function 'air_water_or_lava_p'
+2026-10-29 16:57:24: ERROR[Main]: 	...sktop/Everforge/mods/ITEMS/mcl_dripstone/lg_register.lua:671: in function 'generate_large_dripstone'
+2026-10-29 16:57:24: ERROR[Main]: 	...sktop/Everforge/mods/ITEMS/mcl_dripstone/lg_register.lua:748: in function 'place'
+2026-10-29 16:57:24: ERROR[Main]: 	.../Desktop/Everforge/mods/MAPGEN/mcl_levelgen/features.lua:1223: in function 'place_one_feature'
+2026-10-29 16:57:24: ERROR[Main]: 	.../Desktop/Everforge/mods/MAPGEN/mcl_levelgen/features.lua:1302: in function 'process_features_1'
+2026-10-29 16:57:24: ERROR[Main]: 	.../Desktop/Everforge/mods/MAPGEN/mcl_levelgen/features.lua:459: in function 'process_features'
+2026-10-29 16:57:24: ERROR[Main]: 	...p/Everforge/mods/MAPGEN/mcl_levelgen/post_processing.lua:1488: in function 'func'
+2026-10-29 16:57:24: ERROR[Main]: 	...ads/luanti.app/Contents/Resources/builtin/async/game.lua:9: in function <...ads/luanti.app/Contents/Resources/builtin/async/game.lua:8>

@@ -501,6 +501,16 @@ local function rtree_index_1 (coords, leaf, distance, tree)
 	return leaf, distance
 end
 
+-- Luanti 5.17.0/macOS ARM64: recursive JIT tracing here can make cold
+-- stronghold preparation exceed minutes (Everforge seed QA stack traces).
+-- Interpret only this coordinator-side tree walk; feature workers keep JIT,
+-- and the tree, distance comparisons, traversal order and RNG are unchanged.
+if not mcl_levelgen.load_feature_environment and core.global_exists("jit")
+	and jit.os == "OSX" and jit.arch == "arm64"
+	and (core.get_version().string or ""):match("^5%.17%.0") then
+	jit.off(rtree_index_1)
+end
+
 local function rtree_index_closest (coords, tree)
 	local leaf, distance = nil, huge
 	if tree.last_result then

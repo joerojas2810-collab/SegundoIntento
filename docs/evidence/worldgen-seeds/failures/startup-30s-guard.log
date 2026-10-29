@@ -1,0 +1,30 @@
+Luanti 5.17.0 (OSX)
+Using LuaJIT 2.1.1764270282
+Built by Clang 21.0
+Running on Darwin/25.5.0 arm64
+BUILD_TYPE=Release
+RUN_IN_PLACE=0
+USE_CURL=1
+USE_GETTEXT=1
+USE_SOUND=1
+STATIC_SHAREDIR="luanti.app/Contents/Resources"
+STATIC_LOCALEDIR="luanti.app/Contents/Resources/locale"
+
+World: /private/tmp/everforge-seeds-frozen/random-b/world-1793303749357046000
+Log: /private/tmp/everforge-seeds-frozen/random-b/server.log
+2026-10-29 16:55:51: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 6278349997176465666 (Biome seed: 2366759618036285414)
+2026-10-29 16:55:52: ACTION[Main]: [mcl_villages]: World was upgraded or is pristine.
+2026-10-29 16:55:52: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-29 16:55:52: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:55:52: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-29 16:55:52: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:55:52: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-29 16:55:52: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: bounded native stronghold preparation on Luanti 5.17.0 macOS ARM64; temporary execution hook, unchanged RNG
+2026-10-29 16:55:52: ACTION[Main]: [mcl_levelgen]: Preparing stronghold placement.  This may take a while.
+2026-10-29 16:56:22: ACTION[Main]: Server: Shutting down
+2026-10-29 16:56:23: ERROR[Main]: ModError: Runtime error from mod 'mcl_levelgen' in callback on_mods_loaded(): Everforge: native stronghold preparation exceeded 30s; see server log (seed=6278349997176465666)
+2026-10-29 16:56:23: ERROR[Main]: stack traceback:
+2026-10-29 16:56:23: ERROR[Main]: 	[C]: in function 'error'
+2026-10-29 16:56:23: ERROR[Main]: 	...esktop/Everforge/mods/MISC/everforge/worldgen_compat.lua:22: in function 'prime_concentric_placement'
+2026-10-29 16:56:23: ERROR[Main]: 	...esktop/Everforge/mods/MAPGEN/mcl_levelgen/stronghold.lua:243: in function <...esktop/Everforge/mods/MAPGEN/mcl_levelgen/stronghold.lua:242>
+2026-10-29 16:56:23: ERROR[Main]: 	...uanti.app/Contents/Resources/builtin/common/register.lua:27: in function <...uanti.app/Contents/Resources/builtin/common/register.lua:13>

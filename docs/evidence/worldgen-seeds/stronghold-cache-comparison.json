@@ -1,0 +1,22 @@
+[
+  {
+    "seed": "12345",
+    "before": {
+      "concentric_ring_placement,12345,mcl_levelgen:strongholds": "c07581d092e0b946d7a714cea96f9540641d6f792c4bf745f80f02a81e098f07"
+    },
+    "after": {
+      "concentric_ring_placement,12345,mcl_levelgen:strongholds": "c07581d092e0b946d7a714cea96f9540641d6f792c4bf745f80f02a81e098f07"
+    },
+    "identical": true
+  },
+  {
+    "seed": "-1",
+    "before": {
+      "concentric_ring_placement,18446744073709551615,mcl_levelgen:strongholds": "9f3e3801a9be2064cdeec61a8325702687da3384771de90d942ae9d5f08ab4a3"
+    },
+    "after": {
+      "concentric_ring_placement,18446744073709551615,mcl_levelgen:strongholds": "9f3e3801a9be2064cdeec61a8325702687da3384771de90d942ae9d5f08ab4a3"
+    },
+    "identical": true
+  }
+]

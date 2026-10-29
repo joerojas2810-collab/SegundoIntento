@@ -684,6 +684,13 @@ local function generate_large_dripstone (parms, rng, wind)
 	end
 end
 
+-- Same ARM LuaJIT workaround as mcl_terrain_features.generate_dripstone.
+-- https://github.com/luanti-org/luanti/issues/15983
+-- Keep native geometry and RNG; only interpret this nested numeric loop.
+if core.global_exists("jit") and (jit.arch == "arm64" or jit.arch == "arm") then
+	jit.off(generate_large_dripstone)
+end
+
 local function large_dripstone_place (_, x, y, z, cfg, rng)
 	dripstone_rng:reseed (rng:next_long ())
 	local rng = dripstone_rng

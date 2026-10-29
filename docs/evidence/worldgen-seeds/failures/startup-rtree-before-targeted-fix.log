@@ -1,0 +1,49 @@
+Luanti 5.17.0 (OSX)
+Using LuaJIT 2.1.1764270282
+Built by Clang 21.0
+Running on Darwin/25.5.0 arm64
+BUILD_TYPE=Release
+RUN_IN_PLACE=0
+USE_CURL=1
+USE_GETTEXT=1
+USE_SOUND=1
+STATIC_SHAREDIR="luanti.app/Contents/Resources"
+STATIC_LOCALEDIR="luanti.app/Contents/Resources/locale"
+
+World: /private/tmp/everforge-seeds-unlocked/stress-water/world-1793304939218010000
+Log: /private/tmp/everforge-seeds-unlocked/stress-water/server.log
+2026-10-29 17:15:41: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 12345 (Biome seed: 293737985876514017)
+2026-10-29 17:15:42: ACTION[Main]: [mcl_villages]: World was upgraded or is pristine.
+2026-10-29 17:15:42: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-29 17:15:42: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 17:15:42: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-29 17:15:42: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 17:15:42: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-29 17:15:42: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: bounded native stronghold preparation on Luanti 5.17.0 macOS ARM64; temporary execution hook, unchanged RNG
+2026-10-29 17:15:42: ACTION[Main]: [mcl_levelgen]: Preparing stronghold placement.  This may take a while.
+2026-10-29 17:17:12: ERROR[Main]: [Everforge] STRONGHOLD_TIMEOUT seed=12345
+stack traceback:
+	...esktop/Everforge/mods/MISC/everforge/worldgen_compat.lua:16: in function <...esktop/Everforge/mods/MISC/everforge/worldgen_compat.lua:14>
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:462: in function 'distance_to_value'
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:477: in function 'distance_total'
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:491: in function 'rtree_index_1'
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:497: in function 'rtree_index_1'
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:497: in function 'rtree_index_1'
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:497: in function 'rtree_index_1'
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:497: in function 'rtree_index_1'
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:510: in function 'rtree_index_closest'
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:1657: in function 'index_biomes_cached'
+	...as/Desktop/Everforge/mods/MAPGEN/mcl_levelgen/biomes.lua:6982: in function 'locate_biome_in_area'
+	...esktop/Everforge/mods/MAPGEN/mcl_levelgen/structures.lua:472: in function 'generate_stronghold_positions'
+	...esktop/Everforge/mods/MAPGEN/mcl_levelgen/structures.lua:380: in function <...esktop/Everforge/mods/MAPGEN/mcl_levelgen/structures.lua:367>
+	[C]: in function 'pcall'
+	...esktop/Everforge/mods/MISC/everforge/worldgen_compat.lua:21: in function 'prime_concentric_placement'
+	...esktop/Everforge/mods/MAPGEN/mcl_levelgen/stronghold.lua:243: in function <...esktop/Everforge/mods/MAPGEN/mcl_levelgen/stronghold.lua:242>
+	...uanti.app/Contents/Resources/builtin/common/register.lua:27: in function <...uanti.app/Contents/Resources/builtin/common/register.lua:13>
+2026-10-29 17:17:12: ACTION[Main]: Server: Shutting down
+2026-10-29 17:17:13: ERROR[Main]: ModError: Runtime error from mod 'mcl_levelgen' in callback on_mods_loaded(): Everforge: native stronghold preparation exceeded 90s; see server log (seed=12345)
+2026-10-29 17:17:13: ERROR[Main]: stack traceback:
+2026-10-29 17:17:13: ERROR[Main]: 	[C]: in function 'error'
+2026-10-29 17:17:13: ERROR[Main]: 	...esktop/Everforge/mods/MISC/everforge/worldgen_compat.lua:23: in function 'prime_concentric_placement'
+2026-10-29 17:17:13: ERROR[Main]: 	...esktop/Everforge/mods/MAPGEN/mcl_levelgen/stronghold.lua:243: in function <...esktop/Everforge/mods/MAPGEN/mcl_levelgen/stronghold.lua:242>
+2026-10-29 17:17:13: ERROR[Main]: 	...uanti.app/Contents/Resources/builtin/common/register.lua:27: in function <...uanti.app/Contents/Resources/builtin/common/register.lua:13>

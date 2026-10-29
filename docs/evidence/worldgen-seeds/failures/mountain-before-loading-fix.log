@@ -1,0 +1,58 @@
+Luanti 5.17.0 (OSX)
+Using LuaJIT 2.1.1764270282
+Built by Clang 21.0
+Running on Darwin/25.5.0 arm64
+BUILD_TYPE=Release
+RUN_IN_PLACE=0
+USE_CURL=1
+USE_GETTEXT=1
+USE_SOUND=1
+STATIC_SHAREDIR="luanti.app/Contents/Resources"
+STATIC_LOCALEDIR="luanti.app/Contents/Resources/locale"
+
+World: /private/tmp/everforge-seeds-final-stress/mountain-twin/world-1793301148432860000
+Log: /private/tmp/everforge-seeds-final-stress/mountain-twin/server.log
+2026-10-29 16:12:30: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 12345 (Biome seed: 293737985876514017)
+2026-10-29 16:12:30: ACTION[Main]: [mcl_villages]: World was upgraded or is pristine.
+2026-10-29 16:12:30: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-29 16:12:30: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:12:30: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-29 16:12:30: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:12:30: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-29 16:12:30: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: stronghold ring loop interpreted on Luanti 5.17.0 macOS ARM64; RNG and generation rules unchanged
+2026-10-29 16:12:30: ACTION[Main]: [mcl_levelgen]: Preparing stronghold placement.  This may take a while.
+ _                   _   _
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-29 16:12:36: ACTION[Main]: World at [/private/tmp/everforge-seeds-final-stress/mountain-twin/world-1793301148432860000]
+2026-10-29 16:12:36: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:49352.
+2026-10-29 16:12:36: ACTION[Server]: [everforge_world_visuals] Everforge visual: ACTIVO; Roble: nodebox / everforge_world_visuals_leaves_oak.png; Cesped: everforge_world_visuals_grass_top.png; Generador: singlenode; mcl_levelgen=true
+2026-10-29 16:12:37: ACTION[Server]: Generating world spawn from (-408,-128,167) to (-360,255,215)
+2026-10-29 16:12:37: ACTION[Server]: [Everforge] REGION_SEARCH seed=12345 radius=12 max_candidates=961
+2026-10-29 16:12:37: ACTION[Server]: Emerged 0/3600 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:12:37: ACTION[Server]: EVERFORGE_TEST_PASS: model: serialization, curves, points, purchase, dedupe, exploration, bounds
+2026-10-29 16:12:41: WARNING[Server]: Server: Maximum lag peaked at 2.14117 (steplen=0.05)
+2026-10-29 16:12:43: ACTION[Server]: Emerged 2/3600 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:12:44: ACTION[Server]: Emerged 5/3600 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 16:12:46: ACTION[Server]: Emerged 472/3600 MapBlocks; 72/384 MapBlocks regenerated
+2026-10-29 16:12:47: ACTION[Server]: Emerged 472/3600 MapBlocks; 96/384 MapBlocks regenerated
+2026-10-29 16:12:48: ACTION[Server]: Emerged 1005/3600 MapBlocks; 96/384 MapBlocks regenerated
+2026-10-29 16:12:49: ACTION[Server]: Emerged 1006/3600 MapBlocks; 96/384 MapBlocks regenerated
+2026-10-29 16:12:52: ACTION[Server]: Emerged 1008/3600 MapBlocks; 168/384 MapBlocks regenerated
+2026-10-29 16:12:53: ACTION[Server]: Emerged 1008/3600 MapBlocks; 192/384 MapBlocks regenerated
+2026-10-29 16:12:54: ACTION[Server]: Emerged 1784/3600 MapBlocks; 264/384 MapBlocks regenerated
+2026-10-29 16:12:54: ACTION[Server]: Emerged 1784/3600 MapBlocks; 336/384 MapBlocks regenerated
+2026-10-29 16:12:55: ACTION[Server]: Completed regeneration of 384 MapBlocks
+2026-10-29 16:13:15: ACTION[Server]: [Everforge] REGION_SEARCH seed=12345 radius=28 max_candidates=961
+2026-10-29 16:13:29: ACTION[Server]: [Everforge] REGION_SEARCH seed=12345 radius=60 max_candidates=961
+2026-10-29 16:13:59: ERROR[Server]: [Everforge] REGION_FAILED seed=12345 {"attempts":961,"elapsed_seconds":88.323223999999996,"reason":"no safe footprint within 60 nodes of native spawn","rejected":{"blocked_surface:ignore":426,"blocked_surface:mcl_core:ice":60,"blocked_surface:mcl_core:lava_flowing":1,"blocked_surface:mcl_core:water_flowing":4,"blocked_surface:mcl_core:water_source":434,"slope_over_3":36}}
+2026-10-29 16:13:59: ACTION[Main]: Server: Shutting down
+2026-10-29 16:14:00: ERROR[Main]: ServerError: AsyncErr: Lua: Runtime error from mod '??' in callback environment_Step(): .../Desktop/Everforge/tools/everforge_runtime_test/init.lua:242: EVERFORGE_TEST_FAIL: region needs review: {"center":{"x":-384,"y":0,"z":191},"failure":{"attempts":961,
+2026-10-29 16:14:00: ERROR[Main]: "elapsed_seconds":88.323223999999996,"reason":"no safe footprint within 60 nodes of native spawn","rejected":{"blocked_surface:ignore":426,"blocked_surface:mcl_core:ice":60,"blocked_surface:mcl_core:lava_flowing":1,"blocked_surface:mcl_core:water_flowing":
+2026-10-29 16:14:00: ERROR[Main]: 4,"blocked_surface:mcl_core:water_source":434,"slope_over_3":36}},"origin":{"x":-384,"y":0,"z":191},"radius":10,"search_radius":60,"seed":"12345","state":"needs_review","version":1}
+2026-10-29 16:14:00: ERROR[Main]: stack traceback:
+2026-10-29 16:14:00: ERROR[Main]: 	[C]: in function 'error'
+2026-10-29 16:14:00: ERROR[Main]: 	.../Desktop/Everforge/tools/everforge_runtime_test/init.lua:242: in function <.../Desktop/Everforge/tools/everforge_runtime_test/init.lua:236>
+2026-10-29 16:14:00: ERROR[Main]: 	...uanti.app/Contents/Resources/builtin/common/register.lua:27: in function <...uanti.app/Contents/Resources/builtin/common/register.lua:13>

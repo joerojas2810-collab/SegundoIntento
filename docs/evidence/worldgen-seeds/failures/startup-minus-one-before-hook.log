@@ -1,0 +1,33 @@
+Luanti 5.17.0 (OSX)
+Using LuaJIT 2.1.1764270282
+Built by Clang 21.0
+Running on Darwin/25.5.0 arm64
+BUILD_TYPE=Release
+RUN_IN_PLACE=0
+USE_CURL=1
+USE_GETTEXT=1
+USE_SOUND=1
+STATIC_SHAREDIR="luanti.app/Contents/Resources"
+STATIC_LOCALEDIR="luanti.app/Contents/Resources/locale"
+
+World: /private/tmp/everforge-seeds-release/negative/world-1793301971459178000
+Log: /private/tmp/everforge-seeds-release/negative/server.log
+2026-10-29 16:26:13: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 18446744073709551615 (Biome seed: 6759447113877070610)
+2026-10-29 16:26:14: ACTION[Main]: [mcl_villages]: World was upgraded or is pristine.
+2026-10-29 16:26:14: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-29 16:26:14: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:26:14: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-29 16:26:14: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 16:26:14: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-29 16:26:14: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: stronghold ring loop interpreted on Luanti 5.17.0 macOS ARM64; RNG and generation rules unchanged
+2026-10-29 16:26:14: ACTION[Main]: [mcl_levelgen]: Preparing stronghold placement.  This may take a while.
+INFO: signal_handler(): got SIGTERM, shutting down.
+ _                   _   _
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-29 16:38:05: ACTION[Main]: World at [/private/tmp/everforge-seeds-release/negative/world-1793301971459178000]
+2026-10-29 16:38:05: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:49403.
+2026-10-29 16:38:05: ACTION[Server]: [everforge_world_visuals] Everforge visual: ACTIVO; Roble: nodebox / everforge_world_visuals_leaves_oak.png; Cesped: everforge_world_visuals_grass_top.png; Generador: singlenode; mcl_levelgen=true
+2026-10-29 16:38:05: ACTION[Main]: Server: Shutting down

@@ -1494,4 +1494,5 @@ dofile(core.get_modpath(modname) .. "/ui_probe.lua")(function(player)
 	return waila_enabled(player), waila_suppressed[player:get_player_name()] ~= nil
 end)
 
+dofile(core.get_modpath(modname) .. "/worldgen_compat.lua")
 dofile(core.get_modpath(modname) .. "/start_region.lua")
