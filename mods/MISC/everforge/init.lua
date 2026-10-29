@@ -1441,10 +1441,8 @@ core.register_abm({
 	end,
 })
 
--- Register native levelgen features for mineral deposits and both dungeon types.
-if mcl_vars.enable_mcl_levelgen then
- mcl_levelgen.register_levelgen_script(core.get_modpath(modname) .. "/world_features.lua")
-end
+-- Load the isolated Extra Structures 1.4.0 to Mineclonia levelgen port.
+dofile(core.get_modpath(modname) .. "/extra_structures.lua")
 
 local function count_group_nodes(group)
 	local count = 0
