@@ -1,0 +1,197 @@
+{
+  "repository": "https://github.com/MysticTempest/REFI_Textures",
+  "revision": "33f1f719930d1d202beaa5fa6251c26d3a711149",
+  "license": "CC-BY-SA-4.0",
+  "assets": [
+    {
+      "file": "everforge_world_visuals_leaves_oak.png",
+      "upstream_path": "textures/default_mcl_core/trees/default_leaves.png",
+      "git_blob_sha1": "435da07231d2c908b95e70370efbec514f5ea6a4",
+      "sha256": "1178b613e7f7b307ac88f561f7f10456dc78eba39d9513d4c4fe5ab99b1f06f9",
+      "bytes": 251,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_jungle.png",
+      "upstream_path": "textures/default_mcl_core/trees/default_jungleleaves.png",
+      "git_blob_sha1": "600eaec6092554a068323a363e21f4a2e754f859",
+      "sha256": "4ab5bf66fa1032d14c15f567b6ffa1679e21e843a9906f7847ac2cddfd016127",
+      "bytes": 264,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_acacia.png",
+      "upstream_path": "textures/default_mcl_core/trees/default_acacia_leaves.png",
+      "git_blob_sha1": "b8df5020d0256025bc941e4d41c57d50a4a9370a",
+      "sha256": "00422019f89e094efcd109a771c45aa5ae4ac9e20a3a1332f2552e2ef0c44ddb",
+      "bytes": 260,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_dark_oak.png",
+      "upstream_path": "textures/default_mcl_core/trees/mcl_core_leaves_big_oak.png",
+      "git_blob_sha1": "ff2b2f664a1f0ddd98c4aaf88d1201eb06ab0687",
+      "sha256": "3be31b3815e9765171d4b4c70cc6a3b08bcd0a391ed933f2cefef1c7ad1ebcc9",
+      "bytes": 249,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_birch.png",
+      "upstream_path": "textures/default_mcl_core/trees/mcl_core_leaves_birch.png",
+      "git_blob_sha1": "669b4fd3c6d0ef2afead4d88c961a8070911c359",
+      "sha256": "208a3f0f5ac6deab369cf7e86d1a49b5a0dcf22f9af1b30997061ef4107e9593",
+      "bytes": 259,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_spruce.png",
+      "upstream_path": "textures/default_mcl_core/trees/mcl_core_leaves_spruce.png",
+      "git_blob_sha1": "22509eff2f59dd06fe4339773a3130994e631af9",
+      "sha256": "48fb82508019c018f4af53b8a21d1e4873db2964b24312e771313329af57d03a",
+      "bytes": 254,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_mangrove.png",
+      "upstream_path": "textures/mcl_wild_update/mcl_mangrove_leaves.png",
+      "git_blob_sha1": "1918cdec1fc629ed76e5a7cee033be134a0421dd",
+      "sha256": "37a26657001778b6dc34ca25323644d5f9af8a81c12c236685e0db6687cd9d18",
+      "bytes": 627,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_cherry.png",
+      "upstream_path": "textures/mcl_cherry_blossom/mcl_cherry_blossom_leaves.png",
+      "git_blob_sha1": "9ba7f8739ff0f81ae9fb2c76feae31784236e1da",
+      "sha256": "03b65df3f80b8838894ebafa9a44ecff1fdf150910dbd8f4358253a8f0656246",
+      "bytes": 757,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_pale_oak.png",
+      "upstream_path": "textures/mcl_pale_oak/mcl_pale_oak_leaves.png",
+      "git_blob_sha1": "dca21ef2a2ac5fb4840735d9d9da4e0270d8a022",
+      "sha256": "3c3115b31b97a67a0a2bf3b433af671a178b2384251ab213226f9225031f0026",
+      "bytes": 260,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_azalea.png",
+      "upstream_path": "textures/mcl_lush_caves/mcl_lush_caves_azalea_leaves.png",
+      "git_blob_sha1": "6ecc9d00ee95156054ce174e87a22ac36167fe7e",
+      "sha256": "84979d696be104013f7c239dd28f70d67821dc2b99e5d35beae45802cff68d97",
+      "bytes": 556,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaves_azalea_flowering.png",
+      "upstream_path": "textures/mcl_lush_caves/mcl_lush_caves_azalea_leaves_flowering.png",
+      "git_blob_sha1": "23824e9bcec9d473ece77d41511fb7fa7933b530",
+      "sha256": "c88415a9f474ab1161255daa9a43b34832d553998a0db8f0892fc67378b1832d",
+      "bytes": 534,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_grass_top.png",
+      "upstream_path": "textures/default_mcl_core/soil/mcl_core_grass_block_top.png",
+      "git_blob_sha1": "f6dc1dc686c44af0c0e8139b2130dcd33a3da8b1",
+      "sha256": "71530f2a4192070ddf1596cf9c109e8a0fd50fc3087256d08ddad4bd2770acb3",
+      "bytes": 264,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_grass_side_overlay.png",
+      "upstream_path": "textures/default_mcl_core/soil/mcl_core_grass_block_side_overlay.png",
+      "git_blob_sha1": "2dc9efdd861ae88d3728631b7d9e36dfc32fa294",
+      "sha256": "b0aa8380b6bf236feed45e329a4bc355cabaa72f670c9cd4e7f838ba239b9e7d",
+      "bytes": 177,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_podzol_top.png",
+      "upstream_path": "textures/default_mcl_core/soil/mcl_core_dirt_podzol_top.png",
+      "git_blob_sha1": "f6baa877543bdf4a7770619850744cb33d32c885",
+      "sha256": "e41469aac2f09d6f7947544b0e18c3c2850277b5b1da9b155b6632533cee70d9",
+      "bytes": 456,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_podzol_side.png",
+      "upstream_path": "textures/default_mcl_core/soil/mcl_core_dirt_podzol_side.png",
+      "git_blob_sha1": "8d5641aa4964906ec51a3f64fba5b9f821c89220",
+      "sha256": "929afe9f70ce3719c4265d81d845f63133666cc873d36516fd26bd48eb36ce18",
+      "bytes": 640,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_tallgrass.png",
+      "upstream_path": "textures/flowers_mcl_flowers/mcl_flowers_tallgrass.png",
+      "git_blob_sha1": "a3d38709bf18384d3ecddb301ef50edb2a807696",
+      "sha256": "fd8b93d8eab1b5b0dc84c2efe74b5e40d714752669e2245e619457a1fe380d91",
+      "bytes": 222,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_fern.png",
+      "upstream_path": "textures/flowers_mcl_flowers/mcl_flowers_fern.png",
+      "git_blob_sha1": "4d76b16ffe8ccb26bba952623149f86fc5b55fd0",
+      "sha256": "c5da5b5be2dfce0fcb662283f3ef91e738ffe0eee85003c26ac7398611b63b72",
+      "bytes": 170,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_bush.png",
+      "upstream_path": "textures/flowers_mcl_flowers/mcl_flowers_bush.png",
+      "git_blob_sha1": "f7208acaf769157612f7c5c3539e58ed291e8d92",
+      "sha256": "d89fcbca8d9b3ba0481d347d8d7a232635bae309b507f756b287e9aff2349bf6",
+      "bytes": 278,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    },
+    {
+      "file": "everforge_world_visuals_leaf_litter.png",
+      "upstream_path": "textures/flowers_mcl_flowers/mcl_flowers_leaf_litter.png",
+      "git_blob_sha1": "5747db083e5b90cc3c4908481ee0a9c59f3044bc",
+      "sha256": "5bce8c29abf0f1365a9a5ee18372f7e8da3ee3a0d011ff6b4fd0dd661b59e16c",
+      "bytes": 292,
+      "width": 16,
+      "height": 16,
+      "color_type": 6
+    }
+  ]
+}

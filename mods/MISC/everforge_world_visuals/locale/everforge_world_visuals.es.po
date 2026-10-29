@@ -1,0 +1,18 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Field Stone Cluster"
+msgstr "Conjunto de piedras de campo"
+
+msgid "Foothill Stone Cluster"
+msgstr "Conjunto de piedras de estribación"
+
+msgid "Mountain Stone Cluster"
+msgstr "Conjunto de piedras de montaña"
+
+msgid "Forest Shrub"
+msgstr "Arbusto de bosque"
