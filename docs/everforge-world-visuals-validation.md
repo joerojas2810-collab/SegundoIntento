@@ -63,3 +63,11 @@ En el Mac, después de actualizar y reiniciar Luanti:
 6. Anotar resolución, distancia de visión, opciones de hojas, FPS/frametime y tiempo de carga en bosque denso; probar también cliente multijugador actualizado.
 
 Enviar capturas reales de estos puntos antes de decidir si esta mejora basta o se continúa trabajando árboles, follaje, rocas y texturas. No hay capturas simuladas ni certificación de FPS.
+
+## Diagnóstico cuando no se perciben cambios
+
+Comando dentro de la partida: `/everforge_visuals`. Es de solo lectura y muestra si las definiciones finales conservan las hojas y el césped de Everforge, el generador y el número de decoraciones en un entorno de 24 bloques. También deja el estado en el registro al iniciar. `ACTIVO` confirma definiciones aplicadas, no calidad visual ni comportamiento del renderizador del cliente. Cero decoraciones cercanas es posible en terreno antiguo o biomas no elegibles.
+
+Se comprobó en Luanti el diagnóstico `ACTIVO`, roble `nodebox` con `everforge_world_visuals_leaves_oak.png` y césped `everforge_world_visuals_grass_top.png`. Pasaron 125 comprobaciones ejecutables. Se corrigió además el test de reinicio para comparar las posiciones por tipo, en vez del texto de serialización de una tabla (el orden de claves no es estable); las posiciones reales siguen siendo las mismas. Evidencia: [diagnóstico y reinicio](evidence/world-visuals/diagnostic-restart.log).
+
+La entrega conserva la estructura de los árboles y tiene decoración muy dispersa. Si el diagnóstico está activo y las capturas siguen pareciendo iguales, falta una mejora visual suficiente; no se debe atribuir automáticamente a que el usuario no generó terreno nuevo. Revisar capturas de follaje y suelo antes de decidir el siguiente ajuste sobre la misma apariencia.

@@ -212,3 +212,47 @@ if mcl_vars.enable_mcl_levelgen then
 end
 
 core.register_on_mods_loaded(install_foliage_visuals)
+
+-- Read-only diagnostic: inspect the final definitions, including later overrides.
+local function visual_status(player_name)
+ local leaf = core.registered_nodes["mcl_trees:leaves_oak"] or {}
+ local grass = core.registered_nodes["mcl_core:dirt_with_grass"] or {}
+ local function first_tile(def)
+  local tile = def.tiles and def.tiles[1]
+  return type(tile) == "table" and tile.name or tostring(tile)
+ end
+ local active = leaf.drawtype == "nodebox"
+  and first_tile(leaf) == texture("leaves_oak")
+  and first_tile(grass) == texture("grass_top")
+ local lines = {
+  active and "Everforge visual: ACTIVO" or "Everforge visual: DEFINICIONES ALTERADAS O INCOMPLETAS",
+  "Roble: " .. tostring(leaf.drawtype) .. " / " .. first_tile(leaf),
+  "Cesped: " .. first_tile(grass),
+  "Generador: " .. tostring(core.get_mapgen_setting("mg_name"))
+   .. "; mcl_levelgen=" .. tostring(mcl_vars.enable_mcl_levelgen),
+ }
+ local player = player_name and core.get_player_by_name(player_name)
+ local pos = player and player:get_pos()
+ if pos then
+  local p = vector.round(pos)
+  local minp, maxp = vector.offset(p,-24,-16,-24), vector.offset(p,24,16,24)
+  local shrubs = core.find_nodes_in_area(minp,maxp,{modname..":forest_shrub"})
+  local stones = core.find_nodes_in_area(minp,maxp,{
+   modname..":field_stones",modname..":foothill_stones",modname..":mountain_stones",
+  })
+  lines[#lines+1] = "Cerca (24 bloques): arbustos=" .. #shrubs .. "; piedras=" .. #stones
+  lines[#lines+1] = "Cero decoraciones no implica fallo: solo aparecen en terreno nuevo y biomas elegibles."
+ end
+ return active, table.concat(lines,"\n")
+end
+core.register_chatcommand("everforge_visuals", {
+ description = "Diagnostico de solo lectura de la apariencia Everforge",
+ func = function(name) local _,status=visual_status(name); return true,status end,
+})
+core.register_on_mods_loaded(function()
+ -- Read after all mods-loaded callbacks, without changing any world nodes.
+ core.after(0, function()
+  local _,status=visual_status()
+  core.log("action", "[everforge_world_visuals] " .. status:gsub("\n", "; "))
+ end)
+end)

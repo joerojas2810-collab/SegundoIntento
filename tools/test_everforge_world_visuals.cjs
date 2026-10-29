@@ -15,8 +15,8 @@ local checks=0
 local function check(v) assert(v); checks=checks+1 end
 local ids={} local nextid=0
 local function cid(n) if not ids[n] then nextid=nextid+1; ids[n]=nextid end return ids[n] end
-local nodes={} local callbacks={}
-core={get_content_id=cid,registered_nodes=nodes,get_current_modname=function() return 'everforge_world_visuals' end,
+local nodes={} local callbacks={} local commands={}
+core={get_content_id=cid,registered_nodes=nodes,register_chatcommand=function(n,d) commands[n]=d end,after=function() end,get_current_modname=function() return 'everforge_world_visuals' end,
 get_modpath=function() return '${dir.slice(0,-1)}' end,get_translator=function() return function(s) return s end end,
 register_node=function(n,d) nodes[n]=d end,override_item=function(n,d) for k,v in pairs(d) do nodes[n][k]=v end end,
 register_on_mods_loaded=function(f) callbacks[#callbacks+1]=f end}
@@ -83,6 +83,7 @@ for _,n in ipairs({'mcl_trees:leaves_oak','mcl_trees:leaves_oak_orphan'}) do
  for _,key in ipairs({'walkable','drop','paramtype2','palette','waving','on_timer'}) do check(nodes[n][key]==original[key]) end
  check(nodes[n].groups.leaves==1 and nodes[n].collision_box.fixed[1]==-.5 and nodes[n].selection_box.fixed[6]==.5)
 end
+check(commands.everforge_visuals~=nil)
 print('PASS '..checks..' world visual behavior checks using actual biome definitions and generate_feature')
 `;
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'everforge-visuals-'));

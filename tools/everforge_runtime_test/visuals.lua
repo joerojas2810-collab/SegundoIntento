@@ -2,6 +2,11 @@
 -- Disposable world integration: real feature output and reload invariance.
 return function(stage, store, check, passed, stop)
  local lg=mcl_levelgen
+ local leaves=core.registered_nodes["mcl_trees:leaves_oak"]
+ check(leaves.drawtype=="nodebox" and leaves.tiles[1]=="everforge_world_visuals_leaves_oak.png",
+  "actual final oak visual override active")
+ local ok,status=core.registered_chatcommands.everforge_visuals.func("")
+ check(ok and status:find("ACTIVO",1,true),"read-only visual diagnostic confirms applied textures")
  local names={"everforge_world_visuals:forest_shrub", "everforge_world_visuals:field_stones"}
  local function scan(area)
   core.load_area(area.minp,area.maxp)
@@ -22,7 +27,7 @@ return function(stage, store, check, passed, stop)
    core.log("action", "EVERFORGE_VISUAL_COUNT: "..name.."="..#keys)
    check(#keys>0,"real generated "..name)
   end
-  return core.serialize(snapshot)
+  return snapshot
  end
  if stage=="legacy" then
   local c=core.parse_json(store:get_string("center"))
@@ -38,7 +43,14 @@ return function(stage, store, check, passed, stop)
  if stage=="restart" then
   local area=core.deserialize(store:get_string("visual_area"),true)
   check(area,"visual test area saved")
-  check(scan(area)==store:get_string("visual_snapshot"),"no scenery added or removed on restart")
+  local actual=scan(area)
+  local expected=core.deserialize(store:get_string("visual_snapshot"),true)
+  check(type(expected)=="table","valid saved scenery snapshot")
+  for name,positions in pairs(actual) do
+   check(type(expected[name])=="table"
+    and table.concat(positions,";")==table.concat(expected[name],";"),
+    "no scenery added or removed on restart: "..name)
+  end
   passed("visuals: scenery snapshot unchanged on reload")
   stop(); return
  end
@@ -58,7 +70,7 @@ return function(stage, store, check, passed, stop)
    done=true
    core.after(0,function()
     store:set_string("visual_area",core.serialize(area))
-    store:set_string("visual_snapshot",scan(area))
+    store:set_string("visual_snapshot",core.serialize(scan(area)))
     passed("visuals: shrubs and stones actually generated in selected biomes")
     stop()
    end)
