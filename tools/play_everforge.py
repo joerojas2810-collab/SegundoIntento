@@ -22,7 +22,7 @@ p.add_argument("--archive", type=Path, help="Reuse the official archive instead 
 p.add_argument("--new", action="store_true", help="Create a fresh development world; keep earlier worlds")
 p.add_argument("--server", action="store_true")
 p.add_argument("--port", type=int, default=49177)
-p.add_argument("--test-stage", choices=["bootstrap", "restart", "players", "verify_players", "mechanics", "solo"])
+p.add_argument("--test-stage", choices=["bootstrap", "restart", "players", "verify_players", "mechanics", "solo", "legacy"])
 p.add_argument("--name", default="Forjador")
 p.add_argument("--client", help="Connect a separately isolated test client to localhost (e.g. ForgeAlice)")
 p.add_argument("--resolution", nargs=2, type=int, default=(1280, 800), metavar=("WIDTH", "HEIGHT"), help="Isolated QA window size")

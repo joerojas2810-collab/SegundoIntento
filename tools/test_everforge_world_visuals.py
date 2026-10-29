@@ -56,16 +56,13 @@ class EverforgeWorldVisuals(unittest.TestCase):
         self.assertIn('diggable = false', LUA)
 
     def test_mapgen_decor_is_sparse_and_does_not_change_existing_world_rules(self) -> None:
-        self.assertEqual(LUA.count("core.register_decoration({"), 3)
-        ratios = [float(x) for x in re.findall(r"fill_ratio = ([0-9.]+)", LUA)]
-        self.assertEqual(len(ratios), 3)
-        self.assertTrue(all(0 < ratio <= 0.004 for ratio in ratios))
-        for biome in ("Forest", "RoofedForest", "BirchForest", "Taiga", "Meadow", "ExtremeHills"):
-            self.assertIn(f'"{biome}"', LUA)
+        self.assertEqual(LUA.count("core.register_decoration({"), 0)
+        for biome in ("Forest", "DarkForest", "BirchForest", "Taiga", "Meadow", "StonyPeaks"):
+            self.assertIn(f'"{biome}"', LG_SCRIPT)
         for forbidden in ("core.set_node(", "core.register_craft(", "set_mapgen_setting", "formspec[", "register_on_generated"):
             self.assertNotIn(forbidden, LUA)
         for node in ("mcl_core:stone", "mcl_core:andesite", "mcl_core:granite"):
-            self.assertIn(node, LUA)
+            self.assertIn(node, LG_SCRIPT)
         self.assertIn('pointable = false', LUA)
         self.assertIn('walkable = false', LUA)
         self.assertIn('diggable = false', LUA)
@@ -77,7 +74,7 @@ class EverforgeWorldVisuals(unittest.TestCase):
         self.assertIn("lg.register_configured_feature", LG_SCRIPT)
         self.assertIn("lg.register_placed_feature", LG_SCRIPT)
         self.assertIn("lg.generate_feature", LG_SCRIPT)
-        self.assertIn('"mcl_levelgen:freeze_top_layer", biomes, 12', LG_SCRIPT)
+        self.assertIn('"mcl_levelgen:freeze_top_layer", biomes, 11', LG_SCRIPT)
         self.assertIn('lg.build_heightmap("motion_blocking_wg")', LG_SCRIPT)
         self.assertIn("content_id_set(node_names)", LG_SCRIPT)
         self.assertIn('"mcl_core:dirt_with_grass", "mcl_core:podzol"', LG_SCRIPT)

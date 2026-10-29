@@ -1,0 +1,36 @@
+Luanti 5.17.0 (OSX)
+Using LuaJIT 2.1.1764270282
+Built by Clang 21.0
+Running on Darwin/25.5.0 arm64
+BUILD_TYPE=Release
+RUN_IN_PLACE=0
+USE_CURL=1
+USE_GETTEXT=1
+USE_SOUND=1
+STATIC_SHAREDIR="luanti.app/Contents/Resources"
+STATIC_LOCALEDIR="luanti.app/Contents/Resources/locale"
+
+World: /private/tmp/everforge-scenery-qa/world-1793297254024293000
+Log: /private/tmp/everforge-scenery-qa/server.log
+2026-10-29 15:13:26: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 12345 (Biome seed: 293737985876514017)
+2026-10-29 15:13:27: ACTION[Main]: [mcl_villages]: Loaded 0 points of interest in 0 ms
+2026-10-29 15:13:27: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-29 15:13:27: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 15:13:27: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-29 15:13:27: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 15:13:27: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-29 15:13:27: ACTION[Main]: [mcl_levelgen]: Resuming 2 feature placement task(s)
+ _                   _   _ 
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-29 15:13:31: ACTION[Main]: World at [/private/tmp/everforge-scenery-qa/world-1793297254024293000]
+2026-10-29 15:13:31: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:49282.
+2026-10-29 15:13:31: ACTION[Server]: Generating world spawn from (79,-128,2) to (127,255,50)
+2026-10-29 15:13:31: ACTION[Server]: Completed regeneration of 384 MapBlocks
+2026-10-29 15:13:32: ACTION[Server]: EVERFORGE_TEST_PASS: model: serialization, curves, points, purchase, dedupe, exploration, bounds
+2026-10-29 15:13:32: ACTION[Server]: EVERFORGE_TEST_PASS: physical camp: roof, posts, campfire, lantern and workstations; compact HUD
+2026-10-29 15:13:32: ACTION[Server]: EVERFORGE_TEST_PASS: restart: same region, blocks and node metadata preserved
+2026-10-29 15:13:32: ACTION[Server]: EVERFORGE_TEST_PASS: legacy world: no retroactive scenery; existing camp, construction and metadata preserved
+2026-10-29 15:13:33: ACTION[Main]: Server: Shutting down

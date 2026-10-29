@@ -34,15 +34,23 @@ local shrub_ground_ids = content_id_set({
 })
 local stone_ground_ids = content_id_set({
 	"mcl_core:stone", "mcl_core:andesite", "mcl_core:granite", "mcl_core:diorite",
-	"mcl_core:dirt", "mcl_core:coarse_dirt", "mcl_core:podzol", "mcl_core:mycelium",
+	"mcl_core:dirt_with_grass", "mcl_core:dirt", "mcl_core:coarse_dirt", "mcl_core:podzol", "mcl_core:mycelium",
 	"mcl_core:gravel", "mcl_core:sand",
 })
 
 local function surface_support_filter(support_ids)
 	return function (x, y, z)
 		local cid = lg.get_block(x, y - 1, z)
-		if support_ids[cid] then return {x, y, z} end
-		return nil
+		if not support_ids[cid] then return nil end
+		-- Only empty air: never replace native plants, trunks, structures,
+		-- water, snow, or another decoration. Keep the immediate envelope free.
+		local air = core.get_content_id("air")
+		for dx = -1, 1 do for dz = -1, 1 do
+			for dy = 0, 1 do
+				if lg.get_block(x + dx, y + dy, z + dz) ~= air then return nil end
+			end
+		end end
+		return {x, y, z}
 	end
 end
 
@@ -50,7 +58,7 @@ local function biomes_with_surface_feature(names)
 	local result = {}
 	for _, biome_name in ipairs(names) do
 		local biome = lg.registered_biomes[biome_name]
-		local surface_features = biome and biome.features and biome.features[12]
+		local surface_features = biome and biome.features and biome.features[11]
 		if surface_features and table.indexof(surface_features, "mcl_levelgen:freeze_top_layer") ~= -1 then
 			result[#result + 1] = biome_name
 		end
@@ -84,7 +92,7 @@ local function register_block(name, node_names, biomes, support_ids, count, rari
 			lg.build_in_biome(),
 		},
 	})
-	lg.generate_feature(placed_id, "mcl_levelgen:freeze_top_layer", biomes, 12)
+	lg.generate_feature(placed_id, "mcl_levelgen:freeze_top_layer", biomes, 11)
 end
 
 register_block("forest_shrub", {modname .. ":forest_shrub"}, biomes_with_surface_feature(shrub_biomes), shrub_ground_ids, 2, 4)

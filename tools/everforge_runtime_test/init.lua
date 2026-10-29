@@ -64,8 +64,8 @@ local function region_tests()
    core.get_meta(edit):set_string("player_edit","do not rebuild")
   end
   passed("actual singlenode region generated; world edit saved for restart")
-  stop()
- elseif stage=="restart" then
+  dofile(core.get_modpath("everforge_runtime_test").."/visuals.lua")(stage,store,check,passed,stop)
+ elseif stage=="restart" or stage=="legacy" then
   check(store:get_string("center")==core.write_json(r.center),"same region after restart")
   check(core.get_node(marker).name=="mcl_core:goldblock","construction preserved")
   if r.revision==2 then
@@ -74,7 +74,7 @@ local function region_tests()
   end
   check(core.get_meta(marker):get_string("everforge_test")~="","node metadata preserved")
   passed("restart: same region, blocks and node metadata preserved")
-  stop()
+  dofile(core.get_modpath("everforge_runtime_test").."/visuals.lua")(stage,store,check,passed,stop)
  end
  return true
 end
@@ -237,7 +237,7 @@ core.register_on_mods_loaded(function()
   elapsed=elapsed+dt
   if elapsed<1 then return end
   elapsed=0
-  if not executed and (stage=="bootstrap" or stage=="restart") then executed=region_tests() end
+  if not executed and (stage=="bootstrap" or stage=="restart" or stage=="legacy") then executed=region_tests() end
  end)
  -- Bounded smoke test: a hung generation must fail visibly.
  core.after(180,function() error("EVERFORGE_TEST_FAIL: runtime timeout") end)

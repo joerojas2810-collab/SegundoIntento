@@ -131,6 +131,7 @@ core.register_node(modname .. ":forest_shrub", {
 	pointable = false,
 	diggable = false,
 	buildable_to = true,
+	floodable = true,
 	drop = "",
 	groups = {
 		not_in_creative_inventory = 1,
@@ -150,7 +151,7 @@ local rock_nodes = {
 	{
 		name = "field_stones",
 		description = S("Field Stone Cluster"),
-		texture = "mcl_core_stone.png",
+		texture = "default_stone.png",
 		boxes = {
 				{-0.43, -0.5, -0.22, -0.13, -0.30, 0.08},
 				{-0.09, -0.5, -0.32, 0.22, -0.34, -0.03},
@@ -195,58 +196,17 @@ for _, rock in ipairs(rock_nodes) do
 		pointable = false,
 		diggable = false,
 		buildable_to = true,
+		floodable = true,
 		drop = "",
 		groups = {not_in_creative_inventory = 1, deco_block = 1},
 		is_ground_content = false,
 	})
 end
 
--- Mapgen decorations affect only newly generated mapblocks. No terrain,
--- tree schematic, mapgen setting, already-saved node, or player construction
--- is rewritten by these registrations.
-local overworld_min = mcl_vars.mg_overworld_min
-local overworld_max = mcl_vars.mg_overworld_max
-
-local shrub_biomes = {"Forest", "RoofedForest", "BirchForest", "BirchForestM", "Taiga", "Meadow", "FlowerForest"}
-for _, biome_name in ipairs(shrub_biomes) do
-	local biome = core.registered_biomes[biome_name]
-	if biome then
-		core.register_decoration({
-			deco_type = "simple",
-			place_on = {"group:grass_block_no_snow", "mcl_core:podzol"},
-			fill_ratio = 0.003,
-			biomes = {biome_name},
-			y_min = overworld_min,
-			y_max = overworld_max,
-			param2 = biome._mcl_palette_index or 0,
-			decoration = modname .. ":forest_shrub",
-		})
-	end
-end
-
-core.register_decoration({
-	deco_type = "simple",
-	place_on = {"group:grass_block_no_snow", "mcl_core:podzol"},
-	fill_ratio = 0.0015,
-	biomes = {"Forest", "RoofedForest", "BirchForest", "BirchForestM", "Taiga", "Meadow", "FlowerForest"},
-	y_min = overworld_min,
-	y_max = overworld_max,
-	decoration = modname .. ":field_stones",
-})
-
-core.register_decoration({
-	deco_type = "simple",
-	place_on = {"mcl_core:stone", "mcl_core:andesite", "mcl_core:granite", "mcl_core:diorite"},
-	fill_ratio = 0.004,
-	biomes = {"ExtremeHills", "ExtremeHills+", "ExtremeHillsM", "ExtremeHills+_snowtop"},
-	y_min = overworld_min,
-	y_max = overworld_max,
-	decoration = {modname .. ":foothill_stones", modname .. ":mountain_stones"},
-})
-
--- Mineclonia normally routes singlenode through its own levelgen. This
--- script is executed in that generator's feature environment; classic Core
--- mapgens continue to use the registrations above.
+-- Use only Mineclonia's feature pipeline. Core decorations run at a
+-- different time and cannot apply our post-tree/structure clearance filter.
+-- Existing classic-mapgen worlds still load the visual node definitions;
+-- they receive no new scenery. No mapgen setting or saved mapblock is edited.
 if mcl_vars.enable_mcl_levelgen then
 	mcl_levelgen.register_levelgen_script(modpath .. "/lg_register.lua")
 end

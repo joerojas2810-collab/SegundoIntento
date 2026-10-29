@@ -1,0 +1,74 @@
+Luanti 5.17.0 (OSX)
+Using LuaJIT 2.1.1764270282
+Built by Clang 21.0
+Running on Darwin/25.5.0 arm64
+BUILD_TYPE=Release
+RUN_IN_PLACE=0
+USE_CURL=1
+USE_GETTEXT=1
+USE_SOUND=1
+STATIC_SHAREDIR="luanti.app/Contents/Resources"
+STATIC_LOCALEDIR="luanti.app/Contents/Resources/locale"
+
+World: /private/tmp/everforge-world-visuals-release/world-1793297857188317000
+Log: /private/tmp/everforge-world-visuals-release/server.log
+2026-10-29 15:17:38: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 12345 (Biome seed: 293737985876514017)
+2026-10-29 15:17:39: ACTION[Main]: [mcl_villages]: World was upgraded or is pristine.
+2026-10-29 15:17:39: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-29 15:17:39: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 15:17:39: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-29 15:17:39: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-29 15:17:39: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-29 15:17:39: ACTION[Main]: [mcl_levelgen]: Preparing stronghold placement.  This may take a while.
+ _                   _   _ 
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-29 15:17:46: ACTION[Main]: World at [/private/tmp/everforge-world-visuals-release/world-1793297857188317000]
+2026-10-29 15:17:46: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:49281.
+2026-10-29 15:17:46: ACTION[Server]: Generating world spawn from (79,-128,2) to (127,255,50)
+2026-10-29 15:17:46: ACTION[Server]: Emerged 0/3600 MapBlocks; 0/384 MapBlocks regenerated
+2026-10-29 15:17:47: ACTION[Server]: EVERFORGE_TEST_PASS: model: serialization, curves, points, purchase, dedupe, exploration, bounds
+2026-10-29 15:17:50: WARNING[Server]: Server: Maximum lag peaked at 2.12266 (steplen=0.05)
+2026-10-29 15:17:52: ACTION[Server]: Emerged 3/3600 MapBlocks; 24/384 MapBlocks regenerated
+2026-10-29 15:17:55: ACTION[Server]: Emerged 5/3600 MapBlocks; 48/384 MapBlocks regenerated
+2026-10-29 15:17:56: ACTION[Server]: Emerged 5/3600 MapBlocks; 72/384 MapBlocks regenerated
+2026-10-29 15:17:57: ACTION[Server]: Emerged 473/3600 MapBlocks; 96/384 MapBlocks regenerated
+2026-10-29 15:17:59: ACTION[Server]: Emerged 1007/3600 MapBlocks; 96/384 MapBlocks regenerated
+2026-10-29 15:18:01: ACTION[Server]: Emerged 1010/3600 MapBlocks; 120/384 MapBlocks regenerated
+2026-10-29 15:18:01: ACTION[Server]: Emerged 1010/3600 MapBlocks; 168/384 MapBlocks regenerated
+2026-10-29 15:18:02: ACTION[Server]: Emerged 1014/3600 MapBlocks; 168/384 MapBlocks regenerated
+2026-10-29 15:18:04: ACTION[Server]: Emerged 1014/3600 MapBlocks; 192/384 MapBlocks regenerated
+2026-10-29 15:18:04: ACTION[Server]: Emerged 1790/3600 MapBlocks; 240/384 MapBlocks regenerated
+2026-10-29 15:18:05: ACTION[Server]: Emerged 1790/3600 MapBlocks; 288/384 MapBlocks regenerated
+2026-10-29 15:18:06: ACTION[Server]: Emerged 1790/3600 MapBlocks; 312/384 MapBlocks regenerated
+2026-10-29 15:18:07: ACTION[Server]: Emerged 1790/3600 MapBlocks; 336/384 MapBlocks regenerated
+2026-10-29 15:18:08: ACTION[Server]: Emerged 1790/3600 MapBlocks; 360/384 MapBlocks regenerated
+2026-10-29 15:18:08: ACTION[Server]: Completed regeneration of 384 MapBlocks
+2026-10-29 15:18:20: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=55 m_static_exists=true but static data doesn't actually exist in (4,-7,0)
+2026-10-29 15:18:20: WARNING[Server]: StaticObjectList::remove(): id=55 not found
+2026-10-29 15:18:20: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=56 m_static_exists=true but static data doesn't actually exist in (4,-7,0)
+2026-10-29 15:18:20: WARNING[Server]: StaticObjectList::remove(): id=56 not found
+2026-10-29 15:18:23: ACTION[Server]: [Everforge] REGION_READY {"arrival":{"x":103,"y":72,"z":33},"center":{"x":103,"y":72,"z":26},"components":{"beam":14,"bench":6,"bench_support":6,"campfire":1,"clearance":400,"courtyard_clearance":128,"floor":35,"foundation":25,"furnace":1,"hearth":9,"lamp_post":6,"lamp_support":2,"lantern":3,"path":21,"post":12,"roof":63,"workbench":1},"radius":10,"revision":2,"seed":"12345","state":"ready","version":1}
+2026-10-29 15:18:23: ACTION[Server]: EVERFORGE_TEST_PASS: physical camp: roof, posts, campfire, lantern and workstations; compact HUD
+2026-10-29 15:18:23: ACTION[Server]: EVERFORGE_TEST_PASS: actual singlenode region generated; world edit saved for restart
+2026-10-29 15:18:23: ACTION[Server]: EVERFORGE_VISUAL_AREA: (-256,16,-257)
+2026-10-29 15:18:34: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=90 m_static_exists=true but static data doesn't actually exist in (1,-7,10)
+2026-10-29 15:18:34: WARNING[Server]: StaticObjectList::remove(): id=90 not found
+2026-10-29 15:18:36: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=93 m_static_exists=true but static data doesn't actually exist in (8,-2,10)
+2026-10-29 15:18:36: WARNING[Server]: StaticObjectList::remove(): id=93 not found
+2026-10-29 15:18:36: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=95 m_static_exists=true but static data doesn't actually exist in (8,-2,10)
+2026-10-29 15:18:36: WARNING[Server]: StaticObjectList::remove(): id=95 not found
+2026-10-29 15:18:40: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=100 m_static_exists=true but static data doesn't actually exist in (13,-1,10)
+2026-10-29 15:18:40: WARNING[Server]: StaticObjectList::remove(): id=100 not found
+2026-10-29 15:18:40: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=101 m_static_exists=true but static data doesn't actually exist in (13,-1,10)
+2026-10-29 15:18:40: WARNING[Server]: StaticObjectList::remove(): id=101 not found
+2026-10-29 15:19:50: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=130 m_static_exists=true but static data doesn't actually exist in (-10,-6,-16)
+2026-10-29 15:19:50: WARNING[Server]: StaticObjectList::remove(): id=130 not found
+2026-10-29 15:19:50: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=131 m_static_exists=true but static data doesn't actually exist in (-10,-6,-16)
+2026-10-29 15:19:50: WARNING[Server]: StaticObjectList::remove(): id=131 not found
+2026-10-29 15:20:10: ACTION[Server]: EVERFORGE_VISUAL_COUNT: everforge_world_visuals:forest_shrub=2
+2026-10-29 15:20:10: ACTION[Server]: EVERFORGE_VISUAL_COUNT: everforge_world_visuals:field_stones=2
+2026-10-29 15:20:10: ACTION[Server]: EVERFORGE_TEST_PASS: visuals: shrubs and stones actually generated in selected biomes
+2026-10-29 15:20:10: ACTION[Main]: Server: Shutting down
