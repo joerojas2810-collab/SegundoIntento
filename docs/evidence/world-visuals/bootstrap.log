@@ -20,7 +20,7 @@ Log: /private/tmp/everforge-world-visuals-release/server.log
 2026-10-29 15:17:39: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
 2026-10-29 15:17:39: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
 2026-10-29 15:17:39: ACTION[Main]: [mcl_levelgen]: Preparing stronghold placement.  This may take a while.
- _                   _   _ 
+ _                   _   _
 | |_   _  __ _ _ __ | |_(_)
 | | | | |/ _` | '_ \| __| |
 | | |_| | (_| | | | | |_| |
