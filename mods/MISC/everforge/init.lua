@@ -514,7 +514,7 @@ local quality_rng = PcgRandom(core.get_us_time())
 
 local function roll_quality(catalyst_tier)
 	local chances = quality_chances[catalyst_tier] or quality_chances.common
-	local roll = quality_rng:next_within(10000) + 1
+	local roll = quality_rng:next(1, 10000)
 	local cumulative = 0
 	for _, quality in ipairs(quality_order) do
 		cumulative = cumulative + chances[quality]
@@ -548,7 +548,9 @@ local function calculate_modular_stats(tool_type, head_name, binding_name, handl
 	local mining_speed = clamp(head.speed * raw_speed_multiplier, 2.5, 18)
 	local speed_multiplier = mining_speed / head.speed
 	local uses = clamp(math.floor(head.uses * binding.binding_durability * handle.handle_durability * quality.durability + 0.5), 60, 10000)
-	local damage = clamp((kind.damage + head.damage + binding.binding_damage + handle.handle_damage) * quality.damage, 1, 14)
+	-- Luanti stores damage_groups as integers. Round here so descriptions,
+	-- metadata and the effective tool damage all report the same value.
+	local damage = math.floor(clamp((kind.damage + head.damage + binding.binding_damage + handle.handle_damage) * quality.damage, 1, 14) + 0.5)
 	local attack_speed = binding.binding_attack * handle.handle_attack * quality.attack
 	local interval = clamp(kind.interval / attack_speed, 0.35, 1.5)
 	return {

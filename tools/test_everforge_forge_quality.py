@@ -64,7 +64,7 @@ class ForgeQualityRegressions(unittest.TestCase):
         self.assertIn('meta:get_string("everforge:quality_pending") == "1"', build)
         self.assertIn('meta:set_string("everforge:quality_pending", real_craft and "" or "1")', build)
         roll = SOURCE.split("local function roll_quality(", 1)[1].split("\nend", 1)[0]
-        self.assertIn("quality_rng:next_within(10000)", roll)
+        self.assertIn("quality_rng:next(1, 10000)", roll)
         self.assertIn('preview and S("Quality is determined at crafting; preview uses Common stats.")', SOURCE)
         self.assertIn('S("Craft quality: @1", quality.label)', SOURCE)
 
