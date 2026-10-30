@@ -7,6 +7,9 @@ local key = "start_region:v1"
 local encoded = storage:get_string(key)
 local region = encoded ~= "" and core.parse_json(encoded) or nil
 local enabled = core.settings:get_bool("everforge_start_region", true)
+-- The prepared ruins test world uses singlenode and builds its own camp with
+-- worldmods. Never run the normal regional spawn search there.
+if core.get_mapgen_setting("mg_name") == "singlenode" then enabled = false end
 if not enabled then return end
 local previous_environment = io.open(core.get_worldpath() .. "/env_meta.txt", "r")
 local existing_world = previous_environment ~= nil
@@ -172,6 +175,10 @@ local function place(c)
  if not find_arrival() then region.state="building";return fail("no connected safe arrival after camp placement") end
  save()
  core.log("action", "[Everforge] REGION_READY "..core.write_json(region))
+ if everforge.expedition then
+  local ok, err = pcall(everforge.expedition.setup_camp, c)
+  if not ok then core.log("error", "[Everforge] Expedition NPC setup failed: "..tostring(err)) end
+ end
 end
 if starting then
  core.register_on_mods_loaded(function()

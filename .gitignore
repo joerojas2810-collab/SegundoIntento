@@ -18,5 +18,8 @@ tools/minetestmapper/colors.txt
 # Isolated playable development worlds and optional pinned runtime
 .everforge-dev/
 
-# Local Finder link to the official Luanti app (never a wrapper launcher)
+# Local Finder link to the official Luanti app (not a bundled binary)
 /Luanti.app
+
+# Local, evaluation-only structure reference (CC BY-SA 3.0); never distribute
+/visual_test/

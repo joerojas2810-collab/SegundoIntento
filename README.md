@@ -15,7 +15,9 @@ Version: Mineclonia 0.124.1
 
 This repository packages Mineclonia as **Everforge**. RPG progression, modular forging, additional minerals, Graveyard/Ice Tower structures, regional enemy scaling, and bundled upstream attributions are described in [the Everforge integration guide](mods/MISC/everforge/README.md) and [THIRD_PARTY.md](THIRD_PARTY.md).
 
-Para abrir Everforge, crear/continuar mundos y jugar con amigos se usa el **launcher nativo de Luanti**, sin scripts `.command`. Ver [inicio y multijugador](docs/everforge-playable.md) y [comprobaciones del campamento](docs/everforge-camp-launcher-fixes.md).
+Para abrir Everforge, crear/continuar mundos y jugar con amigos se usa el **launcher nativo de Luanti**; ver [inicio y multijugador](docs/everforge-playable.md) y [comprobaciones del campamento](docs/everforge-camp-launcher-fixes.md).
+
+Para jugar ya mismo la aventura preparada **El sello de las ruinas** en macOS, haz doble clic en `Jugar El Sello de las Ruinas.command` (raíz del repositorio) y sigue [las instrucciones](playtest/el_sello_de_las_ruinas/INSTRUCCIONES.md). No se necesitan comandos de administrador.
 
 ### Differences from VoxeLibre (formerly MineClone2)
 * Overworld depth increased from 64 to 128 nodes
