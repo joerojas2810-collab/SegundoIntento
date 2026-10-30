@@ -1429,7 +1429,7 @@ core.register_abm({
 		if count >= 4 then return end
 		local name = mob_names[1 + (meta:get_int("everforge:spawned") % #mob_names)]
 		if core.registered_entities[name] then
-			local spawn = {x = pos.x + random:next_within(5) - 2, y = pos.y + 1, z = pos.z + random:next_within(5) - 2}
+			local spawn = {x = pos.x + math.random(0, 4) - 2, y = pos.y + 1, z = pos.z + math.random(0, 4) - 2}
 			local head = {x = spawn.x, y = spawn.y + 1, z = spawn.z}
 			if core.get_node(spawn).name == "air" and core.get_node(head).name == "air" then
 				local object = core.add_entity(spawn, name)
