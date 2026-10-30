@@ -639,10 +639,10 @@ local function seed_chest(pos, items)
 	if not pos then return end
 	local meta = core.get_meta(pos)
 	if meta:get_int("everforge:sello_loot") == 1 then return end
+	local def = core.registered_nodes["mcl_chests:chest_small"]
 	local name = core.get_node(pos).name
 	if name ~= "mcl_chests:chest_small" then
 		core.set_node(pos, {name = "mcl_chests:chest_small", param2 = 0})
-		local def = core.registered_nodes["mcl_chests:chest_small"]
 		if def and def.on_construct then def.on_construct(pos) end
 		meta = core.get_meta(pos)
 	end
