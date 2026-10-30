@@ -1,0 +1,209 @@
+{
+  "source_nodes": 4067,
+  "kept_nodes": 3059,
+  "pairs": [
+    {
+      "source": "lottblocks:marble_brick",
+      "target": "mcl_core:stonebrick",
+      "count": 1880
+    },
+    {
+      "source": "lottother:air",
+      "target": "air",
+      "count": 992
+    },
+    {
+      "source": "lottother:dirt",
+      "target": "mcl_core:dirt",
+      "count": 813
+    },
+    {
+      "source": "lottmapgen:gondor_grass",
+      "target": "mcl_core:dirt_with_grass",
+      "count": 162
+    },
+    {
+      "source": "default:torch_wall",
+      "target": "mcl_torches:torch_wall",
+      "count": 47
+    },
+    {
+      "source": "default:fence_wood",
+      "target": "mcl_fences:oak_fence",
+      "count": 39
+    },
+    {
+      "source": "stairs:stair_marble_brick",
+      "target": "mcl_stairs:stair_stonebrick",
+      "count": 37
+    },
+    {
+      "source": "default:ladder",
+      "target": "mcl_core:ladder",
+      "count": 35
+    },
+    {
+      "source": "default:wood",
+      "target": "mcl_trees:wood_oak",
+      "count": 18
+    },
+    {
+      "source": "lottmapgen:gondor_chest_spawner",
+      "target": "mcl_chests:chest_small",
+      "count": 10
+    },
+    {
+      "source": "lottother:gondorms_off",
+      "target": "air",
+      "count": 10
+    },
+    {
+      "source": "lottblocks:alder_chair",
+      "target": "air",
+      "count": 4
+    },
+    {
+      "source": "lottblocks:bed_bottom_blue",
+      "target": "mcl_beds:bed_blue_bottom",
+      "count": 4
+    },
+    {
+      "source": "lottblocks:bed_top_blue",
+      "target": "mcl_beds:bed_blue_top",
+      "count": 4
+    },
+    {
+      "source": "lottblocks:alder_table",
+      "target": "air",
+      "count": 2
+    },
+    {
+      "source": "lottblocks:bed_bottom_red",
+      "target": "mcl_beds:bed_red_bottom",
+      "count": 2
+    },
+    {
+      "source": "lottblocks:bed_top_red",
+      "target": "mcl_beds:bed_red_top",
+      "count": 2
+    },
+    {
+      "source": "lottpotion:brewer",
+      "target": "mcl_brewing:stand_000",
+      "count": 2
+    },
+    {
+      "source": "default:furnace",
+      "target": "mcl_furnaces:furnace",
+      "count": 1
+    },
+    {
+      "source": "default:water_source",
+      "target": "mcl_core:water_source",
+      "count": 1
+    },
+    {
+      "source": "lottpotion:cauldron_full",
+      "target": "mcl_cauldrons:cauldron",
+      "count": 1
+    },
+    {
+      "source": "stairs:slab_marble_brick",
+      "target": "mcl_stairs:slab_stonebrick",
+      "count": 1
+    }
+  ],
+  "unknown": [],
+  "ladder_param2_converted": 16,
+  "empty_chests_kept": 4,
+  "empty_chests_removed": 6,
+  "clean": {
+    "path": "gondor_fort_clean.mts",
+    "bytes": 1698,
+    "size": [
+      19,
+      32,
+      20
+    ],
+    "cells": 12160,
+    "solid_nodes": 3053,
+    "palette": [
+      "air",
+      "mcl_beds:bed_blue_bottom",
+      "mcl_beds:bed_blue_top",
+      "mcl_beds:bed_red_bottom",
+      "mcl_beds:bed_red_top",
+      "mcl_brewing:stand_000",
+      "mcl_cauldrons:cauldron",
+      "mcl_chests:chest_small",
+      "mcl_core:dirt",
+      "mcl_core:dirt_with_grass",
+      "mcl_core:ladder",
+      "mcl_core:stonebrick",
+      "mcl_core:water_source",
+      "mcl_fences:oak_fence",
+      "mcl_furnaces:furnace",
+      "mcl_stairs:slab_stonebrick",
+      "mcl_stairs:stair_stonebrick",
+      "mcl_torches:torch_wall",
+      "mcl_trees:wood_oak"
+    ],
+    "sha256": "1494a1c30586f578e262ff2dd1c10478220f1de85afad5aaa540b90786312c18"
+  },
+  "ruin": {
+    "foundation_replaced": "y<=2 -> mcl_core:stonebrick",
+    "gate_opened_blocks": 9,
+    "breach_blocks_removed": 10,
+    "top_blocks_removed": 9,
+    "crown_removed": "y>=30, plus one third of y=29",
+    "rubble_outside_gate": 6,
+    "mossy_base_blocks": 27
+  },
+  "ruined": {
+    "path": "gondor_fort_ruined.mts",
+    "bytes": 2190,
+    "size": [
+      19,
+      30,
+      20
+    ],
+    "cells": 11400,
+    "solid_nodes": 3015,
+    "palette": [
+      "air",
+      "mcl_beds:bed_blue_bottom",
+      "mcl_beds:bed_blue_top",
+      "mcl_beds:bed_red_bottom",
+      "mcl_beds:bed_red_top",
+      "mcl_brewing:stand_000",
+      "mcl_cauldrons:cauldron",
+      "mcl_chests:chest_small",
+      "mcl_core:cobble",
+      "mcl_core:ladder",
+      "mcl_core:stonebrick",
+      "mcl_core:stonebrickcarved",
+      "mcl_core:stonebrickcracked",
+      "mcl_core:stonebrickmossy",
+      "mcl_core:water_source",
+      "mcl_fences:oak_fence",
+      "mcl_furnaces:furnace",
+      "mcl_stairs:slab_stonebrick",
+      "mcl_stairs:stair_stonebrick",
+      "mcl_torches:torch_wall",
+      "mcl_trees:wood_oak"
+    ],
+    "sha256": "25e55855853ab6eadec14bc7c9a075f6f0e4ece4ee5a3a91652609a4f1f48f5c"
+  },
+  "roundtrip": {
+    "size_matches": true,
+    "palette_matches": true,
+    "non_air_matches": true,
+    "slice_probs_all_always": true
+  },
+  "report_version": 1,
+  "source": {
+    "path": "/tmp/lott/mods/lottmapgen/schems/gondorfort.we",
+    "sha256": "88c7b027e006c9b9140a9947f2abd26631dde0906bc114b9d1f9abebb7186d2b",
+    "source_nodes": 4067
+  }
+}
