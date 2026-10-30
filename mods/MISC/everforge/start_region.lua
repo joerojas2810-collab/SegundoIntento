@@ -7,6 +7,9 @@ local key = "start_region:v1"
 local encoded = storage:get_string(key)
 local region = encoded ~= "" and core.parse_json(encoded) or nil
 local enabled = core.settings:get_bool("everforge_start_region", true)
+-- The prepared ruins test world uses singlenode and builds its own camp with
+-- worldmods. Never run the normal regional spawn search there.
+if core.get_mapgen_setting("mg_name") == "singlenode" then enabled = false end
 if not enabled then return end
 local previous_environment = io.open(core.get_worldpath() .. "/env_meta.txt", "r")
 local existing_world = previous_environment ~= nil

@@ -711,7 +711,16 @@ if mcl_mobs and mcl_mobs.register_mob then
 			end)
 		end,
 		on_rightclick = function(_, clicker)
-			if clicker and clicker:is_player() then E.show_npc(clicker) end
+			if clicker and clicker:is_player() then
+				-- In worlds where the ruins site is prepared, the same Maestra
+				-- runs the real adventure. Elsewhere the original prototype
+				-- remains available unchanged.
+				if everforge.ruins_quest and everforge.ruins_quest.is_armed() then
+					everforge.ruins_quest.show_npc(clicker)
+				else
+					E.show_npc(clicker)
+				end
+			end
 		end,
 	})
 else

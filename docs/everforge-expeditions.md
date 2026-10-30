@@ -1,40 +1,87 @@
-# Everforge — prototipo de expediciones cooperativas
+# Everforge — El sello de las ruinas
 
-Estado: primer prototipo funcional. No incluye campaña, regiones nuevas, castillos, jefes ni escalado de dificultad. No modifica combate, forja probabilística ni el inventario existente.
+Aventura cooperativa de 15–20 minutos para **Luanti 5.17 + Everforge** (Mineclonia).
+No usa mods externos, dimensiones de End/Nether ni logros de Minecraft. El
+combate, la forja probabilística, las habilidades y el inventario existentes no
+se modifican.
 
-## Qué se implementó
+## Recorrido
 
-- **NPC en el campamento:** «Maestra de expediciones», entidad `everforge:expedition_npc` registrada con `mcl_mobs`. Se coloca una sola vez junto al campamento inicial; si el mundo ya tenía campamento, se recupera o reaparece en la primera conexión.
-- **Inicio:** al hacer clic derecho en el NPC, el jugador sin expedición activa pulsa «Iniciar expedición».
-- **Invitaciones:** solo el líder puede invitar. La lista muestra únicamente jugadores conectados que no participan en otra expedición. El invitado recibe un formulario y debe pulsar «Aceptar»; «Rechazar» elimina la invitación. Las invitaciones caducan a los 5 minutos.
-- **Misión compartida:** conseguir cualquier objeto con el grupo de objeto `sword` y entregarlo al NPC. El estado del grupo registra `sword_found` y la entrega. Cualquier miembro puede entregar una espada por el grupo; se consume exactamente una.
-- **Confirmación:** al completar, todos los participantes conectados reciben chat y formulario de confirmación. Un participante desconectado la recibe al volver a entrar.
-- **Persistencia:** el estado se guarda en `core.get_mod_storage()` bajo `everforge:expeditions:v1`. No usa `awards`, `mcl_achievements` ni la XP vanilla. La pertenencia se guarda por nombre de jugador, por lo que desconectarse no elimina el progreso del grupo.
-- **HUD propio:** línea discreta con el identificador de expedición y el estado de espada/entrega. Se retira al desconectarse o completar.
+1. La **Maestra de expediciones** está junto a la hoguera del campamento. Al
+   aceptar, la expedición queda armada para el líder y hasta 3 acompañantes.
+2. El grupo se prepara en el cofre del campamento (espada de piedra, antorchas,
+   pan y piedra) y viaja con la **piedra de viaje azul** al sendero de la ruina.
+   El sendero está a 26 bloques de la puerta, como pide el diseño.
+3. La fortaleza tiene patio, muralla almenada, dos torres de puerta, torreón con
+   salón, biblioteca, armería y solar, y una **cripta subterránea** con cinco
+   salas: entrada, salón de los ecos, barracones, cisterna y cámara del sello.
+4. Tres encuentros controlados (entrada, salón y cámara final) usan esqueletos
+   y zombis nativos. Solo aparecen una vez; no hay respawns infinitos.
+   Dificultad: 1 guardián por sala en solitario y 1 extra por sala con dos
+   jugadores; la cámara final añade otro.
+5. El **Sello de las Ruinas** se toma del pedestal de la cámara final. El
+   portador vuelve por una piedra de viaje y lo entrega a la Maestra.
+6. La recompensa (8 hierro, 3 oro y 6 panes) se entrega **una sola vez por
+   participante**, incluso si estaba desconectado al terminar.
 
-## Cómo probarlo
+## Persistencia y seguridad
 
-1. Crear un mundo nuevo con Everforge y esperar a que termine la región inicial.
-2. Buscar a la **Maestra de expediciones** junto al campamento (normalmente a un lado del camino).
-3. Clic derecho → **Iniciar expedición**.
-4. Con otro jugador conectado, el líder pulsa **Invitar a …** en el formulario del NPC.
-5. El invitado acepta en la ventana que recibe.
-6. Conseguir una espada (nativa o modular de Everforge) en el inventario principal. El progreso compartido se actualiza en unos segundos.
-7. Cualquier miembro pulsa **Entregar espada** en el NPC. Se descuenta una espada y todos ven la confirmación.
-8. Repetir con un participante desconectado antes de la entrega: al reconectar recibe la confirmación pendiente.
+- El estado vive en `core.get_mod_storage()` (`everforge:ruins_quest:v1`), no en
+  logros. La pertenencia se guarda por nombre de jugador.
+- El sitio se construye una sola vez (`everforge:ruins_site:v1`). Al reabrir el
+  mundo no se regenera ni se pisa lo que el jugador haya cambiado.
+- El sello es único: un portador, un objeto de pila máxima 1 y una bandera de
+  entrega. Un miembro desconectado conserva su pertenencia, su HUD y su
+  recompensa pendiente.
+- Si el portador pierde el sello, solo él puede recuperarlo del pedestal; nadie
+  más puede duplicarlo.
 
-## Límites del prototipo
+## Archivos
 
-- Máximo 8 miembros por expedición y 64 expediciones almacenadas (las completadas más antiguas se podan).
-- Una invitación pendiente por jugador; caduca a los 300 s.
-- El NPC es una entidad persistente e invulnerable a golpes de jugador, sin IA de combate.
-- No hay cancelación de expedición ni recompensas económicas: el objetivo es verificar el flujo compartido.
-- La detección de espada revisa el inventario `main`; no altera ninguna receta ni probabilidad de forja.
+| Ruta | Función |
+| --- | --- |
+| `mods/MISC/everforge/ruins_quest.lua` | Estado, formularios, waystones, encuentros, pedestal y recompensa |
+| `mods/MISC/everforge/expedition.lua` | NPC Maestra, invitaciones y misiones compartidas |
+| `mods/MISC/everforge/expedition_model.lua` | Modelo persistente y validación |
+| `mods/MISC/everforge/schematics/sello_ruinas.{mts,json}` | Fortaleza original y manifiesto de salas/spawns |
+| `tools/build_sello_ruins.py` | Constructor determinista + autoverificación |
+| `playtest/el_sello_de_las_ruinas/` | Mundo preparado (singlenode) y worldmod de montaje |
+| `Jugar El Sello de las Ruinas.command` | Lanzador macOS |
 
-## Verificación realizada
+## Verificación
+
+### Validación local del sistema de expediciones
 
 El 30/10/2026 se validó el flujo funcional en un servidor real Luanti 5.17.0 con dos clientes nativos, mundo temporal, desconexiones y reinicios. Se corrigieron la duplicación del NPC al activar entidades guardadas y la lectura de colecciones JSON vacías; también se actualizó la clave del HUD a la API vigente.
 
 La prueba automatiza callbacks del servidor sobre jugadores reales: no equivale a pulsar botones desde cada cliente. La inspección visual del NPC, formularios y HUD permanece pendiente por las limitaciones gráficas del entorno. Las pruebas de modelo se mantienen identificadas como simulaciones.
 
 El alcance exacto, los resultados, los errores originales y los registros están en [validación de expediciones](everforge-expeditions-validation.md).
+### Validación de El sello de las ruinas en la rama de origen
+
+Comprobado en el entorno de desarrollo de esa rama:
+
+- Sintaxis Lua 5.1 de los módulos y del worldmod con un parser independiente.
+- `tools/test_everforge_expedition.lua`: 59 comprobaciones del sistema de
+  expediciones (formularios, invitaciones, desconexión/reconexión, persistencia).
+- `tools/test_everforge_ruins_quest.lua`: 35 comprobaciones del flujo completo
+  (inicio, kit, viaje, tres encuentros sin respawn, sello único, entrega,
+  recompensa única, miembro desconectado y estado corrupto).
+- `tools/build_sello_ruins.py`: autoverificación del `.mts` (conectividad a pie,
+  puertas, antorchas, marcadores, spawns y pila del pedestal) sin errores.
+- Simulación del worldmod con un `core` mínimo: 68.368 nodos de plataforma y
+  camino, llamadas de campamento/sitio, y kit inicial que no se duplica.
+- Pruebas existentes de selección de sitio, onboarding e interfaces.
+
+**Pendiente para esta aventura:** en el entorno de desarrollo de la rama no había
+binario de Luanti ni pantalla, por lo que no se ejecutó una partida gráfica real,
+no se probaron dos clientes y no hay capturas de juego auténticas. La primera partida en el Mac debe considerarse la
+validación gráfica pendiente. Si algo falla, el diagnóstico `/sello` solo lee el
+estado y la posición; no concede privilegios ni completa la misión.
+
+## Legal
+
+La estructura y los módulos de esta aventura son originales (GPL-3.0-or-later,
+igual que Everforge). `visual_test/gondor_fort/` es material CC BY-SA 3.0 de
+Lord of the Test usado solo como referencia local de evaluación; **no forma
+parte** del mundo preparado y no debe distribuirse sin revisión legal.

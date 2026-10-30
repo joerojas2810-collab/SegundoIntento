@@ -1,0 +1,313 @@
+{
+  "id": "sello_ruinas",
+  "version": 1,
+  "size": [
+    61,
+    40,
+    61
+  ],
+  "anchor": [
+    -30,
+    61,
+    -30
+  ],
+  "surface_floor_y": 23,
+  "gate_local": [
+    30,
+    23,
+    6
+  ],
+  "trailhead_offset": [
+    0,
+    -20
+  ],
+  "camp_offset": [
+    0,
+    -32
+  ],
+  "rooms": [
+    {
+      "id": "antechamber",
+      "label": "Cámara de entrada",
+      "center": [
+        30,
+        9,
+        31
+      ],
+      "radius": 6,
+      "mobs": [
+        "mobs_mc:skeleton",
+        "mobs_mc:skeleton"
+      ],
+      "spawns": [
+        [
+          28,
+          9,
+          29
+        ],
+        [
+          32,
+          9,
+          33
+        ],
+        [
+          30,
+          9,
+          32
+        ]
+      ],
+      "hint": "Los guardianes de la entrada han despertado. Velas y piedra húmeda."
+    },
+    {
+      "id": "hall",
+      "label": "Salón de los Ecos",
+      "center": [
+        30,
+        9,
+        40
+      ],
+      "radius": 6,
+      "mobs": [
+        "mobs_mc:zombie",
+        "mobs_mc:skeleton"
+      ],
+      "spawns": [
+        [
+          24,
+          9,
+          40
+        ],
+        [
+          36,
+          9,
+          40
+        ],
+        [
+          30,
+          9,
+          43
+        ]
+      ],
+      "hint": "Algo arrastra los pies entre las columnas del salón."
+    },
+    {
+      "id": "seal",
+      "label": "Cámara del Sello",
+      "center": [
+        30,
+        9,
+        50
+      ],
+      "radius": 6,
+      "final": true,
+      "mobs": [
+        "mobs_mc:zombie",
+        "mobs_mc:skeleton"
+      ],
+      "spawns": [
+        [
+          26,
+          10,
+          50
+        ],
+        [
+          34,
+          10,
+          50
+        ],
+        [
+          30,
+          9,
+          47
+        ]
+      ],
+      "hint": "El sello brilla sobre el pedestal. Sus últimos guardianes no piensan cederlo."
+    }
+  ],
+  "side_rooms": [
+    {
+      "id": "barracks",
+      "label": "Barracones",
+      "center": [
+        13,
+        9,
+        40
+      ]
+    },
+    {
+      "id": "cistern",
+      "label": "Cisterna",
+      "center": [
+        47,
+        9,
+        42
+      ]
+    }
+  ],
+  "pedestal": {
+    "base": [
+      30,
+      10,
+      52
+    ],
+    "top": [
+      30,
+      11,
+      52
+    ],
+    "display": [
+      30,
+      12,
+      52
+    ]
+  },
+  "return_stones": [
+    [
+      33,
+      24,
+      9
+    ],
+    [
+      10,
+      9,
+      28
+    ]
+  ],
+  "loot": [
+    {
+      "pos": [
+        10,
+        9,
+        45
+      ],
+      "items": [
+        "mcl_core:iron_ingot 2",
+        "mcl_farming:bread 2"
+      ]
+    },
+    {
+      "pos": [
+        44,
+        9,
+        36
+      ],
+      "items": [
+        "mcl_core:gold_ingot 1",
+        "mcl_torches:torch 6"
+      ]
+    },
+    {
+      "pos": [
+        26,
+        10,
+        53
+      ],
+      "items": [
+        "mcl_core:diamond 1",
+        "mcl_core:iron_ingot 2"
+      ]
+    },
+    {
+      "pos": [
+        42,
+        24,
+        39
+      ],
+      "items": [
+        "mcl_core:iron_ingot 2",
+        "mcl_farming:bread 2"
+      ]
+    }
+  ],
+  "build": {
+    "path": "mods/MISC/everforge/schematics/sello_ruinas.mts",
+    "bytes": 13409,
+    "sha256": "70a5af19d8447058357f69e39d1579d2ccc5b41654583ea0164d7afd23f21099",
+    "palette": [
+      "air",
+      "mcl_anvils:anvil",
+      "mcl_barrels:barrel_closed",
+      "mcl_books:bookshelf",
+      "mcl_campfires:campfire_lit",
+      "mcl_cauldrons:cauldron",
+      "mcl_chests:chest_small",
+      "mcl_core:cobble",
+      "mcl_core:cobweb",
+      "mcl_core:dirt",
+      "mcl_core:dirt_with_grass",
+      "mcl_core:gravel",
+      "mcl_core:ladder",
+      "mcl_core:mossycobble",
+      "mcl_core:stone",
+      "mcl_core:stonebrick",
+      "mcl_core:stonebrickcarved",
+      "mcl_core:stonebrickcracked",
+      "mcl_core:stonebrickmossy",
+      "mcl_core:water_source",
+      "mcl_doors:door_dark_oak_b_1",
+      "mcl_doors:door_dark_oak_t_1",
+      "mcl_fences:dark_oak_fence",
+      "mcl_fences:dark_oak_fence_gate",
+      "mcl_flowerpots:flower_pot_dandelion",
+      "mcl_flowers:fern",
+      "mcl_furnaces:furnace",
+      "mcl_lanterns:chain",
+      "mcl_lanterns:lantern_ceiling",
+      "mcl_lanterns:soul_lantern_floor",
+      "mcl_stairs:slab_stonebrick",
+      "mcl_stairs:stair_stonebrick",
+      "mcl_torches:torch",
+      "mcl_torches:torch_wall",
+      "mcl_trees:wood_dark_oak",
+      "mcl_trees:wood_oak",
+      "mcl_wool:red"
+    ]
+  },
+  "verify": {
+    "errors": [],
+    "nodes": 82266,
+    "doors": 12,
+    "torches": 31,
+    "lanterns": 15,
+    "rooms": 5,
+    "walkable_goal": true,
+    "counts": {
+      "mcl_anvils:anvil": 3,
+      "mcl_barrels:barrel_closed": 10,
+      "mcl_books:bookshelf": 22,
+      "mcl_campfires:campfire_lit": 6,
+      "mcl_cauldrons:cauldron": 1,
+      "mcl_chests:chest_small": 4,
+      "mcl_core:cobble": 1235,
+      "mcl_core:cobweb": 14,
+      "mcl_core:dirt": 1686,
+      "mcl_core:dirt_with_grass": 1913,
+      "mcl_core:gravel": 63,
+      "mcl_core:ladder": 28,
+      "mcl_core:mossycobble": 222,
+      "mcl_core:stone": 64854,
+      "mcl_core:stonebrick": 9047,
+      "mcl_core:stonebrickcarved": 491,
+      "mcl_core:stonebrickcracked": 152,
+      "mcl_core:stonebrickmossy": 1799,
+      "mcl_core:water_source": 46,
+      "mcl_doors:door_dark_oak_b_1": 6,
+      "mcl_doors:door_dark_oak_t_1": 6,
+      "mcl_fences:dark_oak_fence": 49,
+      "mcl_fences:dark_oak_fence_gate": 2,
+      "mcl_flowerpots:flower_pot_dandelion": 3,
+      "mcl_flowers:fern": 1,
+      "mcl_furnaces:furnace": 2,
+      "mcl_lanterns:chain": 5,
+      "mcl_lanterns:lantern_ceiling": 14,
+      "mcl_lanterns:soul_lantern_floor": 1,
+      "mcl_stairs:slab_stonebrick": 394,
+      "mcl_stairs:stair_stonebrick": 10,
+      "mcl_torches:torch": 2,
+      "mcl_torches:torch_wall": 29,
+      "mcl_trees:wood_dark_oak": 18,
+      "mcl_trees:wood_oak": 125,
+      "mcl_wool:red": 3
+    }
+  }
+}
