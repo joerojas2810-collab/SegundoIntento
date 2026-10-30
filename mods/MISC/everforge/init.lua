@@ -436,8 +436,8 @@ core.register_lbm({
 })
 
 -- Modular forging uses existing Mineclonia/More Ores/Adamantine ingots. The
--- metal rarity is material data; manufacturing quality is selected separately
--- with a tempering catalyst when the components are assembled.
+-- metal rarity is material data; a tempering catalyst shifts the odds of the
+-- quality rolled when the components are actually assembled.
 local forge_materials = {
 	tin = {
 		item = "moreores:tin_ingot", label = S("Tin"), rarity = "common", color = "#a9a9a1",
@@ -499,6 +499,31 @@ for quality, def in pairs(quality_defs) do
 	if def.catalyst then quality_by_catalyst[def.catalyst] = quality end
 end
 
+-- Chance weights in basis points (10,000 = 100%). Higher-tier catalysts
+-- improve every upper-tail threshold, but never guarantee their matching tier.
+-- Adjust this table to rebalance quality without changing recipes or stats.
+local quality_chances = {
+	common =    {common = 7500, uncommon = 1800, rare = 550,  epic = 130,  legendary = 20},
+	uncommon =  {common = 4500, uncommon = 3500, rare = 1500, epic = 400,  legendary = 100},
+	rare =      {common = 2500, uncommon = 3000, rare = 3000, epic = 1200, legendary = 300},
+	epic =      {common = 1200, uncommon = 2000, rare = 3000, epic = 2800, legendary = 1000},
+	legendary = {common = 500,  uncommon = 1000, rare = 2000, epic = 3500, legendary = 3000},
+}
+local quality_order = {"common", "uncommon", "rare", "epic", "legendary"}
+local quality_rng = PcgRandom(core.get_us_time())
+
+local function roll_quality(catalyst_tier)
+	local chances = quality_chances[catalyst_tier] or quality_chances.common
+	local roll = quality_rng:next_within(10000) + 1
+	local cumulative = 0
+	for _, quality in ipairs(quality_order) do
+		cumulative = cumulative + chances[quality]
+		if roll <= cumulative then return quality end
+	end
+	-- Defensive fallback: valid rows sum to 10,000 and always return above.
+	return "common"
+end
+
 local tool_defs = {
 	pick = {label = S("Pickaxe"), diggroup = "pickaxey", group = "pickaxe", icon = "default_tool_steelpick.png", damage = 3.0, interval = 0.85, head_icon = "everforge_part_head.png"},
 	axe = {label = S("Axe"), diggroup = "axey", group = "axe", icon = "default_tool_steelaxe.png", damage = 6.0, interval = 1.05, head_icon = "everforge_part_axe_head.png"},
@@ -536,13 +561,13 @@ local function format_percent(multiplier)
 	return tostring(math.floor((multiplier - 1) * 100 + 0.5))
 end
 
-local function build_modular_description(tool_type, head_name, binding_name, handle_name, quality_name, stats)
+local function build_modular_description(tool_type, head_name, binding_name, handle_name, quality_name, stats, preview)
 	local tool, head, binding, handle, quality = tool_defs[tool_type], forge_materials[head_name], forge_materials[binding_name], forge_materials[handle_name], quality_defs[quality_name]
-	local title = quality.label .. " " .. head.label .. " " .. tool.label
-	if core.colorize then title = core.colorize(quality.color, title) end
+	local title = preview and S("Preview: @1 @2", head.label, tool.label) or (quality.label .. " " .. head.label .. " " .. tool.label)
+	if core.colorize then title = core.colorize(preview and "#b7a58c" or quality.color, title) end
 	return table.concat({
 		title,
-		S("Craft quality: @1", quality.label),
+		preview and S("Quality is determined at crafting; preview uses Common stats.") or S("Craft quality: @1", quality.label),
 		S("Head: @1 (@2); binding: @3 (@4); handle: @5 (@6)", head.label, material_rarity_labels[head.rarity], binding.label, material_rarity_labels[binding.rarity], handle.label, material_rarity_labels[handle.rarity]),
 		S("Damage: @1; attack interval: @2 s", string.format("%.1f", stats.damage), string.format("%.2f", stats.interval)),
 		S("Mining speed: @1; mining level: @2", string.format("%.1f", stats.speed), tostring(stats.level)),
@@ -672,7 +697,7 @@ core.register_craft({output = "everforge:tool_head 2", recipe = {{"mcl_core:iron
 core.register_craft({output = "everforge:tool_binding 2", recipe = {{"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"}}})
 core.register_craft({output = "everforge:reinforced_handle 2", recipe = {{"mcl_core:stick"}, {"mcl_core:iron_ingot"}}})
 
-local function apply_modular_stack(stack)
+local function apply_modular_stack(stack, preview)
 	local meta = stack:get_meta()
 	local tool_type = meta:get_string("everforge:tool_type")
 	local head_name = meta:get_string("everforge:head_material")
@@ -707,7 +732,7 @@ local function apply_modular_stack(stack)
 	meta:set_tool_capabilities(caps)
 
 	local head, binding, handle, quality = forge_materials[head_name], forge_materials[binding_name], forge_materials[handle_name], quality_defs[quality_name]
-	local description = build_modular_description(tool_type, head_name, binding_name, handle_name, quality_name, stats)
+	local description = build_modular_description(tool_type, head_name, binding_name, handle_name, quality_name, stats, preview)
 	meta:set_string("description", description)
 	-- Toolranks retains this full materials/quality/stat summary when adding its
 	-- own persistent rank line to the stack description.
@@ -724,10 +749,16 @@ local function apply_modular_stack(stack)
 	return stack
 end
 
-local function build_modular_tool(itemstack, old_craft_grid)
+local function build_modular_tool(itemstack, old_craft_grid, real_craft)
+	local meta = itemstack:get_meta()
 	local tool_type = base_output_types[itemstack:get_name()]
+	-- Some engines may pass the predicted ItemStack into the craft callback.
+	-- Accept that tagged preview once, then clear the tag to prevent rerolls.
+	if not tool_type and meta:get_string("everforge:quality_pending") == "1" then
+		tool_type = meta:get_string("everforge:tool_type")
+	end
 	if not tool_type then return itemstack end
-	local components, quality_name = {}, "common"
+	local components, catalyst_tier, catalyst_item = {}, "common", ""
 	for _, ingredient in ipairs(old_craft_grid or {}) do
 		if ingredient and not ingredient:is_empty() then
 			local def = ingredient:get_definition()
@@ -736,8 +767,11 @@ local function build_modular_tool(itemstack, old_craft_grid)
 				if components[component.kind] then return itemstack end
 				components[component.kind] = component
 			else
-				local found_quality = quality_by_catalyst[ingredient:get_name()]
-				if found_quality then quality_name = found_quality end
+				local found_tier = quality_by_catalyst[ingredient:get_name()]
+				if found_tier then
+					catalyst_tier = found_tier
+					catalyst_item = ingredient:get_name()
+				end
 			end
 		end
 	end
@@ -746,6 +780,10 @@ local function build_modular_tool(itemstack, old_craft_grid)
 	local itemname = modular_variants[tool_type][components.head.material]
 	if not itemname then return itemstack end
 
+	-- Craft prediction is called while displaying recipes and crafting results.
+	-- It uses a clearly-labelled Common baseline and must never consume RNG;
+	-- only register_on_craft passes real_craft=true and rolls the final quality.
+	local quality_name = real_craft and roll_quality(catalyst_tier) or "common"
 	itemstack:set_name(itemname)
 	local meta = itemstack:get_meta()
 	meta:set_string("everforge:tool_type", tool_type)
@@ -753,15 +791,17 @@ local function build_modular_tool(itemstack, old_craft_grid)
 	meta:set_string("everforge:binding_material", components.binding.material)
 	meta:set_string("everforge:handle_material", components.handle.material)
 	meta:set_string("everforge:quality", quality_name)
-	meta:set_string("everforge:quality_catalyst", quality_defs[quality_name].catalyst or "")
-	return apply_modular_stack(itemstack)
+	meta:set_string("everforge:quality_catalyst", catalyst_item)
+	meta:set_string("everforge:quality_catalyst_tier", catalyst_tier)
+	meta:set_string("everforge:quality_pending", real_craft and "" or "1")
+	return apply_modular_stack(itemstack, not real_craft)
 end
 
 core.register_craft_predict(function(itemstack, _player, old_craft_grid)
-	return build_modular_tool(itemstack, old_craft_grid)
+	return build_modular_tool(itemstack, old_craft_grid, false)
 end)
 core.register_on_craft(function(itemstack, _player, old_craft_grid)
-	return build_modular_tool(itemstack, old_craft_grid)
+	return build_modular_tool(itemstack, old_craft_grid, true)
 end)
 
 local function register_modular_assembly_recipes()
@@ -1262,8 +1302,17 @@ local function build_reward_cache_formspec(pos)
 end
 
 core.register_node("everforge:reward_cache", {
-	description = S("Sealed Dungeon Cache"), tiles = {"mcl_chests_normal.png^default_gold_ingot.png"},
-	groups = {choppy = 2, material_wood = 1}, is_ground_content = false, paramtype2 = "facedir",
+	description = S("Sealed Dungeon Cache"),
+	-- Reuse Mineclonia's chest mesh and its matching UV texture atlas. The
+	-- atlas is not a cube tile: its transparent pixels use a vivid-green RGB
+	-- matte, which an opaque cube exposes. The ingot overlay is an inventory
+	-- icon, not a seal mapped to the chest model.
+	drawtype = "mesh", mesh = "mcl_chests_chest.obj",
+	tiles = {"mcl_chests_normal.png"}, use_texture_alpha = "clip",
+	collision_box = {type = "fixed", fixed = {-0.4375, -0.5, -0.4375, 0.4375, 0.375, 0.4375}},
+	selection_box = {type = "fixed", fixed = {-0.4375, -0.5, -0.4375, 0.4375, 0.375, 0.4375}},
+	groups = {choppy = 2, material_wood = 1}, is_ground_content = false,
+	paramtype = "light", paramtype2 = "facedir",
 	_on_ignite = false,
 	on_rightclick = function(pos, _, clicker)
 		if not clicker or not clicker:is_player() or cache_is_protected(pos, clicker) then return end
@@ -1301,19 +1350,50 @@ core.register_lbm({
 	end,
 })
 
+local function downgrade_unclaimed_cache_loot(inv)
+	local downgraded = 0
+	for _, item_name in ipairs({"moreores:mithril_ingot", "adamantine:ingot"}) do
+		for slot = 1, inv:get_size("main") do
+			local stack = inv:get_stack("main", slot)
+			if stack:get_name() == item_name then
+				downgraded = downgraded + stack:get_count()
+				inv:set_stack("main", slot, ItemStack(""))
+			end
+		end
+	end
+	if downgraded > 0 then
+		inv:add_item("main", ItemStack("mcl_core:iron_ingot " .. downgraded))
+	end
+end
+
 core.register_lbm({
 	label = S("Initialize Everforge dungeon caches"), name = "everforge:initialize_dungeon_caches",
 	nodenames = {"everforge:reward_cache"}, run_at_every_load = true,
 	action = function(pos)
 		local meta = core.get_meta(pos)
-		meta:set_string("infotext", S("Sealed Dungeon Cache"))
+		-- The WAILA HUD already shows the node description; repeating it as
+		-- infotext adds a redundant "Status" line. Clearing it also migrates
+		-- caches already present in saved worlds without touching their loot.
+		meta:set_string("infotext", "")
 		meta:set_string("formspec", build_reward_cache_formspec(pos))
-		if meta:get_int("everforge:initialized") == 1 then return end
-		local inv = meta:get_inventory(); inv:set_size("main", 16)
-		inv:add_item("main", ItemStack("everforge:relic 1"))
-		if core.registered_items["moreores:mithril_ingot"] then inv:add_item("main", ItemStack("moreores:mithril_ingot 2")) end
-		if core.registered_items["adamantine:ingot"] then inv:add_item("main", ItemStack("adamantine:ingot")) end
+		local inv = meta:get_inventory()
+		if meta:get_int("everforge:initialized") == 1 then
+			-- One-time migration for previously initialized, still-unclaimed
+			-- advanced ingots. Player inventories and other cache contents stay intact.
+			if meta:get_int("everforge:loot_balance_version") < 1 then
+				downgrade_unclaimed_cache_loot(inv)
+				meta:set_int("everforge:loot_balance_version", 1)
+			end
+			return
+		end
+		inv:set_size("main", 16)
+		-- Existing Everforge structures are surface encounters; guardians
+		-- are avoidable, so their caches contain intermediate rather than
+		-- progression-tier materials. The relic has no implemented use, so
+		-- keep its item ID for old saves but do not award it in fresh caches.
+		inv:add_item("main", ItemStack("mcl_core:iron_ingot 3"))
 		inv:add_item("main", ItemStack("mcl_core:gold_ingot 3"))
+		meta:set_int("everforge:loot_balance_version", 1)
 		meta:set_int("everforge:initialized", 1)
 	end,
 })
@@ -1441,10 +1521,8 @@ core.register_abm({
 	end,
 })
 
--- Register native levelgen features for mineral deposits and both dungeon types.
-if mcl_vars.enable_mcl_levelgen then
- mcl_levelgen.register_levelgen_script(core.get_modpath(modname) .. "/world_features.lua")
-end
+-- Load the isolated Extra Structures 1.4.0 to Mineclonia levelgen port.
+dofile(core.get_modpath(modname) .. "/extra_structures.lua")
 
 local function count_group_nodes(group)
 	local count = 0

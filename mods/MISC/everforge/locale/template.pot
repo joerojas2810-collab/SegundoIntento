@@ -988,3 +988,9 @@ msgstr ""
 
 msgid "Use the registered wood recipe, or another recipe shown here when available."
 msgstr ""
+
+msgid "Preview: @1 @2"
+msgstr ""
+
+msgid "Quality is determined at crafting; preview uses Common stats."
+msgstr ""

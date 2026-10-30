@@ -79,14 +79,93 @@ local function add_overworld_feature(placed_id, step, predicate)
 	end
 end
 
+local birch_ruin_schematics = {
+	"everforge:birch_forest_temple_ruins_1",
+	"everforge:birch_forest_temple_ruins_2",
+}
+
+local function register_birch_ruins_feature()
+	local id = "everforge:birch_forest_temple_ruins"
+	local ground_dirt = core.get_content_id("mcl_core:dirt")
+	local ground_grass = core.get_content_id("mcl_core:dirt_with_grass")
+	local get_block = mcl_levelgen.get_block
+	local get_schematic_size = mcl_levelgen.get_schematic_size
+	local place_schematic = mcl_levelgen.place_schematic
+	local notify_generated = mcl_levelgen.notify_generated
+	local random_rotation = mcl_levelgen.random_schematic_rotation
+
+	mcl_levelgen.register_feature(id, {
+		place = function(_, x, y, z, _cfg, rng)
+			local schematic = birch_ruin_schematics[rng:next_within(#birch_ruin_schematics) + 1]
+			local rotation = random_rotation(rng)
+			local sx, sy, sz = get_schematic_size(schematic, rotation)
+			local base_y = y - 1 -- The original schematics include their soil/grass base layer.
+			if y < mcl_levelgen.placement_level_min + 4
+				or y + sy >= mcl_levelgen.placement_level_min + mcl_levelgen.placement_level_height then
+				return false
+			end
+
+			local half_x, half_z = math.floor(sx / 2), math.floor(sz / 2)
+			local origin_x, origin_z = x - half_x, z - half_z
+			-- Require a level grass/dirt footprint across the whole small schematic.
+			for dx = -half_x, half_x do
+				for dz = -half_z, half_z do
+					local ground = get_block(x + dx, base_y, z + dz)
+					if ground ~= ground_dirt and ground ~= ground_grass then return false end
+				end
+			end
+
+			place_schematic(origin_x, base_y, origin_z, schematic, rotation, true, nil, rng)
+			notify_generated("everforge:birch_forest_temple_ruins_loot", {
+				x = origin_x, y = base_y, z = origin_z,
+				sx = sx, sy = sy, sz = sz, loot_seed = math.abs(rng:next_integer()),
+			})
+			return true
+		end,
+	})
+
+	local configured = id .. "_configured"
+	local placed = id .. "_placed"
+	mcl_levelgen.register_configured_feature(configured, {feature = id})
+	mcl_levelgen.register_placed_feature(placed, {
+		configured_feature = configured,
+		placement_modifiers = {
+			mcl_levelgen.build_count(function(rng)
+				return rng:next_within(256) == 0 and 1 or 0
+			end),
+			-- These ruins are at most 9 x 9, so anchor them in the chunk
+			-- interior to avoid clipping at the levelgen run boundary.
+			function(x, y, z, rng)
+				return {x + 4 + rng:next_within(8), y, z + 4 + rng:next_within(8)}
+			end,
+			mcl_levelgen.build_heightmap("motion_blocking"),
+			mcl_levelgen.build_in_biome(),
+		},
+	})
+	return placed
+end
+
+local function add_biome_named_feature(placed_id, step, names)
+	for biome_name, biome in pairs(mcl_levelgen.registered_biomes or {}) do
+		if names[biome_name] and biome.features and biome.features[step] then
+			local list = biome.features[step]
+			if table.indexof(list, placed_id) == -1 then list[#list + 1] = placed_id end
+		end
+	end
+end
 
 if mcl_vars.enable_mcl_levelgen and mcl_levelgen.register_feature then
 	local graveyard_id = register_structure_feature("everforge:graveyard", "graveyard")
 	local ice_tower_id = register_structure_feature("everforge:ice_tower", "ice_tower")
+	local birch_ruins_id = register_birch_ruins_feature()
 	add_overworld_feature(graveyard_id, 4)
 	add_overworld_feature(ice_tower_id, 4, function(biome)
 		return biome.temperature <= 0.15 or biome.groups.is_taiga
 	end)
+	add_biome_named_feature(birch_ruins_id, 4, {
+		BirchForest = true,
+		OldGrowthBirchForest = true,
+	})
 else
-	core.log("warning", "[Everforge] Graveyard and Ice Tower generation requires Mineclonia's singlenode levelgen. RPG, forging, minerals and difficulty remain available.")
+	core.log("warning", "[Everforge] Graveyard, Ice Tower and Birch Forest Ruins generation requires Mineclonia's singlenode levelgen. RPG, forging, minerals and difficulty remain available.")
 end
