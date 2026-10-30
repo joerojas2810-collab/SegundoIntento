@@ -63,6 +63,7 @@ end
 
 dofile(core.get_modpath(modname) .. "/progression/ui.lua")
 dofile(core.get_modpath(modname) .. "/onboarding.lua")
+dofile(core.get_modpath(modname) .. "/expedition.lua")
 
 -- Mineclonia diggroups are authoritative for block mining. The optional perk
 -- augments only Everforge-forged tools, retaining each tool's registered caps.
