@@ -1,4 +1,0 @@
-mg_name = singlenode
-seed = 1
-water_level = -31000
-flags = nil
