@@ -647,6 +647,11 @@ local function seed_chest(pos, items)
 		meta = core.get_meta(pos)
 	end
 	local inv = meta:get_inventory()
+	if not inv and def and def.on_construct then
+		def.on_construct(pos)
+		meta = core.get_meta(pos)
+		inv = meta:get_inventory()
+	end
 	if inv and inv:get_size("main") == 0 then inv:set_size("main", 16) end
 	if inv then
 		for _, item in ipairs(items or {}) do
@@ -669,6 +674,14 @@ local function seed_supply(pos)
 		meta = core.get_meta(pos)
 	end
 	local inv = meta:get_inventory()
+	if not inv then
+		local def = core.registered_nodes["mcl_chests:chest_small"]
+		if def and def.on_construct then
+			def.on_construct(pos)
+			meta = core.get_meta(pos)
+			inv = meta:get_inventory()
+		end
+	end
 	if inv and inv:get_size("main") == 0 then inv:set_size("main", 16) end
 	if inv then
 		inv:add_item("main", ItemStack("mcl_tools:sword_stone 1"))
