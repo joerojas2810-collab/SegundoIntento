@@ -10,3 +10,6 @@ water_level = -31000
 
 # Prepared adventure world: no regional spawn search; zz_sello_ruins owns terrain.
 everforge_start_region = false
+
+# Only the scripted guardians of the ruins spawn here.
+mobs_spawn = false
