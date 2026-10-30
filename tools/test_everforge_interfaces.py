@@ -11,6 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = (ROOT / "mods/MISC/everforge/init.lua").read_text(encoding="utf-8")
+WORLD_FEATURES = (ROOT / "mods/MISC/everforge/world_features.lua").read_text(encoding="utf-8")
 SLOT_STEP = 1.25  # mcl_formspec.get_itemslot_bg_v4 / Mineclonia list spacing
 SLOT_HEIGHT = 1.0
 
@@ -90,6 +91,51 @@ class EverforgeInterfaceRegressions(unittest.TestCase):
         self.assertLessEqual(hotbar_y + SLOT_HEIGHT, size_y)
         self.assertIn('("list[%s;main;3.5,1;4,4;]"):format(node_inv)', form)
         self.assertIn('("listring[%s;main]"):format(node_inv)', form)
+
+    def test_reward_cache_uses_chest_model_clears_duplicate_status_and_preserves_loot(self) -> None:
+        start = SOURCE.index('core.register_node("everforge:reward_cache"')
+        end = SOURCE.index('core.register_node("everforge:dungeon_spawner"', start)
+        node = SOURCE[start:end]
+        self.assertIn('drawtype = "mesh", mesh = "mcl_chests_chest.obj"', node)
+        self.assertIn('tiles = {"mcl_chests_normal.png"}', node)
+        self.assertIn('use_texture_alpha = "clip"', node)
+        self.assertNotIn('default_gold_ingot.png', node)
+        self.assertIn('collision_box = {type = "fixed"', node)
+        self.assertIn('selection_box = {type = "fixed"', node)
+        self.assertIn('allow_metadata_inventory_take', node)
+        self.assertIn('suppress_waila_for_player(clicker, formname)', node)
+
+        lbm_start = SOURCE.index('name = "everforge:initialize_dungeon_caches"')
+        lbm_end = SOURCE.index('local mob_names', lbm_start)
+        cache_lbm = SOURCE[lbm_start:lbm_end]
+        self.assertIn('meta:set_string("infotext", "")', cache_lbm)
+        guard = 'if meta:get_int("everforge:initialized") == 1 then'
+        self.assertIn(guard, cache_lbm)
+        migration_start = SOURCE.index("local function downgrade_unclaimed_cache_loot")
+        migration_end = SOURCE.index('core.register_lbm({', migration_start)
+        migration = SOURCE[migration_start:migration_end]
+        self.assertIn('"moreores:mithril_ingot", "adamantine:ingot"', migration)
+        self.assertIn('inv:set_stack("main", slot, ItemStack(""))', migration)
+        self.assertIn('ItemStack("mcl_core:iron_ingot " .. downgraded)', migration)
+        self.assertIn('downgrade_unclaimed_cache_loot(inv)', cache_lbm)
+        self.assertIn('everforge:loot_balance_version', cache_lbm)
+        first_reward = cache_lbm.index('inv:add_item("main"')
+        last_reward = cache_lbm.rindex('inv:add_item("main"')
+        initialized = cache_lbm.index('meta:set_int("everforge:initialized", 1)')
+        self.assertLess(cache_lbm.index(guard), first_reward)
+        self.assertGreater(initialized, last_reward)
+        self.assertNotIn('inv:add_item("main", ItemStack("everforge:relic 1"))', cache_lbm)
+        self.assertIn('inv:add_item("main", ItemStack("mcl_core:iron_ingot 3"))', cache_lbm)
+        self.assertIn('inv:add_item("main", ItemStack("mcl_core:gold_ingot 3"))', cache_lbm)
+        self.assertNotIn("moreores:mithril_ingot", cache_lbm)
+        self.assertNotIn("adamantine:ingot", cache_lbm)
+
+        self.assertIn('set_node(x, surface + 1, z, chest)', WORLD_FEATURES)
+        self.assertIn('set_node(x, surface + 8, z, chest)', WORLD_FEATURES)
+        self.assertIn('mcl_levelgen.build_count(function(rng) return rng:next_within(256)', WORLD_FEATURES)
+        self.assertIn('snow_block = core.get_content_id("mcl_core:snowblock")', WORLD_FEATURES)
+        self.assertIn('add_overworld_feature(graveyard_id, 4)', WORLD_FEATURES)
+        self.assertIn('return biome.temperature <= 0.15 or biome.groups.is_taiga', WORLD_FEATURES)
 
     def test_progression_ui_replaces_permanent_class_selector(self) -> None:
         ui = (ROOT / "mods/MISC/everforge/progression/ui.lua").read_text()

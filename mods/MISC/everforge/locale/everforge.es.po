@@ -991,3 +991,9 @@ msgstr "Materiales: @1"
 
 msgid "Use the registered wood recipe, or another recipe shown here when available."
 msgstr "Usa la receta de madera registrada u otra de las alternativas disponibles aquí."
+
+msgid "Preview: @1 @2"
+msgstr "Vista previa: @1 @2"
+
+msgid "Quality is determined at crafting; preview uses Common stats."
+msgstr "La calidad se determina al fabricar; la vista previa usa estadísticas comunes."
