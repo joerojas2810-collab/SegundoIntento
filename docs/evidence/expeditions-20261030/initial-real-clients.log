@@ -1,0 +1,76 @@
+2026-10-30 18:06:55: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 12345 (Biome seed: 293737985876514017)
+2026-10-30 18:06:56: ACTION[Main]: [mcl_villages]: Loaded 0 points of interest in 0 ms
+2026-10-30 18:06:56: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-30 18:06:56: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-30 18:06:56: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-30 18:06:56: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-30 18:06:56: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-30 18:06:56: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: bounded native stronghold preparation on Luanti 5.17.0 macOS ARM64; temporary execution hook, unchanged RNG
+2026-10-30 18:06:56: ACTION[Main]: [mcl_levelgen]: Resuming 2 feature placement task(s)
+ _                   _   _
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-30 18:06:59: ACTION[Main]: World at [/private/tmp/everforge-expedition-20261030/world]
+2026-10-30 18:06:59: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:57563.
+2026-10-30 18:06:59: ACTION[Server]: [everforge_world_visuals] Everforge visual: ACTIVO; Roble: nodebox / everforge_world_visuals_leaves_oak.png; Cesped: everforge_world_visuals_grass_top.png; Generador: singlenode; mcl_levelgen=true
+2026-10-30 18:06:59: ACTION[Server]: Generating world spawn from (79,-128,2) to (127,255,50)
+2026-10-30 18:07:00: ACTION[Server]: Completed regeneration of 384 MapBlocks
+2026-10-30 18:07:05: ACTION[Server]: ExpeditionBob [127.0.0.1] joins game. List of players: ExpeditionBob
+2026-10-30 18:07:05: ACTION[Server]: EXPEDITION_QA_JOIN ExpeditionBob peer={"address":"127.0.0.1","avg_jitter":0,"avg_rtt":0.0010000000474974513,"connection_uptime":2,"formspec_version":11,"ip_version":4,"lang_code":"es","max_jitter":0.0010000000474974513,"max_rtt":0.0020000000949949026,"min_jitter":0,"min_rtt":0.0010000000474974513,"protocol_version":53,"version_string":"5.17.0"}
+2026-10-30 18:07:05: ACTION[Server]: ExpeditionAlice [127.0.0.1] joins game. List of players: ExpeditionBob ExpeditionAlice
+2026-10-30 18:07:05: ACTION[Server]: EXPEDITION_QA_JOIN ExpeditionAlice peer={"address":"127.0.0.1","avg_jitter":0,"avg_rtt":0.0010000000474974513,"connection_uptime":2,"formspec_version":11,"ip_version":4,"lang_code":"es","max_jitter":0.001999999862164259,"max_rtt":0.0030000000260770321,"min_jitter":0,"min_rtt":0.0010000000474974513,"protocol_version":53,"version_string":"5.17.0"}
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_OK exactly one camp expedition NPC (actual=1)
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_OK NPC instantiated and interactable
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_npc
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_OK NPC interaction sends real formspec
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_OK real player ObjectRef ExpeditionAlice
+2026-10-30 18:07:12: WARNING[Server]: Deprecated "hud_elem_type" field, use "type" instead. (at /Users/josephrojas/Desktop/Everforge/mods/MISC/everforge/expedition.lua:111)
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_npc
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_OK leader creates expedition
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_HUD ExpeditionAlice Expedición #1 · espada: pendiente · entrega: pendiente
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionAlice count=1
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_OK real player ObjectRef ExpeditionAlice
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionBob everforge:expedition_invite
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_npc
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_OK second player receives invitation
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_RECONNECT Bob
+2026-10-30 18:07:12: [Server]: [mcl_craftguide] not saving empty progress for player 'ExpeditionBob'
+2026-10-30 18:07:12: ACTION[Server]: EXPEDITION_QA_LEAVE ExpeditionBob
+2026-10-30 18:07:12: ACTION[Server]: ExpeditionBob leaves game. List of players: ExpeditionAlice
+2026-10-30 18:07:15: ACTION[Server]: ExpeditionBob [127.0.0.1] joins game. List of players: ExpeditionAlice ExpeditionBob
+2026-10-30 18:07:15: ACTION[Server]: EXPEDITION_QA_JOIN ExpeditionBob peer={"address":"127.0.0.1","avg_jitter":0,"avg_rtt":0.0010000000474974513,"connection_uptime":1,"formspec_version":11,"ip_version":4,"lang_code":"es","max_jitter":0.0010000000474974513,"max_rtt":0.0020000000949949026,"min_jitter":0,"min_rtt":0.0010000000474974513,"protocol_version":53,"version_string":"5.17.0"}
+2026-10-30 18:07:16: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionBob everforge:expedition_invite
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_OK real disconnect and reconnect before invitation acceptance
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_OK pending invitation presented after reconnect
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_OK real player ObjectRef ExpeditionBob
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionBob everforge:expedition_npc
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_OK second player accepts invitation
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_HUD ExpeditionAlice Expedición #1 · espada: pendiente · entrega: pendiente
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionAlice count=1
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_HUD ExpeditionBob Expedición #1 · espada: pendiente · entrega: pendiente
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionBob count=1
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_OK engine recipe produces a sword
+2026-10-30 18:07:19: ACTION[Server]: EXPEDITION_QA_OK crafted sword fits real inventory
+2026-10-30 18:07:24: ACTION[Server]: EXPEDITION_QA_OK sword acquisition updates shared progress
+2026-10-30 18:07:24: ACTION[Server]: EXPEDITION_QA_RECONNECT Alice
+2026-10-30 18:07:24: ACTION[Server]: EXPEDITION_QA_LEAVE ExpeditionAlice
+2026-10-30 18:07:24: ACTION[Server]: ExpeditionAlice leaves game. List of players: ExpeditionBob
+2026-10-30 18:07:27: ACTION[Server]: ExpeditionAlice [127.0.0.1] joins game. List of players: ExpeditionBob ExpeditionAlice
+2026-10-30 18:07:27: ACTION[Server]: EXPEDITION_QA_JOIN ExpeditionAlice peer={"address":"127.0.0.1","avg_jitter":0,"avg_rtt":0.0010000000474974513,"connection_uptime":1,"formspec_version":11,"ip_version":4,"lang_code":"es","max_jitter":0.0010000000474974513,"max_rtt":0.0020000000949949026,"min_jitter":0,"min_rtt":0.0010000000474974513,"protocol_version":53,"version_string":"5.17.0"}
+2026-10-30 18:07:29: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=83 m_static_exists=true but static data doesn't actually exist in (13,-1,9)
+2026-10-30 18:07:29: WARNING[Server]: StaticObjectList::remove(): id=83 not found
+2026-10-30 18:07:29: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=84 m_static_exists=true but static data doesn't actually exist in (11,-2,0)
+2026-10-30 18:07:29: WARNING[Server]: StaticObjectList::remove(): id=84 not found
+2026-10-30 18:07:29: WARNING[Server]: ServerEnvironment::deactivateFarObjects(): id=85 m_static_exists=true but static data doesn't actually exist in (11,-2,0)
+2026-10-30 18:07:29: WARNING[Server]: StaticObjectList::remove(): id=85 not found
+2026-10-30 18:07:30: ACTION[Server]: EXPEDITION_QA_OK leader disconnect and reconnect are real
+2026-10-30 18:07:30: ACTION[Server]: EXPEDITION_QA_OK shared progress survives leader reconnect
+2026-10-30 18:07:30: ACTION[Server]: EXPEDITION_QA_HUD ExpeditionAlice Expedición #1 · espada: sí · entrega: pendiente
+2026-10-30 18:07:30: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionAlice count=1
+2026-10-30 18:07:30: ACTION[Server]: EXPEDITION_QA_HUD ExpeditionBob Expedición #1 · espada: sí · entrega: pendiente
+2026-10-30 18:07:30: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionBob count=1
+2026-10-30 18:07:30: ACTION[Server]: EXPEDITION_QA_PHASE_PASS active-saved checks=21
+2026-10-30 18:07:31: ACTION[Main]: Server: Shutting down
+2026-10-30 18:07:31: [Main]: [mcl_craftguide] not saving empty progress for player 'ExpeditionBob'

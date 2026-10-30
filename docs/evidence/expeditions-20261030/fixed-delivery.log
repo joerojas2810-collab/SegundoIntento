@@ -1,0 +1,71 @@
+2026-10-30 18:18:24: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 12345 (Biome seed: 293737985876514017)
+2026-10-30 18:18:24: ACTION[Main]: [mcl_villages]: Loaded 0 points of interest in 0 ms
+2026-10-30 18:18:24: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-30 18:18:24: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-30 18:18:24: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-30 18:18:24: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-30 18:18:24: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-30 18:18:24: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: bounded native stronghold preparation on Luanti 5.17.0 macOS ARM64; temporary execution hook, unchanged RNG
+ _                   _   _
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-30 18:18:28: ACTION[Main]: World at [/private/tmp/everforge-expedition-20261030/world]
+2026-10-30 18:18:28: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:57563.
+2026-10-30 18:18:28: ACTION[Server]: [everforge_world_visuals] Everforge visual: ACTIVO; Roble: nodebox / everforge_world_visuals_leaves_oak.png; Cesped: everforge_world_visuals_grass_top.png; Generador: singlenode; mcl_levelgen=true
+2026-10-30 18:18:28: ACTION[Server]: Generating world spawn from (79,-128,2) to (127,255,50)
+2026-10-30 18:18:29: ACTION[Server]: Completed regeneration of 384 MapBlocks
+2026-10-30 18:18:33: ACTION[Server]: ExpeditionAlice [127.0.0.1] joins game. List of players: ExpeditionAlice
+2026-10-30 18:18:33: ACTION[Server]: EXPEDITION_QA_JOIN ExpeditionAlice peer={"address":"127.0.0.1","avg_jitter":0,"avg_rtt":0.0010000000474974513,"connection_uptime":3,"formspec_version":11,"ip_version":4,"lang_code":"es","max_jitter":0.001999999862164259,"max_rtt":0.0030000000260770321,"min_jitter":0,"min_rtt":0.0010000000474974513,"protocol_version":53,"version_string":"5.17.0"}
+2026-10-30 18:18:33: ACTION[Server]: ExpeditionBob [127.0.0.1] joins game. List of players: ExpeditionAlice ExpeditionBob
+2026-10-30 18:18:33: ACTION[Server]: EXPEDITION_QA_JOIN ExpeditionBob peer={"address":"127.0.0.1","avg_jitter":0,"avg_rtt":0.0010000000474974513,"connection_uptime":3,"formspec_version":11,"ip_version":4,"lang_code":"es","max_jitter":0.0030000000260770321,"max_rtt":0.0040000001899898052,"min_jitter":0,"min_rtt":0.0010000000474974513,"protocol_version":53,"version_string":"5.17.0"}
+2026-10-30 18:18:33: WARNING[Server]: Server: Maximum lag peaked at 2.89598 (steplen=0.05)
+2026-10-30 18:18:33: WARNING[Server]: collisionMoveSimple: maximum step interval exceeded, lost movement details!
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK exactly one camp expedition NPC (actual=1)
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK NPC instantiated and interactable
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_npc
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK NPC interaction sends real formspec
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK active progress and membership survive server restart
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK real player sword inventory survives restart
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_HUD ExpeditionAlice Expedición #1 · espada: sí · entrega: pendiente
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionAlice count=1
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_HUD ExpeditionBob Expedición #1 · espada: sí · entrega: pendiente
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionBob count=1
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK leader owns sword before delivery
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK real player ObjectRef ExpeditionAlice
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_complete
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionBob everforge:expedition_complete
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK shared completion for both members
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK exactly one single sword consumed
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionAlice count=0
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionBob count=0
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK both online confirmations recorded
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK completion forms sent to both clients
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK exactly one camp expedition NPC (actual=1)
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK NPC instantiated and interactable
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_npc
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK NPC interaction sends real formspec
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK real player ObjectRef ExpeditionAlice
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_npc
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK real player ObjectRef ExpeditionAlice
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionBob everforge:expedition_invite
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_npc
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK real player ObjectRef ExpeditionBob
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionBob everforge:expedition_npc
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK engine recipe produces a sword
+2026-10-30 18:18:38: ACTION[Server]: EXPEDITION_QA_OK crafted sword fits real inventory
+2026-10-30 18:18:43: ACTION[Server]: EXPEDITION_QA_OK second shared sword found
+2026-10-30 18:18:43: [Server]: [mcl_craftguide] not saving empty progress for player 'ExpeditionBob'
+2026-10-30 18:18:43: ACTION[Server]: EXPEDITION_QA_LEAVE ExpeditionBob
+2026-10-30 18:18:43: ACTION[Server]: ExpeditionBob leaves game. List of players: ExpeditionAlice
+2026-10-30 18:18:45: ACTION[Server]: EXPEDITION_QA_OK member really offline during delivery
+2026-10-30 18:18:45: ACTION[Server]: EXPEDITION_QA_OK leader owns sword before delivery
+2026-10-30 18:18:45: ACTION[Server]: EXPEDITION_QA_OK real player ObjectRef ExpeditionAlice
+2026-10-30 18:18:45: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_complete
+2026-10-30 18:18:45: ACTION[Server]: EXPEDITION_QA_OK shared completion for both members
+2026-10-30 18:18:45: ACTION[Server]: EXPEDITION_QA_OK exactly one single sword consumed
+2026-10-30 18:18:45: ACTION[Server]: EXPEDITION_QA_OK expedition HUD ExpeditionAlice count=0
+2026-10-30 18:18:45: ACTION[Server]: EXPEDITION_QA_OK offline confirmation remains pending
+2026-10-30 18:18:45: ACTION[Server]: EXPEDITION_QA_PHASE_PASS offline-completed checks=31
+2026-10-30 18:18:46: ACTION[Main]: Server: Shutting down

@@ -172,6 +172,10 @@ local function place(c)
  if not find_arrival() then region.state="building";return fail("no connected safe arrival after camp placement") end
  save()
  core.log("action", "[Everforge] REGION_READY "..core.write_json(region))
+ if everforge.expedition then
+  local ok, err = pcall(everforge.expedition.setup_camp, c)
+  if not ok then core.log("error", "[Everforge] Expedition NPC setup failed: "..tostring(err)) end
+ end
 end
 if starting then
  core.register_on_mods_loaded(function()

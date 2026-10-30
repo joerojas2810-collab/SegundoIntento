@@ -1,0 +1,72 @@
+ok: model and engine load
+ok: camp NPC spawned
+ok: exactly one NPC entity
+ok: setup is idempotent
+ok: ensure_npc does not duplicate
+ok: ready camp without NPC record recovers the NPC
+ok: recovered camp has exactly one NPC
+ok: recovered NPC position stored
+ok: recovery remains idempotent
+ok: NPC registered through mcl_mobs
+ok: late saved NPC does not duplicate recovery spawn
+ok: NPC activation recovers after previous object unloads
+ok: NPC right-click opens its formspec
+ok: NPC offers expedition start
+ok: state valid after start
+ok: Alice starts as leader
+ok: leader HUD added
+ok: connected player can be invited
+ok: invitation pending for Bob
+ok: invitee receives invitation form
+ok: Bob accepted and shares the group
+ok: member HUD added
+ok: another connected player can be invited
+ok: invitation pending for Carol
+ok: Carol joins the group
+ok: third member HUD added
+ok: shared mission records the found sword
+ok: group is told who found the sword
+ok: HUD removed on disconnect
+ok: membership survives disconnect
+ok: HUD restored after reconnect
+ok: reconnecting member resumes the group
+ok: leader disconnect keeps group progress
+ok: leader HUD restored
+ok: member delivers the sword
+ok: one delivered sword leaves the inventory
+ok: mission completed
+ok: deliverer recorded
+ok: confirmation shown to all online participants
+ok: completion message for every participant
+ok: offline member does not receive the live form
+ok: offline member gets the confirmation on return
+ok: offline member gets the completion message
+ok: returning member is marked as notified
+ok: completed missions do not block a new one
+ok: expedition state written to mod storage
+ok: stored state survives reload
+ok: completed progress persists independently of achievements
+ok: invalid state rejected
+ok: invalid blob untouched
+ok: new expedition valid
+ok: leader cannot invite self
+ok: invite member
+ok: accept invited member
+ok: invite C
+ok: C accepts
+ok: member cannot be invited elsewhere
+ok: no invitation rejected
+ok: multi-expedition state valid
+ok: invite expiry runs
+ok: state remains bounded/valid under many expeditions
+ok: 64 completed expeditions remain valid
+ok: old completed expedition pruned to make room
+ok: pruned state remains valid
+ok: 64 active expeditions created
+ok: active cap refuses overflow
+ok: full active state remains valid
+ok: native JSON null collections restore as empty tables
+ok: missing collection field still disables actions
+ok: invalid collection blob remains untouched
+EXPEDITION_FORMS: 13
+EVERFORGE_EXPEDITION_TEST_PASS

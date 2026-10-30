@@ -1,0 +1,15 @@
+2026-10-30 18:18:53: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:53: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:53: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:53: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:53: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:53: ERROR[Main]: Irrlicht: Could not create window and context!
+2026-10-30 18:18:53: WARNING[Main]: Irrlicht: SDL_PollEvent took too long: 320ms
+2026-10-30 18:18:54: ACTION[Main]: Connected to 127.0.0.1 (127.0.0.1:57563)
+2026-10-30 18:18:57: ACTION[Main]: CHAT: # Server: version: 5.17.0 | game: Everforge | uptime: 2s | max lag: 0.186s | clients: ExpeditionAlice
+2026-10-30 18:18:57: ACTION[Main]: CHAT: *** ExpeditionAlice joined the game.
+2026-10-30 18:18:57: ACTION[Main]: CHAT: *** ExpeditionBob joined the game.
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+2026-10-30 18:19:03: ACTION[Main]: CHAT: *** Server shutting down
+2026-10-30 18:19:03: ERROR[Main]: Acceso denegado. Razón: Expedition QA stage complete
+INFO: signal_handler(): got SIGTERM, shutting down.

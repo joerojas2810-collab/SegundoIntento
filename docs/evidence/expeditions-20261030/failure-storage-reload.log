@@ -1,0 +1,36 @@
+2026-10-30 18:08:38: ACTION[Main]: [mcl_levelgen]: Initializing level generation with seed 12345 (Biome seed: 293737985876514017)
+2026-10-30 18:08:39: ACTION[Main]: [mcl_villages]: Loaded 0 points of interest in 0 ms
+2026-10-30 18:08:39: ACTION[Main]: [adamantine] sword: speed 16 (netherite 9.5), uses 4062 (netherite 1015.5), damage 11 (netherite 9)
+2026-10-30 18:08:39: ACTION[Main]: [adamantine] pickaxe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-30 18:08:39: ACTION[Main]: [adamantine] axe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 12 (netherite 10)
+2026-10-30 18:08:39: ACTION[Main]: [adamantine] shovel: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 8 (netherite 6)
+2026-10-30 18:08:39: ACTION[Main]: [adamantine] hoe: speed 16 (netherite 9.5), uses 4062 (netherite 2031), damage 6 (netherite 4)
+2026-10-30 18:08:39: ERROR[Main]: [Everforge] Invalid expedition storage; it is preserved and expedition actions are disabled
+2026-10-30 18:08:39: ACTION[Main]: [Everforge] WORLDGEN_COMPAT: bounded native stronghold preparation on Luanti 5.17.0 macOS ARM64; temporary execution hook, unchanged RNG
+ _                   _   _
+| |_   _  __ _ _ __ | |_(_)
+| | | | |/ _` | '_ \| __| |
+| | |_| | (_| | | | | |_| |
+|_|\__,_|\__,_|_| |_|\__|_|  ___ 5.17.0
+2026-10-30 18:08:42: ACTION[Main]: World at [/private/tmp/everforge-expedition-20261030/world]
+2026-10-30 18:08:42: ACTION[Main]: Server for gameid="everforge" listening on 127.0.0.1:57563.
+2026-10-30 18:08:42: ACTION[Server]: [everforge_world_visuals] Everforge visual: ACTIVO; Roble: nodebox / everforge_world_visuals_leaves_oak.png; Cesped: everforge_world_visuals_grass_top.png; Generador: singlenode; mcl_levelgen=true
+2026-10-30 18:08:42: ACTION[Server]: Generating world spawn from (79,-128,2) to (127,255,50)
+2026-10-30 18:08:42: ACTION[Server]: Completed regeneration of 384 MapBlocks
+2026-10-30 18:08:46: ACTION[Server]: ExpeditionAlice [127.0.0.1] joins game. List of players: ExpeditionAlice
+2026-10-30 18:08:46: ACTION[Server]: EXPEDITION_QA_JOIN ExpeditionAlice peer={"address":"127.0.0.1","avg_jitter":0.0010000000474974513,"avg_rtt":0.0020000000949949026,"connection_uptime":3,"formspec_version":11,"ip_version":4,"lang_code":"es","max_jitter":0.0039999997243285179,"max_rtt":0.004999999888241291,"min_jitter":0,"min_rtt":0.0010000000474974513,"protocol_version":53,"version_string":"5.17.0"}
+2026-10-30 18:08:46: ACTION[Server]: ExpeditionBob [127.0.0.1] joins game. List of players: ExpeditionAlice ExpeditionBob
+2026-10-30 18:08:46: ACTION[Server]: EXPEDITION_QA_JOIN ExpeditionBob peer={"address":"127.0.0.1","avg_jitter":0,"avg_rtt":0.0010000000474974513,"connection_uptime":3,"formspec_version":11,"ip_version":4,"lang_code":"es","max_jitter":0.001999999862164259,"max_rtt":0.0040000001899898052,"min_jitter":0,"min_rtt":0.0010000000474974513,"protocol_version":53,"version_string":"5.17.0"}
+2026-10-30 18:08:46: WARNING[Server]: Server: Maximum lag peaked at 2.13029 (steplen=0.05)
+2026-10-30 18:08:51: ACTION[Server]: EXPEDITION_QA_OK exactly one camp expedition NPC (actual=1)
+2026-10-30 18:08:51: ACTION[Server]: EXPEDITION_QA_OK NPC instantiated and interactable
+2026-10-30 18:08:51: ACTION[Server]: EXPEDITION_QA_FORM ExpeditionAlice everforge:expedition_npc
+2026-10-30 18:08:51: ACTION[Server]: EXPEDITION_QA_OK NPC interaction sends real formspec
+2026-10-30 18:08:51: ACTION[Main]: Server: Shutting down
+2026-10-30 18:08:51: [Main]: [mcl_craftguide] not saving empty progress for player 'ExpeditionBob'
+2026-10-30 18:08:52: ERROR[Main]: ServerError: AsyncErr: Lua: Runtime error from mod 'expedition_qa' in callback environment_Step(): ...pedition-20261030/world/worldmods/expedition_qa/init.lua:40: attempt to index a nil value
+2026-10-30 18:08:52: ERROR[Main]: stack traceback:
+2026-10-30 18:08:52: ERROR[Main]: 	...pedition-20261030/world/worldmods/expedition_qa/init.lua:40: in function 'exp'
+2026-10-30 18:08:52: ERROR[Main]: 	...pedition-20261030/world/worldmods/expedition_qa/init.lua:104: in function 'func'
+2026-10-30 18:08:52: ERROR[Main]: 	...s/luanti.app/Contents/Resources/builtin/common/after.lua:140: in function <...s/luanti.app/Contents/Resources/builtin/common/after.lua:117>
+2026-10-30 18:08:52: ERROR[Main]: 	...uanti.app/Contents/Resources/builtin/common/register.lua:27: in function <...uanti.app/Contents/Resources/builtin/common/register.lua:13>

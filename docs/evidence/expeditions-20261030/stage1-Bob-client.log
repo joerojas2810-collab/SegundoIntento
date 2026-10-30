@@ -1,0 +1,21 @@
+2026-10-30 18:18:29: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:29: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:29: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:29: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:29: WARNING[Main]: Irrlicht: Could not create context: Failed creating OpenGL context at version requested
+2026-10-30 18:18:29: ERROR[Main]: Irrlicht: Could not create window and context!
+2026-10-30 18:18:29: WARNING[Main]: Irrlicht: SDL_PollEvent took too long: 325ms
+2026-10-30 18:18:29: WARNING[Main]: Irrlicht: SDL_PollEvent took too long: 168ms
+2026-10-30 18:18:30: WARNING[Main]: Irrlicht: SDL_PollEvent took too long: 154ms
+2026-10-30 18:18:30: ACTION[Main]: Connected to 127.0.0.1 (127.0.0.1:57563)
+2026-10-30 18:18:33: ACTION[Main]: CHAT: *** ExpeditionAlice joined the game.
+2026-10-30 18:18:33: ACTION[Main]: CHAT: # Server: version: 5.17.0 | game: Everforge | uptime: 2s | max lag: 0.173s | clients: ExpeditionAlice, ExpeditionBob
+2026-10-30 18:18:33: ACTION[Main]: CHAT: *** ExpeditionBob joined the game.
+2026-10-30 18:18:33: ACTION[Main]: CHAT: [Everforge] Continúas en la expedición #1 (espada conseguida). entrega pendiente.
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 1 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+2026-10-30 18:18:38: ACTION[Main]: CHAT: [Everforge] Expedición #1 completada: ExpeditionAlice entregó la espada. ¡El grupo ha cumplido la misión!
+2026-10-30 18:18:38: ACTION[Main]: CHAT: [Everforge] ExpeditionAlice te ha invitado a la expedición #2.
+2026-10-30 18:18:38: ACTION[Main]: CHAT: [Everforge] Te has unido a la expedición #2 de ExpeditionAlice.
+2026-10-30 18:18:38: ACTION[Main]: CHAT: [Everforge] ExpeditionBob se ha unido a la expedición #2.
+2026-10-30 18:18:41: ACTION[Main]: CHAT: [Everforge] ExpeditionAlice ha conseguido una espada. Entrégala a la maestra para completar la expedición #2.
+2026-10-30 18:18:43: ERROR[Main]: Acceso denegado. Razón: Kicked: QA offline completion
