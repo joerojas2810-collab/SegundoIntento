@@ -100,16 +100,22 @@ local function escape(text)
 end
 
 local function rich(text)
-	return core.hypertext_escape(tostring(text or "")):gsub("\n", "<br>")
+	return core.formspec_escape("<global margin=0 valign=top><style color=#F2E8D9>"
+		.. core.hypertext_escape(tostring(text or "")) .. "</style>")
 end
 
 local function frame(width, height)
-	return "formspec_version[7]size[" .. width .. "," .. height .. "]" ..
-		"bgcolor[#0d1118;true]" ..
-		"style_type[label;textcolor=#F2E8D9]" ..
-		"style_type[button;bgcolor=#34465e;textcolor=#F7F1E3]" ..
-		"style_type[button_exit;bgcolor=#34465e;textcolor=#F7F1E3]"
+	return table.concat({
+		("formspec_version[7]size[%s,%s]no_prepend[]"):format(width, height),
+		"bgcolor[#08090BEF;true]",
+		("background9[0,0;%s,%s;everforge_ui_panel.png;false;8]"):format(width, height),
+		"style_type[label;textcolor=#F2E8D9]",
+		"style_type[hypertext;textcolor=#F2E8D9]",
+		"style_type[button,button_exit;textcolor=#FFF1DC;border=false;bgimg=everforge_ui_button.png;bgimg_pressed=everforge_ui_button_pressed.png;bgimg_middle=4;font=bold]",
+		"style_type[button:hovered,button_exit:hovered;bgimg=everforge_ui_button_hover.png]",
+	})
 end
+
 
 local function member(party, name)
 	return party and party.members and party.members[name] == true
@@ -324,7 +330,7 @@ local function show_error(player)
 	core.show_formspec(player:get_player_name(), FORM_NPC, table.concat({
 		frame(9, 3.6),
 		"label[0.6,0.5;MAESTRA DE EXPEDICIONES]",
-		"hypertext[0.6,1.1;7.8,1.4;err;El registro de la expedición no está disponible. No se ha modificado ningún dato; consulta el registro del servidor.",
+		"hypertext[0.6,1.1;7.8,1.4;err;El registro de la expedición no está disponible. No se ha modificado ningún dato; consulta el registro del servidor.]",
 		"button_exit[0.6,2.7;3.2,0.7;close;Cerrar]",
 	}))
 end
@@ -815,6 +821,12 @@ end
 
 function Q.is_configured()
 	return site ~= nil
+end
+
+-- Read-only: lets the prepared world find its own camp/trailhead landing
+-- positions again after a restart, without rebuilding or guessing terrain.
+function Q.get_site()
+	return site
 end
 
 -- ---------------------------------------------------------------------------

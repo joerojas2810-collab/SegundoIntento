@@ -13,6 +13,28 @@ fail() { say "ERROR: $*"; say ""; read -r -p "Pulsa Intro para cerrar." _; exit 
 [ -f "$REPO/game.conf" ] || fail "No encuentro game.conf. Mantén este archivo dentro del repositorio Everforge."
 [ -f "$WORLD_SRC/world.mt" ] || fail "Falta playtest/el_sello_de_las_ruinas/world.mt."
 
+BIN=""
+for candidate in \
+	"$REPO/Luanti.app/Contents/MacOS/luanti" \
+	"$REPO/luanti.app/Contents/MacOS/luanti" \
+	"$HOME/Applications/Luanti.app/Contents/MacOS/luanti" \
+	"$HOME/Downloads/luanti.app/Contents/MacOS/luanti" \
+	"/Applications/Luanti.app/Contents/MacOS/luanti" \
+	"/Applications/Minetest.app/Contents/MacOS/minetest" \
+	"/Applications/MineTest.app/Contents/MacOS/minetest"; do
+	if [ -x "$candidate" ]; then BIN="$candidate"; break; fi
+done
+if [ -z "$BIN" ]; then
+	BIN="$(command -v luanti 2>/dev/null || true)"
+fi
+if [ -z "$BIN" ]; then
+	BIN="$(command -v minetest 2>/dev/null || true)"
+fi
+if [ -z "$BIN" ]; then
+	fail "No encuentro Luanti. Instala Luanti 5.17 (luanti.org) y vuelve a abrir este archivo."
+fi
+
+
 # Locate the Luanti/Minettest data directory used by the macOS app.
 DATA=""
 for candidate in \
@@ -48,22 +70,6 @@ else
 	cp -R "$WORLD_SRC/worldmods" "$WORLD/" 2>/dev/null || true
 fi
 
-BIN=""
-for candidate in \
-	"/Applications/Luanti.app/Contents/MacOS/luanti" \
-	"/Applications/Minetest.app/Contents/MacOS/minetest" \
-	"/Applications/MineTest.app/Contents/MacOS/minetest"; do
-	if [ -x "$candidate" ]; then BIN="$candidate"; break; fi
-done
-if [ -z "$BIN" ]; then
-	BIN="$(command -v luanti 2>/dev/null || true)"
-fi
-if [ -z "$BIN" ]; then
-	BIN="$(command -v minetest 2>/dev/null || true)"
-fi
-if [ -z "$BIN" ]; then
-	fail "No encuentro Luanti. Instala Luanti 5.17 (luanti.org) y vuelve a abrir este archivo."
-fi
 
 VERSION="$("$BIN" --version 2>/dev/null | head -n 1 || true)"
 say "Everforge: $REPO"
@@ -73,4 +79,8 @@ say ""
 say "Cuando entres: habla con la Maestra junto a la hoguera, acepta la misión"
 say "y usa la piedra de viaje azul a un lado del campamento."
 say ""
-exec "$BIN" --gameid everforge --world "$WORLD"
+CONFIG="$WORLD/playtest.conf"
+if [ ! -f "$CONFIG" ]; then
+	printf '%s\n' 'language = es' 'enable_server = false' 'server_announce = false' 'everforge_start_region = false' 'mobs_spawn = false' > "$CONFIG"
+fi
+exec "$BIN" --config "$CONFIG" --gameid everforge --world "$WORLD" --go

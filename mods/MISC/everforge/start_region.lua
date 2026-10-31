@@ -7,9 +7,14 @@ local key = "start_region:v1"
 local encoded = storage:get_string(key)
 local region = encoded ~= "" and core.parse_json(encoded) or nil
 local enabled = core.settings:get_bool("everforge_start_region", true)
--- The prepared ruins test world uses singlenode and builds its own camp with
--- worldmods. Never run the normal regional spawn search there.
-if core.get_mapgen_setting("mg_name") == "singlenode" then enabled = false end
+-- Prepared adventure worlds (e.g. "El sello de las ruinas") build their own
+-- camp from a worldmod and must never run the normal regional spawn search.
+-- A world.mt setting cannot be relied on here (core.settings does not read
+-- arbitrary world.mt keys), so this checks for the worldmod itself, which is
+-- resolvable regardless of mod load order.
+if core.get_mapgen_setting("mg_name") == "singlenode" or core.get_modpath("zz_sello_ruins") then
+	enabled = false
+end
 if not enabled then return end
 local previous_environment = io.open(core.get_worldpath() .. "/env_meta.txt", "r")
 local existing_world = previous_environment ~= nil

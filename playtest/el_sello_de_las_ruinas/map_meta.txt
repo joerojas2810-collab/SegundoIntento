@@ -1,3 +1,5 @@
-mg_name = singlenode
-seed = 1
-water_level = -31000
+mg_name = v7
+seed = 11
+water_level = 1
+mcl_levelgen_enable_ersatz = false
+[end_of_params]

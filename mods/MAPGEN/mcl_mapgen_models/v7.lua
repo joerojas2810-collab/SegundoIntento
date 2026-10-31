@@ -35,8 +35,13 @@ function mcl_mapgen_models.v7_mapgen_model ()
 		= core.get_mapgen_setting_noiseparams ("mgv7_np_mountain")
 	local np_ridge
 		= core.get_mapgen_setting_noiseparams ("mgv7_np_ridge")
-	local mount_zero_level
-		= tonumber (core.get_mapgen_setting ("mgv7_mount_zero_level"))
+	-- mcl_levelgen's ersatz terrain model can call this before the engine has
+	-- populated mgv7_mount_zero_level (e.g. during early stronghold/structure
+	-- placement prep); get_mapgen_setting can then return no value at all, so
+	-- tonumber(x) itself (not just an "or") must see a value. Fall back to
+	-- the engine's own default (127).
+	local raw_mount_zero_level = core.get_mapgen_setting ("mgv7_mount_zero_level")
+	local mount_zero_level = tonumber (raw_mount_zero_level) or 127
 	local flags = mcl_mapgen_models.parse_flags ("mgv7_spflags")
 
 	local terrain_persist = core.get_value_noise (np_terrain_persist)
@@ -59,7 +64,9 @@ function mcl_mapgen_models.v7_mapgen_model ()
 
 	local mgv7_mountains = flags.mountains or false
 	local mgv7_ridges = flags.ridges or false
-	local sea_level = tonumber (core.get_mapgen_setting ("water_level"))
+	-- Same "no value at all" hazard as mount_zero_level above.
+	local raw_water_level = core.get_mapgen_setting ("water_level")
+	local sea_level = tonumber (raw_water_level) or 1
 
 	local mg_overworld_min = mcl_vars.mg_overworld_min
 

@@ -1,9 +1,14 @@
 -- SPDX-License-Identifier: GPL-3.0-or-later
--- Prepared, self-contained world for "El sello de las ruinas".
+-- Prepared world for "El sello de las ruinas", grounded in Everforge's normal
+-- Mineclonia terrain (v7 + mcl_biomes), not a flat singlenode plaza.
 --
--- The world is singlenode on purpose: this mod authors a small grassy shelf, a
--- ruined hill-fort from the distributed .mts, a trailhead and a camp. It does
--- not call the normal world generator and never touches an existing map.
+-- This mod never builds its own terrain from scratch: it reads the real,
+-- generated ground height at each column and grounds the camp, the trail and
+-- the fortress on it. The fortress footprint is leveled to a single pad
+-- height chosen from its own natural centre, with a short tapered skirt at
+-- its edges, so hillier ground is quarried into and lower ground is filled
+-- only inside and right at the structure's own footprint -- never a platform
+-- larger than the building that sits on it.
 
 local modname = core.get_current_modname()
 local modpath = core.get_modpath(modname)
@@ -11,205 +16,235 @@ local gamepath = core.get_modpath("everforge")
 local Q = everforge.ruins_quest
 local E = everforge.expedition
 local camp = dofile(gamepath .. "/camp.lua")
+local site = dofile(gamepath .. "/camp_site.lua")
 
-local ANCHOR = {x = -30, y = 61, z = -30}
-local CAMP = {x = 0, y = 83, z = -62}
-local CAMP_LANDING = {x = 0, y = 83, z = -57}
-local CAMP_STONE = {x = -4, y = 83, z = -56}
-local CAMP_CHEST = {x = 5, y = 83, z = -62}
-local TRAIL_LANDING = {x = 0, y = 83, z = -47}
-local TRAIL_STONE = {x = 0, y = 83, z = -50}
+-- Horizontal layout (unchanged from the original design): the camp sits
+-- south of the fortress, connected by a short trail. Only the vertical
+-- placement is now read from the real terrain.
+local ANCHOR_X, ANCHOR_Z = -30, -30
+local CAMP_X, CAMP_Z = 0, -62
+local TRAIL_STONE_X, TRAIL_STONE_Z = 0, -50
+local TRAILHEAD_X, TRAILHEAD_Z = 0, -47
 
-local PLATFORM = {minx = -66, maxx = 66, minz = -84, maxz = 74, top = 82}
+-- Local Y, inside the schematic, of its own walkable ground floor (the
+-- courtyard/gate level). Placing the schematic at anchor.y = ground - GRADE
+-- means this floor lines up with the real surface: the crypt below it stays
+-- naturally underground and the walls/towers above it rise out of the hill.
+local GRADE_OFFSET = 21
+local SKIRT = 6
+local MIN_Y, MAX_Y = -64, 200
 
-local function set_node(pos, name, param2)
-	core.set_node(pos, {name = name, param2 = param2 or 0})
+local function ground_name(name)
+	local def = core.registered_nodes[name]
+	return name ~= "air" and name ~= "ignore" and site.natural(name) and def
 end
 
-local function clear_column(x, z, y1, y2)
-	for y = y1, y2 do set_node({x = x, y = y, z = z}, "air") end
-end
-
-local function build_platform()
-	for x = PLATFORM.minx, PLATFORM.maxx do
-		for z = PLATFORM.minz, PLATFORM.maxz do
-			set_node({x = x, y = 80, z = z}, "mcl_core:stone")
-			set_node({x = x, y = 81, z = z}, "mcl_core:dirt")
-			set_node({x = x, y = 82, z = z}, "mcl_core:dirt_with_grass")
-		end
+-- Topmost natural-ground node in a column; nil if the column never loaded.
+local function ground_height(x, z)
+	for y = MAX_Y, MIN_Y, -1 do
+		local name = core.get_node({x = x, y = y, z = z}).name
+		if name == "ignore" then return nil end
+		if ground_name(name) then return y end
 	end
-	-- Low, irregular grassy shoulders so the shelf does not end in a razor line.
-	for x = PLATFORM.minx, PLATFORM.maxx do
-		for z = PLATFORM.minz, PLATFORM.maxz do
-			if x < -52 or x > 52 or z < -74 or z > 64 then
-				local n = (x * 17 + z * 31) % 100
-				if n < 22 then
-					set_node({x = x, y = 83, z = z}, "mcl_core:dirt_with_grass")
-					if n < 8 then set_node({x = x, y = 84, z = z}, "mcl_core:dirt_with_grass") end
+	return nil
+end
+
+-- Set once the fortress footprint is leveled. Used by grade_height() below so
+-- the trail never re-scans for "natural" ground under the schematic's own
+-- gate/courtyard, where it would see straight through built stonebrick to
+-- whatever lies beneath the structure.
+local footprint_pad_y = nil
+
+-- Height to build the trail at: the known pad grade inside the fortress
+-- footprint (where ground_height() would otherwise be fooled by the
+-- schematic's own, non-"natural" floor), the real terrain outside it.
+local function grade_height(x, z, fallback)
+	if footprint_pad_y and x >= ANCHOR_X and x <= ANCHOR_X + 60
+		and z >= ANCHOR_Z and z <= ANCHOR_Z + 60 then
+		return footprint_pad_y
+	end
+	return ground_height(x, z) or fallback
+end
+
+local function clear_column_above(x, z, from_y, to_y)
+	for y = from_y, to_y do
+		local name = core.get_node({x = x, y = y, z = z}).name
+		if name ~= "air" then core.set_node({x = x, y = y, z = z}, {name = "air"}) end
+	end
+end
+
+local function fill_column(x, z, from_y, to_y)
+	-- Matches the real soil profile: stone core, two layers of dirt, grass on top.
+	for y = from_y, to_y do
+		local name
+		if y >= to_y - 1 then name = "mcl_core:dirt_with_grass"
+		elseif y >= to_y - 3 then name = "mcl_core:dirt"
+		else name = "mcl_core:stone" end
+		core.set_node({x = x, y = y, z = z}, {name = name})
+	end
+end
+
+-- Levels the fortress footprint to pad_y, with a short tapered skirt outside
+-- it so the edge blends into the surrounding slope instead of ending in a
+-- platform lip.
+local function level_footprint(anchor_x, anchor_z, size_x, size_z, pad_y)
+	for x = anchor_x - SKIRT, anchor_x + size_x - 1 + SKIRT do
+		for z = anchor_z - SKIRT, anchor_z + size_z - 1 + SKIRT do
+			local inside = x >= anchor_x and x <= anchor_x + size_x - 1
+				and z >= anchor_z and z <= anchor_z + size_z - 1
+			local h = ground_height(x, z)
+			if h then
+				local target
+				if inside then
+					target = pad_y
+				else
+					local dx = math.max(anchor_x - x, 0, x - (anchor_x + size_x - 1))
+					local dz = math.max(anchor_z - z, 0, z - (anchor_z + size_z - 1))
+					local dist = math.max(dx, dz)
+					local blend = math.min(1, dist / SKIRT)
+					target = h + (pad_y - h) * (1 - blend)
+					target = math.floor(target + 0.5)
+				end
+				if target > h then
+					fill_column(x, z, h + 1, target)
+				elseif target < h then
+					-- Clear the excavated soil AND whatever (trees, plants) was
+					-- standing on it, so nothing is left floating over the cut.
+					clear_column_above(x, z, target + 1, math.min(h + 40, MAX_Y))
 				end
 			end
 		end
 	end
 end
 
-local function build_trailhead()
+local function build_trailhead(base_y)
 	for x = -4, 4 do
 		for z = -54, -46 do
+			local h = grade_height(x, z, base_y)
 			local n = (x * 13 + z * 7) % 100
 			local name = "mcl_core:stonebrick"
 			if n < 18 then name = "mcl_core:stonebrickcracked"
 			elseif n < 34 then name = "mcl_core:stonebrickmossy" end
-			set_node({x = x, y = 82, z = z}, name)
-			clear_column(x, z, 83, 88)
+			core.set_node({x = x, y = h, z = z}, {name = name})
+			clear_column_above(x, z, h + 1, h + 10)
 		end
 	end
-	for _, x in ipairs({-3, 3}) do
-		for y = 83, 85 do set_node({x = x, y = y, z = -54}, "mcl_fences:dark_oak_fence") end
-		set_node({x = x, y = 86, z = -54}, "mcl_lanterns:lantern_floor")
+	local h0 = grade_height(-3, -54, base_y)
+	local h1 = grade_height(3, -54, base_y)
+	for _, pair in ipairs({{-3, h0}, {3, h1}}) do
+		local x, h = pair[1], pair[2]
+		for y = h + 1, h + 3 do core.set_node({x = x, y = y, z = -54}, {name = "mcl_fences:dark_oak_fence"}) end
+		core.set_node({x = x, y = h + 4, z = -54}, {name = "mcl_lanterns:lantern_floor"})
 	end
-	set_node({x = 3, y = 83, z = -47}, "mcl_campfires:campfire_lit")
-	set_node({x = -4, y = 83, z = -47}, "mcl_chests:chest_small")
-	-- A little rubble on the approach: the ruins begin before the gate.
+	local hc = grade_height(3, -47, base_y)
+	core.set_node({x = 3, y = hc + 1, z = -47}, {name = "mcl_campfires:campfire_lit"})
+	local hch = grade_height(-4, -47, base_y)
+	core.set_node({x = -4, y = hch + 1, z = -47}, {name = "mcl_chests:chest_small"})
 	for _, p in ipairs({{-5, -45}, {5, -44}, {-6, -49}, {6, -52}, {-4, -56}}) do
-		set_node({x = p[1], y = 83, z = p[2]}, "mcl_core:cobble")
+		local h = grade_height(p[1], p[2], base_y)
+		core.set_node({x = p[1], y = h + 1, z = p[2]}, {name = "mcl_core:cobble"})
 	end
 end
 
-local function build_path()
-	-- Gravel path, 3 wide, from the trailhead to the gate.  The last two
-	-- blocks step up to the fort's 84-level threshold.
+local function build_path(base_y)
 	for z = -49, -25 do
 		for x = -1, 1 do
+			local h = grade_height(x, z, base_y)
 			local n = (x * 9 + z * 5) % 100
 			local name = "mcl_core:gravel"
 			if n < 8 then name = "mcl_core:grass_path"
 			elseif n < 13 then name = "mcl_core:cobble" end
-			set_node({x = x, y = 82, z = z}, name)
-			clear_column(x, z, 83, 87)
+			core.set_node({x = x, y = h, z = z}, {name = name})
+			clear_column_above(x, z, h + 1, h + 10)
 		end
 	end
 	for z = -27, -25 do
 		for x = -1, 1 do
-			set_node({x = x, y = 83, z = z}, "mcl_core:stonebrick")
-			clear_column(x, z, 84, 87)
+			local h = grade_height(x, z, base_y)
+			core.set_node({x = x, y = h, z = z}, {name = "mcl_core:stonebrick"})
+			clear_column_above(x, z, h + 1, h + 10)
 		end
 	end
-	-- Lamp posts every eight metres; low fence rails on the wild side.
 	for z = -44, -28, 8 do
 		for _, x in ipairs({-3, 3}) do
-			set_node({x = x, y = 82, z = z}, "mcl_core:cobble")
-			for y = 83, 84 do set_node({x = x, y = y, z = z}, "mcl_fences:dark_oak_fence") end
-			set_node({x = x, y = 85, z = z}, "mcl_lanterns:lantern_floor")
+			local h = grade_height(x, z, base_y)
+			core.set_node({x = x, y = h, z = z}, {name = "mcl_core:cobble"})
+			for y = h + 1, h + 2 do core.set_node({x = x, y = y, z = z}, {name = "mcl_fences:dark_oak_fence"}) end
+			core.set_node({x = x, y = h + 3, z = z}, {name = "mcl_lanterns:lantern_floor"})
 		end
 	end
 end
 
-local function tree(x, z, height)
-	for y = 82, 82 + height do
-		set_node({x = x, y = y, z = z}, "mcl_trees:tree_oak")
-	end
-	for dx = -2, 2 do
-		for dz = -2, 2 do
-			for dy = height - 2, height + 1 do
-				if math.abs(dx) + math.abs(dz) + math.abs(dy - height) <= 4 then
-					local p = {x = x + dx, y = 82 + dy, z = z + dz}
-					if core.get_node(p).name == "air" then
-						set_node(p, "mcl_trees:leaves_oak")
-					end
-				end
-			end
-		end
-	end
-end
-
-local function build_landscape()
-	local trees = {
-		{-48, -70, 5}, {-55, -58, 4}, {-47, -34, 6}, {-51, -12, 5},
-		{-46, 18, 4}, {-52, 42, 5}, {-38, 58, 4}, {45, -72, 5},
-		{53, -54, 4}, {48, -28, 6}, {55, -6, 5}, {47, 22, 4},
-		{53, 44, 5}, {40, 60, 4}, {-30, 68, 5}, {24, 69, 4},
-	}
-	for _, t in ipairs(trees) do
-		if core.get_node({x = t[1], y = 82, z = t[2]}).name == "mcl_core:dirt_with_grass" then
-			tree(t[1], t[2], t[3])
-		end
-	end
-	-- Scattered boulders and dry grass, kept away from the path and camp.
-	for i = 1, 34 do
-		local x = ((i * 37) % 110) - 55
-		local z = ((i * 53) % 130) - 74
-		local in_fort = x >= -29 and x <= 29 and z >= -29 and z <= 29
-		if not in_fort and (math.abs(x) > 8 or z < -58 or z > 8)
-			and core.get_node({x = x, y = 82, z = z}).name == "mcl_core:dirt_with_grass" then
-			local n = (x * 3 + z * 11) % 100
-			if n < 45 then
-				set_node({x = x, y = 83, z = z}, "mcl_core:cobble")
-				if n < 18 then set_node({x = x, y = 84, z = z}, "mcl_core:mossycobble") end
-			elseif n < 80 then
-				set_node({x = x, y = 83, z = z}, "mcl_flowers:fern")
-			else
-				set_node({x = x, y = 83, z = z}, "mcl_core:deadbush")
-			end
-		end
-	end
-end
-
-local function build_camp()
-	local ok, err = pcall(camp.place, CAMP)
+local function build_camp(camp_y)
+	local ok, err = pcall(camp.place, {x = CAMP_X, y = camp_y, z = CAMP_Z})
 	if not ok then
 		core.log("error", "[zz_sello_ruins] camp.place failed: " .. tostring(err))
 		-- A minimal fallback still leaves the world playable.
 		for x = -3, 3 do
-			for z = -4, 3 do set_node({x = x, y = 82, z = z}, "mcl_core:stonebrick") end
+			for z = -4, 3 do core.set_node({x = x, y = camp_y - 1, z = z}, {name = "mcl_core:stonebrick"}) end
 		end
-		set_node({x = 0, y = 83, z = -58}, "mcl_campfires:campfire_lit")
+		core.set_node({x = 0, y = camp_y, z = -58}, {name = "mcl_campfires:campfire_lit"})
 		return false
 	end
-	-- Camp supply chest, just outside the hut.
-	set_node(CAMP_CHEST, "mcl_chests:chest_small")
+	local chest = {x = CAMP_X + 5, y = camp_y, z = CAMP_Z}
+	core.set_node(chest, {name = "mcl_chests:chest_small"})
 	local def = core.registered_nodes["mcl_chests:chest_small"]
-	if def and def.on_construct then def.on_construct(CAMP_CHEST) end
+	if def and def.on_construct then def.on_construct(chest) end
 	return true
 end
 
-local function prepare_waystones()
-	-- Q.setup_site places the crypt and gate stones from the manifest.
-	Q.arm_site({
-		anchor = ANCHOR,
-		trailhead = TRAIL_LANDING,
-		camp = CAMP_LANDING,
-		camp_stone = CAMP_STONE,
-		camp_chest = CAMP_CHEST,
-		trail_stone = TRAIL_STONE,
-		camp_center = CAMP,
-	})
-	Q.setup_site()
-	Q.setup_camp(CAMP)
-end
-
 local function build_all()
-	core.log("action", "[zz_sello_ruins] Building the prepared adventure world")
-	build_platform()
-	build_trailhead()
-	build_path()
-	build_landscape()
-	build_camp()
-	core.load_area({x = ANCHOR.x, y = ANCHOR.y, z = ANCHOR.z},
-		{x = ANCHOR.x + 60, y = ANCHOR.y + 39, z = ANCHOR.z + 60})
+	core.log("action", "[zz_sello_ruins] Grounding the prepared adventure on the real terrain")
+	local center_h = ground_height(ANCHOR_X + 30, ANCHOR_Z + 30)
+	if not center_h then
+		core.log("error", "[zz_sello_ruins] Could not read the fortress site's natural height")
+		return false
+	end
+	local anchor_y = center_h - GRADE_OFFSET
+	local pad_y = anchor_y + GRADE_OFFSET
+	footprint_pad_y = pad_y
+	level_footprint(ANCHOR_X, ANCHOR_Z, 61, 61, pad_y)
+
+	local camp_ground = ground_height(CAMP_X, CAMP_Z)
+	local camp_y = (camp_ground or (pad_y - 5)) + 1
+	if not build_camp(camp_y) then return false end
+
+	build_trailhead(pad_y)
+	build_path(pad_y)
+
+	local anchor = {x = ANCHOR_X, y = anchor_y, z = ANCHOR_Z}
+	core.load_area({x = anchor.x, y = anchor.y, z = anchor.z},
+		{x = anchor.x + 60, y = anchor.y + 39, z = anchor.z + 60})
 	-- Force placement is required: the schematic's stair shaft must cut the
-	-- solid grass shelf.  The short path through the plateau is rebuilt below.
-	local ok, placed = pcall(core.place_schematic, ANCHOR,
+	-- leveled pad. The short path through the footprint is rebuilt below.
+	local ok, placed = pcall(core.place_schematic, anchor,
 		gamepath .. "/schematics/sello_ruinas.mts", "0", nil, true)
 	if not ok or not placed then
 		core.log("error", "[zz_sello_ruins] Could not place sello_ruinas.mts: " .. tostring(placed))
 		return false
 	end
-	-- The schematic owns the fort interior, but the last metres of the approach
-	-- must remain a walkable gravel ramp through the plateau lip.
-	build_path()
-	prepare_waystones()
+	build_path(pad_y)
+
+	local trailhead_h = (ground_height(TRAILHEAD_X, TRAILHEAD_Z) or pad_y)
+	local trail_stone_h = (ground_height(TRAIL_STONE_X, TRAIL_STONE_Z) or pad_y)
+	local camp_landing = {x = CAMP_X, y = camp_y, z = CAMP_Z + 5}
+	local camp_stone = {x = CAMP_X - 4, y = camp_y, z = CAMP_Z + 6}
+	local camp_chest = {x = CAMP_X + 5, y = camp_y, z = CAMP_Z}
+
+	Q.arm_site({
+		anchor = anchor,
+		trailhead = {x = TRAILHEAD_X, y = trailhead_h + 1, z = TRAILHEAD_Z},
+		camp = camp_landing,
+		camp_stone = camp_stone,
+		camp_chest = camp_chest,
+		trail_stone = {x = TRAIL_STONE_X, y = trail_stone_h + 1, z = TRAIL_STONE_Z},
+		camp_center = {x = CAMP_X, y = camp_y, z = CAMP_Z},
+	})
+	Q.setup_site()
+	Q.setup_camp({x = CAMP_X, y = camp_y, z = CAMP_Z})
 	core.set_timeofday(0.32)
-	core.log("action", "[zz_sello_ruins] Adventure world ready")
+	core.log("action", "[zz_sello_ruins] Adventure world ready (anchor y=" .. anchor_y .. ", camp y=" .. camp_y .. ")")
+	return true
 end
 
 local function give_starter_kit(player)
@@ -229,26 +264,70 @@ local function give_starter_kit(player)
 end
 
 local function place_player_at_camp(player)
-	player:set_pos(CAMP_LANDING)
+	local site_data = Q.get_site()
+	local target = site_data and site_data.camp
+	if not target then
+		-- Fall back to a column above the camp centre; never below MIN_Y.
+		local h = ground_height(CAMP_X, CAMP_Z + 5) or 32
+		target = {x = CAMP_X, y = h + 1, z = CAMP_Z + 5}
+	end
+	player:set_pos(target)
 	player:set_look_horizontal(0)
 	local meta = player:get_meta()
 	if meta:get_string("mcl_beds:spawn") == "" then
-		meta:set_string("mcl_beds:spawn", core.pos_to_string(CAMP_LANDING))
+		meta:set_string("mcl_beds:spawn", core.pos_to_string(target))
 	end
 end
 
-core.after(0, function()
+local world_ready = false
+local min_safe_y = MIN_Y
+
+local function initialize_world()
 	if Q.is_armed() then
 		Q.ensure_runtime()
-		Q.setup_camp(CAMP)
+		local camp_ground = ground_height(CAMP_X, CAMP_Z)
+		Q.setup_camp({x = CAMP_X, y = (camp_ground or 0) + 1, z = CAMP_Z})
 		core.log("action", "[zz_sello_ruins] Existing adventure world loaded; terrain left untouched")
 	else
-		build_all()
+		if build_all() == false then return end
 	end
-end)
+	world_ready = true
+	for _, player in ipairs(core.get_connected_players()) do
+		place_player_at_camp(player)
+		give_starter_kit(player)
+	end
+end
 
--- Safety net: the prepared world is a grass shelf surrounded by empty sky.
--- If someone walks off it, return them to camp instead of losing the run.
+local function emerge_world(attempt)
+	local failed = false
+	core.emerge_area({x = -90, y = MIN_Y, z = -106}, {x = 90, y = MAX_Y, z = 90},
+		function(_, action, remaining)
+			if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
+				failed = true
+			end
+			if remaining == 0 then
+				core.after(0, function()
+					if failed then
+						if attempt < 4 then
+							core.after(1, function() emerge_world(attempt + 1) end)
+						else
+							core.log("error", "[zz_sello_ruins] No se pudo preparar el terreno; no se construyó la aventura")
+						end
+					else
+						core.load_area({x = -90, y = MIN_Y, z = -106}, {x = 90, y = MAX_Y, z = 90})
+						local anchor_h = ground_height(ANCHOR_X + 30, ANCHOR_Z + 30) or 0
+						local camp_h = ground_height(CAMP_X, CAMP_Z) or 0
+						min_safe_y = math.min(anchor_h, camp_h) - 60
+						initialize_world()
+					end
+				end)
+			end
+		end)
+end
+core.after(0, function() emerge_world(1) end)
+
+-- Safety net: rescue a player who falls into a cave, ravine or mined-out pit
+-- well below the quest area, instead of losing the run.
 local fall_check = 0
 core.register_globalstep(function(dt)
 	fall_check = fall_check + (dt or 0)
@@ -256,7 +335,7 @@ core.register_globalstep(function(dt)
 	fall_check = 0
 	for _, player in ipairs(core.get_connected_players()) do
 		local pos = player:get_pos()
-		if pos and pos.y < 60 then
+		if world_ready and pos and pos.y < min_safe_y then
 			place_player_at_camp(player)
 			core.chat_send_player(player:get_player_name(), "[El sello] El vacío te devuelve al campamento.")
 		end
@@ -278,10 +357,19 @@ core.register_on_joinplayer(function(player)
 	core.after(1, function()
 		if not player or not player:is_valid() then return end
 		local pos = player:get_pos()
-		if not pos or pos.y < 70 or pos.y > 110 then
+		if not pos or (world_ready and pos.y < min_safe_y) then
 			place_player_at_camp(player)
 		end
 		give_starter_kit(player)
+	end)
+	if Q.is_armed() and E and E.ensure_npc then
+		core.after(1, function() pcall(E.ensure_npc) end)
+	end
+end)
+
+core.register_on_mods_loaded(function()
+	core.after(2, function()
+		if Q.is_armed() and E and E.ensure_npc then pcall(E.ensure_npc) end
 	end)
 end)
 
@@ -290,11 +378,10 @@ end)
 core.register_chatcommand("sello", {
 	description = "Muestra el estado de la expedición del mundo preparado",
 	func = function(name)
-		local Qstate = Q
 		local player = core.get_player_by_name(name)
 		if not player then return false, "Sin jugador." end
 		local pos = vector.round(player:get_pos())
-		local sm = Qstate.is_armed() and "sitio preparado" or "sitio sin preparar"
+		local sm = Q.is_armed() and "sitio preparado" or "sitio sin preparar"
 		return true, ("%s · posición %d,%d,%d · el sello está en la cámara del fondo de la cripta"):format(
 			sm, pos.x, pos.y, pos.z)
 	end,

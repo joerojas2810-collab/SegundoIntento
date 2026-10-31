@@ -1,7 +1,7 @@
 # El sello de las ruinas — cómo jugar
 
-1. Haz doble clic en **`Jugar El Sello de las Ruinas.command`** (raíz del repositorio).
-2. Entra al mundo con el botón **Jugar** o con el personaje por defecto.
+1. Abre **Luanti.app** directamente desde Finder. Selecciona el juego **Everforge**.
+2. En **Iniciar partida**, selecciona **El sello de las ruinas** (`sello_de_las_ruinas`), activa **Alojar servidor**, elige tu nombre y contraseña y usa el puerto **30000**. Pulsa **Alojar servidor**. Los demás entran desde **Unirse a una partida**, con la dirección de tu Mac y ese puerto. No hace falta ejecutar un archivo `.command`.
 3. La **Maestra de expediciones** está junto a la hoguera, a tu espalda al
    aparecer. Haz clic derecho sobre ella y elige **Iniciar «El sello de las ruinas»**.
 4. Si quieres jugar con otra persona: el lanzador abre una partida local; para dos

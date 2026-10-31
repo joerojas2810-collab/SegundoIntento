@@ -340,6 +340,7 @@ end
 
 -- Update/notify neighbouring observing nodes at pos, aka "shape update".
 function mcl_redstone._notify_observer_neighbours(pos)
+	pos = vector.new(pos)
 	for _, dir in pairs(sixdirs) do
 		local pos2  = pos:add(dir)
 		local node2 = core.get_node(pos2)
