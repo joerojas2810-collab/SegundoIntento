@@ -18,5 +18,7 @@ mcl_levelgen_enable_ersatz = false
 # fortress and camp on the real terrain instead of building a flat plaza.
 everforge_start_region = false
 
-# Only the scripted guardians of the ruins spawn here.
-mobs_spawn = false
+# The world is now real, explorable terrain, not a tiny isolated shelf:
+# let ordinary wildlife/mobs spawn in the open world. The crypt keeps its
+# own scripted guardians on top of that.
+mobs_spawn = true

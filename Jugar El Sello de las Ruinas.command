@@ -81,6 +81,6 @@ say "y usa la piedra de viaje azul a un lado del campamento."
 say ""
 CONFIG="$WORLD/playtest.conf"
 if [ ! -f "$CONFIG" ]; then
-	printf '%s\n' 'language = es' 'enable_server = false' 'server_announce = false' 'everforge_start_region = false' 'mobs_spawn = false' > "$CONFIG"
+	printf '%s\n' 'language = es' 'enable_server = false' 'server_announce = false' 'everforge_start_region = false' > "$CONFIG"
 fi
 exec "$BIN" --config "$CONFIG" --gameid everforge --world "$WORLD" --go
